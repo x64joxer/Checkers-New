@@ -7,8 +7,10 @@
 #include <QTimer>
 #include <QPainter>
 #include <QMouseEvent>
+
 #include "Board/Board.h"
 #include "Board/PossibleMoves.h"
+#include "TCP/TCPHandler.h"
 #include "ProgramVariables.h"
 
 
@@ -46,6 +48,7 @@ class CheckerArea : public QWidget
         unsigned short currentPercentOfSteps;
 
         QTimer *waitForIATimer;
+        TCPHandler *agentTCP;
 
         void Paint();
         void PaintFields(QPainter *painter);

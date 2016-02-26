@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    Traces::SetTraceFolder("trace");
+
      //Create board
      board = new Board();
     *board =

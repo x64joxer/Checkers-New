@@ -31,6 +31,7 @@ CheckerArea::CheckerArea(QWidget *parent) :
     waitForIATimer->setInterval(50);
     connect(waitForIATimer,SIGNAL(timeout()), this, SLOT(CheckStatus()));        
 
+    agentTCP = new TCPHandler(this);
 }
 
 //███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
@@ -393,5 +394,6 @@ void CheckerArea::keyPressEvent(QKeyEvent *event)
 
 CheckerArea::~CheckerArea()
 {
+    delete agentTCP;
     delete ui;
 }

@@ -92,7 +92,7 @@ std::string Traces::GetThreadText()
 }
 
 Traces& Traces::operator <<(QString data)
-{    
+{        
         std::lock_guard<std::mutex> guard(mutex);
         StringToFile(data.toStdString());
 }
@@ -141,7 +141,7 @@ std::string Traces::GetCurrentDate()
 }
 
 void Traces::StringToFile(std::string log)
-{
+{    
     QString separator(QDir::separator());
     static std::ofstream logFile;
     logFile.open (traceFolder + separator.toStdString() + GetThreadText().c_str(),std::ofstream::in | std::ofstream::app);

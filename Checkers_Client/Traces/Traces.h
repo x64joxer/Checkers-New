@@ -53,6 +53,4 @@ class Traces
         static std::string traceFolder;
 };
 
-#define TRACE01 if (Traces::GetTraceFlag())
-
 #endif // TRACES_H
