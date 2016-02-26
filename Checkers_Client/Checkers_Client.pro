@@ -17,21 +17,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     GUI/CheckerArea.cpp \
-    ../Common/Board/Board.cpp \
-    ../Common/Board/Pawn.cpp \
-    ../Common/Board/PawnPos.cpp \
-    ../Common/Board/PossibleMoves.cpp \
-    ../Common/Board/ThreadIASimpleBoard.cpp \
-    ../Common/Traces/Traces.cpp
+    Board/Board.cpp \
+    Board/Pawn.cpp \
+    Board/PawnPos.cpp \
+    Board/PossibleMoves.cpp \
+    Board/ThreadIASimpleBoard.cpp \
+    Traces/Traces.cpp
 
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
-    ../Common/Board/Board.h \
-    ../Common/Board/Pawn.h \
-    ../Common/Board/PawnPos.h \
-    ../Common/Board/PossibleMoves.h \
-    ../Common/Board/ThreadIASimpleBoard.h \
-    ../Common/Traces/Traces.h
+    Board/Board.h \
+    Board/Pawn.h \
+    Board/PawnPos.h \
+    Board/PossibleMoves.h \
+    Board/ThreadIASimpleBoard.h \
+    Traces/Traces.h
 
 FORMS    += mainwindow.ui \
     GUI/CheckerArea.ui

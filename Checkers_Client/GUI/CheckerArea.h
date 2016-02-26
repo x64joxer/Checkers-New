@@ -7,8 +7,8 @@
 #include <QTimer>
 #include <QPainter>
 #include <QMouseEvent>
-#include "../Common/Board/Board.h"
-#include "../Common/Board/PossibleMoves.h"
+#include "Board/Board.h"
+#include "Board/PossibleMoves.h"
 #include "ProgramVariables.h"
 
 

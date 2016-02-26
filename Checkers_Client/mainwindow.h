@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../Common/Board/Board.h"
+#include "Board/Board.h"
 #include "GUI/CheckerArea.h"
 
 namespace Ui {
