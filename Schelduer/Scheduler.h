@@ -2,18 +2,17 @@
 #define SCHEDULER_H
 
 #include <iostream>
-#include "../Common/TCP/TCPConnection.h"
-#include "../Common/TCP/TCPServer.h"
+#include "TCP/TCPConnection.h"
 
 class Scheduler
 {
     public:
         Scheduler();
         void Init();
+        void NewConnection(TCPConnection_ptr wsk);
 
-    private:
+    private:       
         TCPConnection *socket;
-        TCPServer *server;
 };
 
 #endif // SCHEDULER_H

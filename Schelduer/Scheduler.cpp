@@ -5,9 +5,12 @@ Scheduler::Scheduler()
 
 }
 
+void Scheduler::NewConnection(TCPConnection_ptr wsk)
+{
+    std::cout << "New connection" << std::endl;
+}
+
 void Scheduler::Init()
 {
-    std::cout << "Scheluder" << std::endl;
-    server = new TCPServer("0.0.0.0", "6000");
-    server->Run();
+
 }

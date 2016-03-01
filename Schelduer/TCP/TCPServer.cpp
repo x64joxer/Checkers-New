@@ -6,7 +6,9 @@
 TCPServer::TCPServer(const std::string& address, const std::string& port)
                                                     : io_service_(),
                                                     acceptor_(io_service_),
-                                                    new_connection_()
+                                                    new_connection_(),
+                                                    schedulerWSk(nullptr)
+
 {
     // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
     boost::asio::ip::tcp::resolver resolver(io_service_);
@@ -49,6 +51,7 @@ void TCPServer::HandleAccept(const boost::system::error_code& e)
   if (!e)
   {
     std::cout << "yea" << std::endl;
+    schedulerWSk->NewConnection(new_connection_);
   }
 
   StartAccept();

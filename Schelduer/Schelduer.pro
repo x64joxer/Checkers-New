@@ -5,14 +5,14 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     Scheduler.cpp \
-    ../Common/TCP/TCPConnection.cpp \
-    ../Common/TCP/TCPServer.cpp
+    TCP/TCPConnection.cpp \
+    TCP/TCPServer.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
 
 HEADERS += \
     Scheduler.h \
-    ../Common/TCP/TCPConnection.h \
-    ../Common/TCP/TCPServer.h
+    TCP/TCPConnection.h \
+    TCP/TCPServer.h
 
