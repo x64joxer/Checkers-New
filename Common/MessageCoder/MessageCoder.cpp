@@ -31,6 +31,11 @@ void MessageCoder::KeyValuePairToChar(const std::string & key, const int value, 
     KeyValuePairToChar(key, std::to_string(value), dest);
 }
 
+void MessageCoder::KeyValuePairToChar(const std::string & key, const unsigned int value, char *dest)
+{
+    KeyValuePairToChar(key, std::to_string(value), dest);
+}
+
 void MessageCoder::KeyValuePairToChar(const std::string & key, const short value, char *dest)
 {
     KeyValuePairToChar(key, std::to_string(value), dest);
@@ -101,7 +106,7 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
 
 void MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned short numberOfBoard)
 {
-    TRACE01 Traces() << "\n" << "LOG: MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned short numberOfBoard)";    
+     Traces() << "\n" << "LOG: MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned short numberOfBoard)";
 
     KeyValuePairToChar(PREVIOUS_MURDER, board.GetPreviousMurder(), dest);
     KeyValuePairToChar(WHITE_PATCH_END, board.GetWhitePatchEnd(), dest);
@@ -148,7 +153,7 @@ void MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned sh
     num = board.GetNumberOfBlack();
     KeyValuePairToChar(prefix + NUMBER_BLACK, num, dest);
 
-    TRACE01 board.PrintDebug();
+    board.PrintDebug();
 
     if (num > 0)
     {
@@ -299,12 +304,12 @@ void MessageCoder::CreateBestResultMessage(const std::string & id, const std::st
     KeyValuePairToChar(JOB_ID, jobId, dest);    
 }
 
-void MessageCoder::CreateStateMessage(const Peers::STATE stat, const std::string & id, char *dest)
+void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest)
 {
     KeyValuePairToChar(ACTION, SET_STATE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(STATE, stat, dest);
-    KeyValuePairToChar(NUM_OF_THREAD, ProgramVariables::GetNumberOfThreads(), dest);
+    KeyValuePairToChar(NUM_OF_THREAD, numOfThread, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);    
 }
 

@@ -5,7 +5,7 @@
 #include "Traces/Traces.h"
 #include "Board/Board.h"
 #include "Board/PawnPos.h"
-#include "Peers.h"
+#include "Peers/Peers.h"
 
 class MessageCoder
 {
@@ -14,6 +14,7 @@ class MessageCoder
         static void KeyValuePairToChar(const std::string & key, const std::string & value, char *dest);
 
         static void KeyValuePairToChar(const std::string & key, const int value, char *dest);
+        static void KeyValuePairToChar(const std::string & key, const unsigned int value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const short value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const long value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const unsigned short value, char *dest);
@@ -23,7 +24,7 @@ class MessageCoder
         static void BoardToChar(const Board & board, char *dest, const unsigned short numberOfBoard);
         static void CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard,  const std::string & id, const std::string & jobId, char *dest);
         static void CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest);
-        static void CreateStateMessage(const Peers::STATE stat, const std::string & id, char *dest);
+        static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 
         static void ClearChar(char *dest, const unsigned int num);
