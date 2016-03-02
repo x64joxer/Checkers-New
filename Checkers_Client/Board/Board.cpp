@@ -501,7 +501,7 @@ double Board::GetPercentageResult() const
 
 void Board::PrintDebug() const
 {
-    QString line;
+    std::string line;
     bool flag = 0;
     Traces() << "\n" << "LOG: White= " << GetNumberOfWhite();
     Traces() << "\n" << "LOG: Black= " << GetNumberOfBlack();
@@ -549,7 +549,7 @@ void Board::PrintDebug() const
             flag = !flag;
         };
 
-        Traces() << "\n" << line.toStdString();
+        Traces() << "\n" << line;
         flag = !flag;
     };
 }

@@ -24,8 +24,7 @@ SOURCES += main.cpp\
     Board/ThreadIASimpleBoard.cpp \
     TCP/TCPHandler.cpp \
     ProgramVariables.cpp \
-    ../Common/Traces/Traces.cpp
-
+    Traces/Traces.cpp
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
     Board/Board.h \
@@ -35,7 +34,7 @@ HEADERS  += mainwindow.h \
     Board/ThreadIASimpleBoard.h \
     TCP/TCPHandler.h \
     ProgramVariables.h \
-    ../Common/Traces/Traces.h
+    Traces/Traces.h
 
 FORMS    += mainwindow.ui \
     GUI/CheckerArea.ui

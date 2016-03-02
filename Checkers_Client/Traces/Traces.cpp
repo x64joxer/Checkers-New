@@ -5,11 +5,6 @@ Traces::Traces()
 
 }
 
-/*Traces& Traces::operator <<(const std::string data)
-{
-    StringToFile(data);
-}*/
-
 void Traces::CreateTraceFolder()
 {    
     std::string mkdirCommand = std::string("mkdir -p ") + traceFolder.c_str();
@@ -115,7 +110,6 @@ unsigned long long Traces::GetCurrentTime()
     {
         stop = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
         timeFlag = false;       
-        qDebug() << "Diff=" << stop - start;
         return stop - start;
     };    
 

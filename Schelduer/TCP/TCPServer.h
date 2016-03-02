@@ -4,7 +4,9 @@
 #include <boost/asio.hpp>
 #include <string>
 #include <boost/noncopyable.hpp>
+
 #include "TCPConnection.h"
+#include "Traces/Traces.h"
 #include "../Scheduler.h"
 
 
