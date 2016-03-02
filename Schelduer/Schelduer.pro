@@ -7,6 +7,7 @@ SOURCES += main.cpp \
     Scheduler.cpp \
     TCP/TCPConnection.cpp \
     TCP/TCPServer.cpp \
+    Traces/Traces.cpp \
     Traces/Traces.cpp
 
 include(deployment.pri)
@@ -16,5 +17,6 @@ HEADERS += \
     Scheduler.h \
     TCP/TCPConnection.h \
     TCP/TCPServer.h \
+    Traces/Traces.h \
     Traces/Traces.h
 

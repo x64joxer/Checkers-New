@@ -115,7 +115,6 @@ unsigned long long Traces::GetCurrentTime()
     {
         stop = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
         timeFlag = false;       
-        qDebug() << "Diff=" << stop - start;
         return stop - start;
     };    
 

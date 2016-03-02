@@ -6,7 +6,7 @@
 #include <boost/noncopyable.hpp>
 
 #include "TCPConnection.h"
-#include "Traces/Traces.h"
+#include "../Traces/Traces.h"
 #include "../Scheduler.h"
 
 
