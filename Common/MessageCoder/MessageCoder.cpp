@@ -332,6 +332,12 @@ std::string MessageCoder::GetNextKey(const std::string & debug_key)
     }
 }
 
+std::string MessageCoder::CreateMessageId()
+{
+    std::lock_guard<std::mutex> guard(mutex_guard);
+    return std::to_string(++messageId);
+}
+
 std::string MessageCoder::ACTION = GetNextKey("ACTION");
 std::string MessageCoder::OK = GetNextKey("OK");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
@@ -372,3 +378,5 @@ std::string MessageCoder::BLACK_PONS = GetNextKey("BLACK_PONS_");
 
 unsigned int MessageCoder::nextKey = 0;
 bool MessageCoder::debugMode = false;
+unsigned long long MessageCoder::messageId = 0;
+std::mutex MessageCoder::mutex_guard;

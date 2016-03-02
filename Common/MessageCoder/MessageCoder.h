@@ -32,6 +32,8 @@ class MessageCoder
         static void MessageToMap(const char *source, std::map<std::string, std::string> & dest);
         static void MapToBoard(const std::map<std::string, std::string> & dest, Board *board);        
 
+        static std::string CreateMessageId();
+
         //Keys
         static std::string ACTION;
         static std::string OK;
@@ -75,7 +77,8 @@ class MessageCoder
         static std::string GetNextKey(const std::string & debug_key);
         static unsigned int nextKey;
         static bool debugMode;
-
+        static unsigned long long messageId;
+        static std::mutex mutex_guard;
 };
 
 #endif // MESSAGECODER_H

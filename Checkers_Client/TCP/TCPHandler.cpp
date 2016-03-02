@@ -47,7 +47,15 @@ void TCPHandler::Reconnect()
 
 void TCPHandler::SendJob(const Board &board)
 {
+    while(tcpSocket->waitForBytesWritten()) {}
 
+    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
+    std::string tempId = MessageCoder::CreateMessageId();
+    std::string jobId = MessageCoder::CreateMessageId();
+    MessageCoder::CreateStartMessage(ProgramVariables::GetMaxTimeForIa(), 1, tempId, jobId, globalData);
+    MessageCoder::BoardToChar(board, globalData, 1);
+
+    tcpSocket->write(globalData);
 }
 
 void TCPHandler::Connected()
