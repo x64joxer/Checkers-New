@@ -4,7 +4,7 @@
 #include "ProgramVariables.h"
 #include "Traces/Traces.h"
 #include "Board/Board.h"
-#include "PawnPos.h"
+#include "Board/PawnPos.h"
 #include "Peers.h"
 
 class MessageCoder
