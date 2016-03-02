@@ -6,10 +6,10 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
-#include "../Common/Traces/Traces.h"
-#include "../Common/Board/Pawn.h"
-#include "../Common/Board/PawnPos.h"
-#include "../Common/Board/ThreadIASimpleBoard.h"
+#include "Traces/Traces.h"
+#include "Board/Pawn.h"
+#include "Board/PawnPos.h"
+#include "Board/ThreadIASimpleBoard.h"
 
 class ThreadIASimpleBoard;
 

@@ -4,6 +4,7 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QTimer>
+#include "Board/Board.h"
 #include "ProgramVariables.h"
 
 class TCPHandler : public QObject
@@ -11,7 +12,9 @@ class TCPHandler : public QObject
         Q_OBJECT
     public:
         explicit TCPHandler(QObject *parent = 0);
+
         void ConnectToServer(const QString ho, int po);
+        void SendJob(const Board &board);
 
         enum MessageState { NONE_OK, STATE_OK, BEST_RESULT_OK };
 

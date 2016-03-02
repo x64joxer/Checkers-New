@@ -492,16 +492,16 @@ unsigned short Board::GetResult() const
 
 double Board::GetPercentageResult() const
 {
-    TRACE01 Traces() << "\n" << "LOG: Board::GetPercentageResult()";
+     Traces() << "\n" << "LOG: Board::GetPercentageResult()";
     if (numberOfWhite() == 0) return 12;
     if (numberOfBlack() == 0) return 0;
-    TRACE01 Traces() << "\n" << "LOG: Result = " << (double)numberOfBlack() / (double)numberOfWhite();
+     Traces() << "\n" << "LOG: Result = " << (double)numberOfBlack() / (double)numberOfWhite();
     return (double)numberOfBlack() / (double)numberOfWhite();
 }
 
 void Board::PrintDebug() const
 {
-    QString line;
+    std::string line;
     bool flag = 0;
     Traces() << "\n" << "LOG: White= " << GetNumberOfWhite();
     Traces() << "\n" << "LOG: Black= " << GetNumberOfBlack();
@@ -692,7 +692,7 @@ Board & Board::operator =(const std::string & data)
 
 bool Board::operator ==(const Board & data) const
 {
-    TRACE01 Traces() << "\n" << "LOG: Board::operator ==(Board data)";
+     Traces() << "\n" << "LOG: Board::operator ==(Board data)";
 
     if (GetNumberOfBlack()!=data.GetNumberOfBlack())
     {
@@ -830,13 +830,13 @@ void Board::clearBlack()
 
 bool Board::GetWhitePatchEnd() const
 {
-    TRACE01 Traces() << "\n" << "LOG: bool Board::GetWhitePatchEnd() " << int (whitePatchEnd);
+     Traces() << "\n" << "LOG: bool Board::GetWhitePatchEnd() " << int (whitePatchEnd);
     return whitePatchEnd;
 }
 
 void Board::SetWhitePatchEnd(const bool flag)
 {
-    TRACE01 Traces() << "\n" << "LOG: void Board::SetWhitePatchEnd(const bool flag) " << int (flag);
+     Traces() << "\n" << "LOG: void Board::SetWhitePatchEnd(const bool flag) " << int (flag);
     whitePatchEnd = flag;
 }
 
