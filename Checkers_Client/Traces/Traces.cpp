@@ -11,11 +11,9 @@ Traces::Traces()
 }*/
 
 void Traces::CreateTraceFolder()
-{
-    QDir dir;
-    dir.setCurrent(dir.absolutePath());
-
-    dir.mkdir(QString(traceFolder.c_str()));
+{    
+    std::string mkdirCommand = std::string("mkdir -p ") + traceFolder.c_str();
+    system(mkdirCommand.c_str());
 }
 
 void Traces::SetTraceFolder(const QString &dir)
@@ -91,10 +89,10 @@ std::string Traces::GetThreadText()
     return CreateNewThreadText();
 }
 
-Traces& Traces::operator <<(QString data)
+Traces& Traces::operator <<(std::string data)
 {        
         std::lock_guard<std::mutex> guard(mutex);
-        StringToFile(data.toStdString());
+        StringToFile(data);
 }
 
 Traces& Traces::operator <<(const unsigned long long data)
@@ -142,9 +140,8 @@ std::string Traces::GetCurrentDate()
 
 void Traces::StringToFile(std::string log)
 {    
-    QString separator(QDir::separator());
     static std::ofstream logFile;
-    logFile.open (traceFolder + separator.toStdString() + GetThreadText().c_str(),std::ofstream::in | std::ofstream::app);
+    logFile.open (traceFolder + "/" + GetThreadText().c_str(),std::ofstream::in | std::ofstream::app);
 
     if (log == "\n") log += GetThreadText() + "[" + GetCurrentDate() + "]";
 

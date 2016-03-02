@@ -549,7 +549,7 @@ void Board::PrintDebug() const
             flag = !flag;
         };
 
-        Traces() << "\n" << line;
+        Traces() << "\n" << line.toStdString();
         flag = !flag;
     };
 }

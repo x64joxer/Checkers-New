@@ -34,20 +34,20 @@ void TCPHandler::ConnectToServer(const QString ho,  int po)
     host = ho;
     port = po;
 
-    Traces() << "\n" << "LOG: Connecting to host:" << host << " port:" << port;
+    Traces() << "\n" << "LOG: Connecting to host:" << host.toStdString() << " port:" << port;
     tcpSocket->connectToHost(host,port);
 }
 
 void TCPHandler::Reconnect()
 {
     time->stop();
-    Traces() << "\n" << "LOG: Reconnecting to host:"  << host << " port:" << port;;
+    Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
     tcpSocket->connectToHost(host,port);
 }
 
 void TCPHandler::Connected()
 {
-    Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host << " port:" << port;;
+    Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
 
     connection_state = CONNECTED;
 }
@@ -65,7 +65,7 @@ void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
         connection_state = DISCONNECTED;
         break;
     default:
-        Traces() << "\n" << "ERROR:The following error occurred:" << tcpSocket->errorString();
+        Traces() << "\n" << "ERROR:The following error occurred:" << tcpSocket->errorString().toStdString();
         connection_state = DISCONNECTED;
     }
 

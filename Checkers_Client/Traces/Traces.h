@@ -11,16 +11,13 @@
 #include <string>
 #include <sstream>
 #include <set>
-#include <QString>
-#include <QDir>
 
 class Traces
 {
     public:
         Traces();
 
-        //Traces& operator <<(const std::string);
-        Traces& operator <<(const QString );
+        Traces& operator <<(const std::string);
         Traces& operator <<(const unsigned long long);
 
         static unsigned long long GetCurrentTime();
