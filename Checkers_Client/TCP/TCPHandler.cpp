@@ -45,6 +45,11 @@ void TCPHandler::Reconnect()
     tcpSocket->connectToHost(host,port);
 }
 
+void TCPHandler::SendJob(const Board &board)
+{
+
+}
+
 void TCPHandler::Connected()
 {
     Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
