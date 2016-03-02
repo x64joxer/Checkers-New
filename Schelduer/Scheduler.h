@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #include <iostream>
+#include <set>
 #include "TCP/TCPConnection.h"
 
 class Scheduler
@@ -13,6 +14,9 @@ class Scheduler
 
     private:       
         TCPConnection *socket;
+
+        // The managed connections.
+        std::set<TCPConnection_ptr> connections_;
 };
 
 #endif // SCHEDULER_H
