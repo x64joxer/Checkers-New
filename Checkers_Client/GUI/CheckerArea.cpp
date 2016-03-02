@@ -223,7 +223,7 @@ void CheckerArea::DrawPawn(QPainter *painter, const int x, const int y, const in
 
 void CheckerArea::StartThinking()
 {
-
+    agentTCP->SendJob(*board);
 }
 
 void CheckerArea::TakeMouseClickEvent(QMouseEvent *event)

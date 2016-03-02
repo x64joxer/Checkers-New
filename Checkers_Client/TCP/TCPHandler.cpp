@@ -55,6 +55,9 @@ void TCPHandler::SendJob(const Board &board)
     MessageCoder::CreateStartMessage(ProgramVariables::GetMaxTimeForIa(), 1, tempId, jobId, globalData);
     MessageCoder::BoardToChar(board, globalData, 1);
 
+    Traces() << "\n" << "LOG: Sending job to server " << globalData;
+
+
     tcpSocket->write(globalData);
 }
 
