@@ -22,9 +22,9 @@ SOURCES += main.cpp\
     Board/PawnPos.cpp \
     Board/PossibleMoves.cpp \
     Board/ThreadIASimpleBoard.cpp \
-    Traces/Traces.cpp \
     TCP/TCPHandler.cpp \
-    ProgramVariables.cpp
+    ProgramVariables.cpp \
+    ../Common/Traces/Traces.cpp
 
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
@@ -33,9 +33,9 @@ HEADERS  += mainwindow.h \
     Board/PawnPos.h \
     Board/PossibleMoves.h \
     Board/ThreadIASimpleBoard.h \
-    Traces/Traces.h \
     TCP/TCPHandler.h \
-    ProgramVariables.h
+    ProgramVariables.h \
+    ../Common/Traces/Traces.h
 
 FORMS    += mainwindow.ui \
     GUI/CheckerArea.ui

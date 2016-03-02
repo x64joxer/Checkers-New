@@ -5,7 +5,7 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
-#include "Traces/Traces.h"
+#include "../Common/Traces/Traces.h"
 
 class ProgramVariables
 {

@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "Board/Board.h"
 #include "GUI/CheckerArea.h"
-#include "Traces/Traces.h"
+#include "../Common/Traces/Traces.h"
 
 namespace Ui {
 class MainWindow;
