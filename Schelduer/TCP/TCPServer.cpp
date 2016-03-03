@@ -10,7 +10,8 @@ TCPServer::TCPServer(const std::string& address, const std::string& port)
                                                     schedulerWSk(nullptr)
 
 {
-    // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
+    Traces() << "\n" << "LOG: TCPServer::TCPServer(const std::string& address, const std::string& port)";
+
     boost::asio::ip::tcp::resolver resolver(io_service_);
     boost::asio::ip::tcp::resolver::query query(address, port);
     boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
@@ -24,15 +25,14 @@ TCPServer::TCPServer(const std::string& address, const std::string& port)
 
 void TCPServer::Run()
 {
-  // The io_service::run() call will block until all asynchronous operations
-  // have finished. While the server is running, there is always at least one
-  // asynchronous operation outstanding: the asynchronous accept call waiting
-  // for new incoming connections.
+  Traces() << "\n" << "LOG: void TCPServer::Run()";
   io_service_.run();
 }
 
 void TCPServer::StartAccept()
 {
+  Traces() << "\n" << "LOG: void TCPServer::StartAccept()";
+
   new_connection_.reset(new TCPConnection(io_service_));
   acceptor_.async_accept(new_connection_->Socket(),
       boost::bind(&TCPServer::HandleAccept, this,
@@ -41,15 +41,16 @@ void TCPServer::StartAccept()
 
 void TCPServer::HandleAccept(const boost::system::error_code& e)
 {
-  // Check whether the server was stopped by a signal before this completion
-  // handler had a chance to run.
+  Traces() << "\n" << "LOG: void TCPServer::HandleAccept(const boost::system::error_code& e)";
+
   if (!acceptor_.is_open())
   {
     return;
   }
 
   if (!e)
-  {  
+  {
+    Traces() << "\n" << "LOG: Adding new connection to scheduler";
     schedulerWSk->NewConnection(new_connection_);
   }
 
