@@ -3,12 +3,13 @@
 
 #include "Scheduler.h"
 #include "TCP/TCPServer.h"
+#include "Traces/Traces.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Main";
+    Traces::SetTraceFolder("trace");
 
     Scheduler workScheduler;
 

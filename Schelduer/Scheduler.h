@@ -4,6 +4,7 @@
 #include <iostream>
 #include <set>
 #include "TCP/TCPConnection.h"
+#include "Traces/Traces.h"
 
 class Scheduler
 {

@@ -49,8 +49,7 @@ void TCPServer::HandleAccept(const boost::system::error_code& e)
   }
 
   if (!e)
-  {
-    std::cout << "yea" << std::endl;
+  {  
     schedulerWSk->NewConnection(new_connection_);
   }
 

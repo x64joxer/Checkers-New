@@ -1,13 +1,17 @@
 #include "TCPConnection.h"
 #include <boost/bind.hpp>
 
-TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)
+TCPConnection::TCPConnection(boost::asio::io_service& io_service)
+                            : socket_(io_service),
+                              socketActive(true)
 {
-
+    Traces() << "\n" << "LOG: TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)";
 }
 
 void TCPConnection::Start()
 {
+  Traces() << "\n" << "LOG: void TCPConnection::Start()";
+
   socket_.async_read_some(boost::asio::buffer(buffer_),
       boost::bind(&TCPConnection::HandleRead, shared_from_this(),
         boost::asio::placeholders::error,
@@ -17,19 +21,24 @@ void TCPConnection::Start()
 void TCPConnection::HandleRead(const boost::system::error_code& e,
     std::size_t bytes_transferred)
 {
+  Traces() << "\n" << "LOG: void TCPConnection::HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred)";
+
   if (!e)
   {
-    std::cout << "New message" << std::endl;
+    Traces() << "\n" << "LOG: New message";
+    std::cout << buffer_.data() << std::endl;
   }
   else if (e != boost::asio::error::operation_aborted)
   {
-    std::cout << "error" << std::endl;
-    //TO_DO Send error signal
+    Traces() << "\n" << "LOG: Close connection";
+    this->Stop();
   }
 }
 
 void TCPConnection::HandleWrite(const boost::system::error_code& e)
 {
+  Traces() << "\n" << "LOG: void TCPConnection::HandleWrite(const boost::system::error_code& e)";
+
   if (!e)
   {
     // Initiate graceful connection closure.
@@ -46,10 +55,15 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
 
 void TCPConnection::Stop()
 {
+  Traces() << "\n" << "LOG: void TCPConnection::Stop()";
+
+  socketActive = false;
   socket_.close();
 }
 
 boost::asio::ip::tcp::socket& TCPConnection::Socket()
 {
+  Traces() << "\n" << "LOG: boost::asio::ip::tcp::socket& TCPConnection::Socket()";
+
   return socket_;
 }

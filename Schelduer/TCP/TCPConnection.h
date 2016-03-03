@@ -7,6 +7,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include "../Traces/Traces.h"
+
 
 class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
                       private boost::noncopyable
@@ -19,13 +21,14 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      void Stop();
      void HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred);
      void HandleWrite(const boost::system::error_code& e);
+     bool IsSocketActive() { return socketActive; }
+
      boost::asio::ip::tcp::socket& Socket();
 
-   private:
-      boost::asio::ip::tcp::socket socket_;
-
-       /// Buffer for incoming data.
-       boost::array<char, 8192> buffer_;
+   private:     
+     boost::array<char, 8192> buffer_;
+     boost::asio::ip::tcp::socket socket_;
+     bool socketActive;
 };
 
 typedef boost::shared_ptr<TCPConnection> TCPConnection_ptr;
