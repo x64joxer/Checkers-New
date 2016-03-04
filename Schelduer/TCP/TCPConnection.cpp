@@ -27,6 +27,8 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
   {
     Traces() << "\n" << "LOG: New message";
     std::cout << buffer_.data() << std::endl;
+
+    SendMessage("Ok stary");
   }
   else if (e != boost::asio::error::operation_aborted)
   {
@@ -42,8 +44,8 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
   if (!e)
   {
     // Initiate graceful connection closure.
-    boost::system::error_code ignored_ec;
-    socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+    //boost::system::error_code ignored_ec;
+    //socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
   }
 
   if (e != boost::asio::error::operation_aborted)
@@ -52,6 +54,14 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
   }
 }
 
+void TCPConnection::SendMessage(const std::string message)
+{
+     Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
+
+    boost::asio::async_write(socket_, boost::asio::buffer(message),
+              boost::bind(&TCPConnection::HandleWrite, shared_from_this(),
+                boost::asio::placeholders::error));
+}
 
 void TCPConnection::Stop()
 {

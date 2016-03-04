@@ -92,7 +92,8 @@ void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
 
 void TCPHandler::ReadDataFromServer()
 {
-    Traces() << "\n" << "LOG: Read data from server";
+    Traces() << "\n" << "LOG: Read data from server: " << tcpSocket->readAll().toStdString();
+
 }
 
 void TCPHandler::Disconnect()

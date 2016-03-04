@@ -21,6 +21,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      void Stop();
      void HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred);
      void HandleWrite(const boost::system::error_code& e);
+     void SendMessage(const std::string message);
      bool IsSocketActive() { return socketActive; }
 
      boost::asio::ip::tcp::socket& Socket();
