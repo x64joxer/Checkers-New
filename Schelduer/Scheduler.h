@@ -18,7 +18,7 @@ class Scheduler
         TCPConnection *socket;
 
         // The managed connections.
-        std::set<TCPConnection_ptr> connections_;
+        SharedPtrSet<TCPConnection_ptr> connections_;        
 };
 
 #endif // SCHEDULER_H

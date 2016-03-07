@@ -7,9 +7,9 @@ Scheduler::Scheduler()
 
 void Scheduler::NewConnection(TCPConnection_ptr wsk)
 {
-    Traces() << "\n" << "LOG: Adding new connection";
+    Traces() << "\n" << "LOG: Adding new connection";    
 
-    connections_.insert(wsk);
+    connections_.PushBack(wsk);
     wsk->Start();
 }
 
