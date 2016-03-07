@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     TCP/TCPConnection.cpp \
     TCP/TCPServer.cpp \
     Traces/Traces.cpp \
-    Traces/Traces.cpp
+    Traces/Traces.cpp \
+    SafeQueue/SharedPtrSet/SharedPtrSet.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -18,5 +19,6 @@ HEADERS += \
     TCP/TCPConnection.h \
     TCP/TCPServer.h \
     Traces/Traces.h \
-    Traces/Traces.h
+    Traces/Traces.h \
+    SafeQueue/SharedPtrSet/SharedPtrSet.h
 

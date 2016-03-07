@@ -5,6 +5,7 @@
 #include <set>
 #include "TCP/TCPConnection.h"
 #include "Traces/Traces.h"
+#include "SafeQueue/SharedPtrSet/SharedPtrSet.h"
 
 class Scheduler
 {
