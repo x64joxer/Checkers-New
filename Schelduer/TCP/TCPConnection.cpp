@@ -30,7 +30,6 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
     Message tempMessage;
     tempMessage.CopyData((boost::shared_ptr<TCPConnection>)this, buffer_.data());
     messageQueue->PushBack(tempMessage);
-
   }
   else if (e != boost::asio::error::operation_aborted)
   {

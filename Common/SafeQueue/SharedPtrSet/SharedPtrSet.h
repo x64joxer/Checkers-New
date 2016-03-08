@@ -24,6 +24,7 @@ class SharedPtrSet
         std::mutex mutex;
         std::set<wskType> setList;
         std::condition_variable *condition_var;
+        std::condition_variable *org_condition_var;
 };
 
 
@@ -32,6 +33,7 @@ SharedPtrSet<wskType>::SharedPtrSet()
 {
     Traces() << "\n" << "LOG: SharedPtrSet<wskType>::SharedPtrSet()";
     condition_var = new std::condition_variable();
+    org_condition_var = condition_var;
 }
 
 template<typename wskType>
@@ -66,13 +68,15 @@ void SharedPtrSet<wskType>::PushBack(wskType wsk)
     std::lock_guard<std::mutex> ls(mutex);
     setList.insert(wsk);
     condition_var->notify_one();
+
+    Traces() << "\n" << "LOG: Number of element in list " << setList.size();
 }
 
 template<typename wskType>
 SharedPtrSet<wskType>::~SharedPtrSet()
 {
     Traces() << "\n" << "LOG: SharedPtrSet<wskType>::~SharedPtrSet()";
-    delete condition_var;
+    delete org_condition_var;
 }
 
 template<typename wskType>
