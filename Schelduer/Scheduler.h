@@ -5,6 +5,7 @@
 #include <set>
 #include "TCP/TCPConnection.h"
 #include "Traces/Traces.h"
+#include "SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "SafeQueue/SharedPtrSet/SharedPtrSet.h"
 
 class Scheduler
@@ -20,7 +21,7 @@ class Scheduler
 
         // The managed connections.        
         std::set<TCPConnection_ptr> connections_;
-        SharedPtrSet<boost::array<char, 8192> > *messageQueue;
+        SharedPtrList<boost::array<char, 8192> > *messageQueue;
 };
 
 #endif // SCHEDULER_H

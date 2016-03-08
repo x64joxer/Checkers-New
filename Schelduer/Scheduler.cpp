@@ -3,7 +3,7 @@
 Scheduler::Scheduler()
 {
     Traces() << "\n" << "LOG: Scheduler::Scheduler()";
-    messageQueue = new SharedPtrSet<boost::array<char, 8192> >;
+    messageQueue = new SharedPtrList<boost::array<char, 8192> >;
 }
 
 void Scheduler::NewConnection(TCPConnection_ptr wsk)
