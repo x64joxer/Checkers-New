@@ -21,7 +21,7 @@ class Scheduler
 
         // The managed connections.        
         std::set<TCPConnection_ptr> connections_;
-        SharedPtrList<boost::array<char, 8192> > *messageQueue;
+        SharedPtrList<Message> *messageQueue;
 };
 
 #endif // SCHEDULER_H

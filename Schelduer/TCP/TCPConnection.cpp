@@ -25,10 +25,12 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
 
   if (!e)
   {
-    Traces() << "\n" << "LOG: New message";
-    std::cout << buffer_.data() << std::endl;
+    Traces() << "\n" << "LOG: New message";    
 
-    SendMessage("Ok stary");
+    Message tempMessage;
+    tempMessage.CopyData((boost::shared_ptr<TCPConnection>)this, buffer_.data());
+    messageQueue->PushBack(tempMessage);
+
   }
   else if (e != boost::asio::error::operation_aborted)
   {
