@@ -7,7 +7,7 @@ TCPServer::TCPServer(const std::string& address, const std::string& port)
                                                     : io_service_(),
                                                     acceptor_(io_service_),
                                                     new_connection_(),
-                                                    schedulerWSk(nullptr)
+                                                    connectionManagerWSk(nullptr)
 
 {
     Traces() << "\n" << "LOG: TCPServer::TCPServer(const std::string& address, const std::string& port)";
@@ -50,8 +50,8 @@ void TCPServer::HandleAccept(const boost::system::error_code& e)
 
   if (!e)
   {
-    Traces() << "\n" << "LOG: Adding new connection to scheduler";
-    schedulerWSk->NewConnection(new_connection_);
+    Traces() << "\n" << "LOG: Adding new connection to ConnectionManager";
+    connectionManagerWSk->NewConnection(new_connection_);
   }
 
   StartAccept();

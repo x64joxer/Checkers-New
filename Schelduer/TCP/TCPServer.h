@@ -7,7 +7,7 @@
 
 #include "TCPConnection.h"
 #include "../Traces/Traces.h"
-#include "../Scheduler.h"
+#include "../ConnectionManager/ConnectionManager.h"
 
 
 class TCPServer
@@ -15,7 +15,7 @@ class TCPServer
     public:
          TCPServer(const std::string& address, const std::string& port);
          void Run();         
-         void SetScheduler(Scheduler *wsk) { schedulerWSk = wsk; }
+         void SetConnectionManager(ConnectionManager *wsk) { connectionManagerWSk = wsk; }
 
     private:
         void HandleAccept(const boost::system::error_code& e);
@@ -28,7 +28,7 @@ class TCPServer
         TCPConnection_ptr new_connection_;
 
         //Pointer to message handler
-        Scheduler *schedulerWSk;
+        ConnectionManager *connectionManagerWSk;
 };
 
 #endif // TCPSERVER_H

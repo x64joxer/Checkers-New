@@ -1,7 +1,7 @@
 #include <iostream>
 #include <boost/filesystem/operations.hpp>
 
-#include "Scheduler.h"
+#include "ConnectionManager/ConnectionManager.h"
 #include "TCP/TCPServer.h"
 #include "Traces/Traces.h"
 
@@ -11,11 +11,11 @@ int main()
 {
     Traces::SetTraceFolder("trace");
 
-    Scheduler workScheduler;
+    ConnectionManager workScheduler;
 
     TCPServer *server;
     server = new TCPServer("0.0.0.0", "6000");
-    server->SetScheduler(&workScheduler);
+    server->SetConnectionManager(&workScheduler);
     server->Run();
 
     return 0;
