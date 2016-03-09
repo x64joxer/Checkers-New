@@ -41,8 +41,32 @@ void TCPHandler::ConnectToServer(const QString ho,  int po)
 void TCPHandler::Reconnect()
 {
     time->stop();
-    Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
-    tcpSocket->connectToHost(host,port);
+
+    if (connection_state == ConState::DISCONNECTED)
+    {
+        Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
+        tcpSocket->connectToHost(host,port);
+    } else
+    if (connection_state == ConState::CONNECTED)
+    {
+        Traces() << "\n" << "LOG: Registering as client";
+        SendRegisterMessage();
+        waitForOKMessageTimer->start();
+
+    } else
+    {
+        Traces() << "\n" << "ERROR: Wrong connection state!";
+    }
+}
+
+void TCPHandler::SendRegisterMessage()
+{
+    Traces() << "\n" << "LOG: void TCPHandler::SendRegisterMessage()";
+
+    while(tcpSocket->waitForBytesWritten()) {}
+    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
+    MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::CLIENT, MessageCoder::CreateMessageId(), globalData);
+    tcpSocket->write(globalData);
 }
 
 void TCPHandler::SendJob(const Board &board)
@@ -57,7 +81,6 @@ void TCPHandler::SendJob(const Board &board)
 
     Traces() << "\n" << "LOG: Sending job to server " << globalData;
 
-
     tcpSocket->write(globalData);
 }
 
@@ -65,7 +88,8 @@ void TCPHandler::Connected()
 {
     Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
 
-    connection_state = CONNECTED;
+    time->start();
+    connection_state = CONNECTED;        
 }
 
 void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
@@ -104,7 +128,23 @@ void TCPHandler::Disconnect()
 
 void TCPHandler::NoResponseFromServer()
 {
+    Traces() << "\n" << "LOG: void TCPHandler::NoResponseFromServer()";
 
+    waitForOKMessageTimer->stop();
+
+    if (connection_state == CONNECTED)
+    {
+        SendRegisterMessage();
+        waitForOKMessageTimer->start();
+    } else
+    if (connection_state == REGISTERED)
+    {
+
+    } else
+    if (connection_state == DISCONNECTED)
+    {
+
+    };
 }
 
 TCPHandler::~TCPHandler()

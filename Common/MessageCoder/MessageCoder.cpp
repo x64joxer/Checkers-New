@@ -313,6 +313,14 @@ void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned in
     KeyValuePairToChar(MESSAGE_END, 0, dest);    
 }
 
+void MessageCoder::CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest)
+{
+    KeyValuePairToChar(ACTION, SET_ROLE, dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);
+    KeyValuePairToChar(ROLE, role, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+}
+
 void MessageCoder::CreateOkMessage(const std::string  & id, char *dest)
 {
     KeyValuePairToChar(ACTION, OK, dest);
@@ -345,12 +353,14 @@ std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");
+std::string MessageCoder::SET_ROLE = GetNextKey("SET_ROLE");
 std::string MessageCoder::BEST_RESULT = GetNextKey("BEST_RESULT");
 
 std::string MessageCoder::MAX_TIME = GetNextKey("MAX_TIME");
 std::string MessageCoder::NUM_OF_ANALYSED = GetNextKey("NUM_OF_ANALYSED");
 std::string MessageCoder::NUM_OF_BOARD = GetNextKey("NUM_OF_BOARD");
 std::string MessageCoder::STATE = GetNextKey("STATE");
+std::string MessageCoder::ROLE = GetNextKey("STATE");
 std::string MessageCoder::JOB_ID = GetNextKey("JOB_ID");
 std::string MessageCoder::NUM_OF_THREAD = GetNextKey("NUM_OF_THREAD");
 

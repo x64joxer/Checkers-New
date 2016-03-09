@@ -13,6 +13,8 @@ class MessageCoder
         MessageCoder();
         static void KeyValuePairToChar(const std::string & key, const std::string & value, char *dest);
 
+        enum ROLE_ENUM { CLIENT, WORKER };
+
         static void KeyValuePairToChar(const std::string & key, const int value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const unsigned int value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const short value, char *dest);
@@ -25,9 +27,10 @@ class MessageCoder
         static void CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard,  const std::string & id, const std::string & jobId, char *dest);
         static void CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest);
         static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
+        static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 
-        static void ClearChar(char *dest, const unsigned int num);
+        static void ClearChar(char *dest, const unsigned int num);        
 
         static void MessageToMap(const char *source, std::map<std::string, std::string> & dest);
         static void MapToBoard(const std::map<std::string, std::string> & dest, Board *board);        
@@ -42,12 +45,14 @@ class MessageCoder
 
         static std::string START_WORK;
         static std::string SET_STATE;        
+        static std::string SET_ROLE;
         static std::string BEST_RESULT;
 
         static std::string MAX_TIME;
         static std::string NUM_OF_ANALYSED;
         static std::string NUM_OF_BOARD;
         static std::string STATE;
+        static std::string ROLE;
         static std::string JOB_ID;
         static std::string NUM_OF_THREAD;
 

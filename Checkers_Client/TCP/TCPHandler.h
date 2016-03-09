@@ -35,8 +35,10 @@ class TCPHandler : public QObject
         void Init();
         void Disconnect();
 
+        void SendRegisterMessage();
+
         QTcpSocket *tcpSocket;
-        enum ConState { DISCONNECTED, CONNECTED} connection_state;
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED } connection_state;
         MessageState messageState;
         unsigned short numOfReattempt;
         QTimer *time;
