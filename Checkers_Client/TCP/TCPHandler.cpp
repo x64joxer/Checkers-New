@@ -67,6 +67,8 @@ void TCPHandler::SendRegisterMessage()
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
     MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::CLIENT, MessageCoder::CreateMessageId(), globalData);
     tcpSocket->write(globalData);
+    while(tcpSocket->waitForBytesWritten()) {}
+    tcpSocket->write(globalData);
 }
 
 void TCPHandler::SendJob(const Board &board)

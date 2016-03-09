@@ -25,11 +25,16 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
 
   if (!e)
   {
-    Traces() << "\n" << "LOG: New message";    
+    Traces() << "\n" << "LOG: New message from " << socket_.remote_endpoint().address().to_string() << ":" << socket_.remote_endpoint().port();
 
     Message tempMessage;
     tempMessage.CopyData((boost::shared_ptr<TCPConnection>)this, buffer_.data());
     messageQueue->PushBack(tempMessage);
+
+    socket_.async_read_some(boost::asio::buffer(buffer_),
+        boost::bind(&TCPConnection::HandleRead, shared_from_this(),
+          boost::asio::placeholders::error,
+          boost::asio::placeholders::bytes_transferred));
   }
   else if (e != boost::asio::error::operation_aborted)
   {
