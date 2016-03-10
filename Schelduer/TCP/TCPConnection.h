@@ -26,6 +26,18 @@ struct Message
         connectionWsk = connection;
     }
 
+    Message & operator=(Message & data)
+    {
+        connectionWsk = data.connectionWsk;
+
+        delete [] wskMessage;
+        wskMessage = new char[std::strlen(data.wskMessage)];
+        std::strcpy(wskMessage, data.wskMessage);
+
+        return *this;
+    }
+
+
     TCPConnection_ptr connectionWsk;
     char *wskMessage;
 };
