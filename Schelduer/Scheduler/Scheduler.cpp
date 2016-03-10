@@ -1,8 +1,23 @@
 #include "Scheduler.h"
 
-Scheduler::Scheduler()
+Scheduler::Scheduler() : wskConnectionManager(nullptr)
 {
     Traces() << "\n" << "LOG: Scheduler::Scheduler()";
+    condition_var = new std::condition_variable();
+
+}
+
+ConnectionManager * Scheduler::GetConnectionManager()
+{
+    std::lock_guard<std::mutex> ls(mutex);
+    return wskConnectionManager;
+}
+
+void Scheduler::SetConnectionManager(ConnectionManager *wsk)
+{
+    std::lock_guard<std::mutex> ls(mutex);
+    wskConnectionManager = wsk;
+    wskConnectionManager->SetConditionVariable(condition_var);
 }
 
 void Scheduler::Start(const unsigned short numofthread)
@@ -19,7 +34,6 @@ void Scheduler::Start(const unsigned short numofthread)
     }
 }
 
-
 void Scheduler::StartScheduling()
 {
     Traces() << "\n" << "LOG: void Scheduler::StartScheduling()";
@@ -28,4 +42,9 @@ void Scheduler::StartScheduling()
     {
 
     }
+}
+
+Scheduler::~Scheduler()
+{
+    delete condition_var;
 }

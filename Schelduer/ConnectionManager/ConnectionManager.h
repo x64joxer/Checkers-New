@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <set>
+#include <thread>
 #include "../TCP/TCPConnection.h"
 #include "../Traces/Traces.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
@@ -14,6 +15,7 @@ class ConnectionManager
         ConnectionManager();
         void Init();
         void NewConnection(TCPConnection_ptr wsk);
+        void SetConditionVariable(std::condition_variable *wsk) { messageQueue->SetCondVar(wsk); }
         ~ConnectionManager();
 
     private:       
