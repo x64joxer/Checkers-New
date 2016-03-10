@@ -19,7 +19,7 @@ typedef boost::shared_ptr<TCPConnection> TCPConnection_ptr;
 
 struct Message
 {
-    void CopyData(TCPConnection_ptr connection, const char *wskM)
+    void CopyData(TCPConnection * connection, const char *wskM)
     {
         wskMessage = new char[std::strlen(wskM)];
         std::strcpy(wskMessage, wskM);
@@ -38,7 +38,7 @@ struct Message
     }
 
 
-    TCPConnection_ptr connectionWsk;
+    TCPConnection *connectionWsk;
     char *wskMessage;
 };
 
