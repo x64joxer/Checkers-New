@@ -14,6 +14,7 @@ class SharedPtrList
         SharedPtrList();
 
         std::condition_variable *GetCondVar();
+        bool Empty();
         void SetCondVar(std::condition_variable * wsk);
 
         wskType PopFront();
@@ -27,6 +28,12 @@ class SharedPtrList
         std::condition_variable *org_condition_var;
 };
 
+template<typename wskType>
+bool SharedPtrList<wskType>::Empty()
+{
+    Traces() << "\n" << "LOG: bool SharedPtrList<wskType>::Empty()";
+    return setList.empty();
+}
 
 template<typename wskType>
 SharedPtrList<wskType>::SharedPtrList()

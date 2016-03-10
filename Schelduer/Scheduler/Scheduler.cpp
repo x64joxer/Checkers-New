@@ -40,7 +40,14 @@ void Scheduler::StartScheduling()
 
     while (true)
     {
+        Traces() << "\n" << "LOG: Waiting for job..";
+        std::mutex tmpMutex;
+        std::unique_lock<std::mutex> guard(tmpMutex);
 
+        condition_var->wait(guard,[this]
+        {
+            return wskConnectionManager->IsNewMessage(); }
+        );
     }
 }
 

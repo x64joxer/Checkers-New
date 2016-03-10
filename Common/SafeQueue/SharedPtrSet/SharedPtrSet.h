@@ -13,6 +13,7 @@ class SharedPtrSet
 	public:
         SharedPtrSet();
 
+        bool Empty();
         std::condition_variable *GetCondVar();
         void SetCondVar(std::condition_variable * wsk);
 
@@ -27,6 +28,12 @@ class SharedPtrSet
         std::condition_variable *org_condition_var;
 };
 
+template<typename wskType>
+bool SharedPtrSet<wskType>::Empty()
+{
+    Traces() << "\n" << "LOG: bool SharedPtrSet<wskType>::Empty()";
+    return setList.empty();
+}
 
 template<typename wskType>
 SharedPtrSet<wskType>::SharedPtrSet()
