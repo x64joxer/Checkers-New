@@ -28,9 +28,15 @@ void Scheduler::Start(const unsigned short numofthread)
 {
     Traces() << "\n" << "LOG: void Scheduler::Start(const unsigned short numofthread)";
 
+    if (numofthread == 0)
+    {
+        Traces() << "\n" << "ERROR: Number of threads can not be 0!";
+        throw std::string("Wrong number of threads");
+    }
+
     for (unsigned short i=0;i<numofthread;i++)
     {
-        Traces() << "\n" << "LOG: Start thread: " << i;
+        Traces() << "\n" << "LOG: Start thread: " << i + 1;
         iaThread[i] = std::move(std::thread(&Scheduler::StartScheduling,
                                             this));
 
@@ -44,7 +50,7 @@ void Scheduler::StartScheduling()
 
     while (true)
     {
-        Traces() << "\n" << "LOG: Waiting for job..";
+        Traces() << "\n" << "LOG: Waiting for a job..";
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);
 
