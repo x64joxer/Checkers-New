@@ -17,7 +17,7 @@ int main()
     //Start scheduler
     Scheduler scheduler;
     scheduler.SetConnectionManager(&connectionMnager);
-    scheduler.Start(5);
+    scheduler.Start(1);
 
     //Start TCP server
     TCPServer *server;

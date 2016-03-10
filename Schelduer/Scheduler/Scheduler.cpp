@@ -55,6 +55,15 @@ void Scheduler::StartScheduling()
 
         Traces() << "\n" << "LOG: Try reading message from message queue";
 
+        try
+        {
+            Message tmpMessage = wskConnectionManager->GetFirstMessage();
+        }
+        catch (std::string)
+        {
+            Traces() << "\n" << "LOG: List empty. Not a bug.";
+        }
+
 
     }
 }

@@ -32,6 +32,8 @@ template<typename wskType>
 bool SharedPtrList<wskType>::Empty()
 {
     Traces() << "\n" << "LOG: bool SharedPtrList<wskType>::Empty()";
+
+    std::lock_guard<std::mutex> ls(mutex);
     return setList.empty();
 }
 
@@ -39,6 +41,8 @@ template<typename wskType>
 SharedPtrList<wskType>::SharedPtrList()
 {
     Traces() << "\n" << "LOG: SharedPtrList<wskType>::SharedPtrList()";
+
+    std::lock_guard<std::mutex> ls(mutex);
     condition_var = new std::condition_variable();
     org_condition_var = condition_var;
 }
@@ -47,6 +51,8 @@ template<typename wskType>
 std::condition_variable * SharedPtrList<wskType>::GetCondVar()
 {
     Traces() << "\n" << "LOG: std::condition_variable * SharedPtrList<wskType>::GetCondVar()";
+
+    std::lock_guard<std::mutex> ls(mutex);
     return condition_var;
 }
 
@@ -59,6 +65,7 @@ wskType SharedPtrList<wskType>::PopFront()
 
     if (setList.empty())
     {        
+        Traces() << "\n" << "LOG: Message list is empty . Throwing exception";
         throw std::string("Empty");
     }
 
@@ -90,6 +97,8 @@ template<typename wskType>
 void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)
 {
     Traces() << "\n" << "LOG: void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)";
+
+    std::lock_guard<std::mutex> ls(mutex);
     condition_var = wsk;
 }
 

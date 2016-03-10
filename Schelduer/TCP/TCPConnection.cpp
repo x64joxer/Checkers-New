@@ -29,6 +29,7 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
 
     Message tempMessage;
     tempMessage.CopyData((boost::shared_ptr<TCPConnection>)this, buffer_.data());
+    Traces() << "\n" << "LOG: Push back new message";
     messageQueue->PushBack(tempMessage);
 
     socket_.async_read_some(boost::asio::buffer(buffer_),

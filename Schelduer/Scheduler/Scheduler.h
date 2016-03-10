@@ -21,7 +21,7 @@ class Scheduler
 
         ConnectionManager *wskConnectionManager;
 
-        std::thread iaThread[2];
+        std::thread iaThread[1];
         std::mutex mutex;
         std::condition_variable *condition_var;
 };
