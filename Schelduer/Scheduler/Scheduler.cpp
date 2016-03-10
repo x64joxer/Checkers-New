@@ -9,12 +9,16 @@ Scheduler::Scheduler() : wskConnectionManager(nullptr)
 
 ConnectionManager * Scheduler::GetConnectionManager()
 {
+    Traces() << "\n" << "LOG: ConnectionManager * Scheduler::GetConnectionManager()";
+
     std::lock_guard<std::mutex> ls(mutex);
     return wskConnectionManager;
 }
 
 void Scheduler::SetConnectionManager(ConnectionManager *wsk)
 {
+    Traces() << "\n" << "LOG: void Scheduler::SetConnectionManager(ConnectionManager *wsk)";
+
     std::lock_guard<std::mutex> ls(mutex);
     wskConnectionManager = wsk;
     wskConnectionManager->SetConditionVariable(condition_var);
@@ -48,6 +52,10 @@ void Scheduler::StartScheduling()
         {
             return wskConnectionManager->IsNewMessage(); }
         );
+
+        Traces() << "\n" << "LOG: Try reading message from message queue";
+
+
     }
 }
 

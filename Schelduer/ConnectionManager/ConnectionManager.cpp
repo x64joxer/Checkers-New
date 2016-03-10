@@ -6,6 +6,20 @@ ConnectionManager::ConnectionManager()
     messageQueue = new SharedPtrList<Message>;
 }
 
+Message ConnectionManager::GetFirstMessage()
+{
+    Traces() << "\n" << "LOG: Message ConnectionManager::GetFirstMessage()";
+
+    try
+    {
+       return messageQueue->PopFront();
+    }
+    catch (std::string)
+    {
+        throw;
+    }
+}
+
 void ConnectionManager::NewConnection(TCPConnection_ptr wsk)
 {
     Traces() << "\n" << "LOG: Adding new connection";    
@@ -13,11 +27,6 @@ void ConnectionManager::NewConnection(TCPConnection_ptr wsk)
     wsk->SetMessageQueue(messageQueue);
     connections_.insert(wsk);
     wsk->Start();
-}
-
-void ConnectionManager::Init()
-{
-
 }
 
 ConnectionManager::~ConnectionManager()

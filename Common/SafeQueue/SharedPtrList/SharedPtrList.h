@@ -62,7 +62,9 @@ wskType SharedPtrList<wskType>::PopFront()
         throw std::string("Empty");
     }
 
-    return setList.pop_front();
+    wskType tmp = setList.front();
+    setList.pop_front();
+    return tmp;
 }
 
 template<typename wskType>

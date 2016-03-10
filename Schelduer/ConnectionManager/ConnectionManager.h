@@ -13,10 +13,12 @@ class ConnectionManager
 {
     public:
         ConnectionManager();
-        void Init();
+
+        Message GetFirstMessage();
         void NewConnection(TCPConnection_ptr wsk);
         void SetConditionVariable(std::condition_variable *wsk) { messageQueue->SetCondVar(wsk); }
         bool IsNewMessage() { return !messageQueue->Empty(); }
+
         ~ConnectionManager();
 
     private:       
