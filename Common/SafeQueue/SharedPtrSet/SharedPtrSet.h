@@ -59,7 +59,7 @@ wskType SharedPtrSet<wskType>::PopFront()
 
     if (setList.empty())
     {
-        return nullptr;
+        throw std::string("Empty");
     }
 
     auto it = setList.begin();

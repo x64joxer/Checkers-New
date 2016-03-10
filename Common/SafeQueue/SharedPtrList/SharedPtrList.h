@@ -58,8 +58,8 @@ wskType SharedPtrList<wskType>::PopFront()
     std::lock_guard<std::mutex> ls(mutex);
 
     if (setList.empty())
-    {
-        return nullptr;
+    {        
+        throw std::string("Empty");
     }
 
     return setList.pop_front();
