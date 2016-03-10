@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
     ConnectionManager.cpp \
-    ConnectionManager/ConnectionManager.cpp
+    ConnectionManager/ConnectionManager.cpp \
+    Scheduler/Scheduler.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -25,5 +26,6 @@ HEADERS += \
     Traces/Traces.h \
     SafeQueue/SharedPtrSet/SharedPtrSet.h \
     SafeQueue/SharedPtrSet/SharedPtrList.h \
-    ConnectionManager/ConnectionManager.h
+    ConnectionManager/ConnectionManager.h \
+    Scheduler/Scheduler.h
 

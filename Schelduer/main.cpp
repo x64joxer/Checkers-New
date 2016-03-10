@@ -4,6 +4,7 @@
 #include "ConnectionManager/ConnectionManager.h"
 #include "TCP/TCPServer.h"
 #include "Traces/Traces.h"
+#include "Scheduler/Scheduler.h"
 
 using namespace std;
 
@@ -11,11 +12,16 @@ int main()
 {
     Traces::SetTraceFolder("trace");
 
-    ConnectionManager workScheduler;
+    ConnectionManager connectionMnager;
 
+    //Start scheduler
+    Scheduler scheduler;
+    scheduler.Start(5);
+
+    //Start TCP server
     TCPServer *server;
     server = new TCPServer("0.0.0.0", "6000");
-    server->SetConnectionManager(&workScheduler);
+    server->SetConnectionManager(&connectionMnager);
     server->Run();
 
     return 0;
