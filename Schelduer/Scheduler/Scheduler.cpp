@@ -37,10 +37,10 @@ void Scheduler::Start(const unsigned short numofthread)
     for (unsigned short i=0;i<numofthread;i++)
     {
         Traces() << "\n" << "LOG: Start thread: " << i + 1;
-        iaThread[i] = std::move(std::thread(&Scheduler::StartScheduling,
+        schedulerThread[i] = std::move(std::thread(&Scheduler::StartScheduling,
                                             this));
 
-        iaThread[i].detach();
+        schedulerThread[i].detach();
     }
 }
 
