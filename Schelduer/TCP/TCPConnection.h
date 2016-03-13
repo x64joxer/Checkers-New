@@ -19,7 +19,7 @@ typedef boost::shared_ptr<TCPConnection> TCPConnection_ptr;
 
 struct Message
 {
-    void CopyData(TCPConnection * connection, const char *wskM)
+    void CopyData(TCPConnection_ptr connection, const char *wskM)
     {
         wskMessage = new char[std::strlen(wskM)];
         std::strcpy(wskMessage, wskM);
@@ -38,7 +38,7 @@ struct Message
     }
 
 
-    TCPConnection *connectionWsk;
+    TCPConnection_ptr connectionWsk;
     char *wskMessage;
 };
 
@@ -53,10 +53,12 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
 
      void Start();
      void Stop();
+     TCPConnection_ptr GetMeWsk() { return meWsk; }
      void HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred);
      void HandleWrite(const boost::system::error_code& e);
      void SendMessage(const std::string message);
      void SetMessageQueue(SharedPtrList<Message> * wsk) { messageQueue = wsk; }
+     void SetMeWsk(TCPConnection_ptr me) { meWsk = me; }
      bool IsSocketActive() { return socketActive; }
 
      boost::asio::ip::tcp::socket& Socket();
@@ -64,6 +66,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
    private:     
      SharedPtrList<Message> *messageQueue;
      boost::array<char, 8192> buffer_;
+     TCPConnection_ptr meWsk;
      boost::asio::ip::tcp::socket socket_;
      bool socketActive;
 };

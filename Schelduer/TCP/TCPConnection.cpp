@@ -28,7 +28,7 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
     Traces() << "\n" << "LOG: New message from " << socket_.remote_endpoint().address().to_string() << ":" << socket_.remote_endpoint().port();
 
     Message tempMessage;
-    tempMessage.CopyData(this, buffer_.data());
+    tempMessage.CopyData(meWsk, buffer_.data());
     Traces() << "\n" << "LOG: Push back new message";
     messageQueue->PushBack(tempMessage);
 
