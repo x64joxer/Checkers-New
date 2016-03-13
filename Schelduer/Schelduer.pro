@@ -14,7 +14,13 @@ SOURCES += main.cpp \
     ConnectionManager.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
-    Scheduler/Message.cpp
+    Scheduler/Message.cpp \
+    Scheduler/MessageCoder.cpp \
+    Board/Board.cpp \
+    Board/Pawn.cpp \
+    Board/PawnPos.cpp \
+    Board/ThreadIASimpleBoard.cpp \
+    Peers/Peers.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -29,5 +35,11 @@ HEADERS += \
     SafeQueue/SharedPtrSet/SharedPtrList.h \
     ConnectionManager/ConnectionManager.h \
     Scheduler/Scheduler.h \
-    Scheduler/Message.h
+    Scheduler/Message.h \
+    Scheduler/MessageCoder.h \
+    Board/Board.h \
+    Board/Pawn.h \
+    Board/PawnPos.h \
+    Board/ThreadIASimpleBoard.h \
+    Peers/Peers.h
 

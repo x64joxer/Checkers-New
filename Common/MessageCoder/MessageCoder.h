@@ -1,11 +1,11 @@
 #ifndef MESSAGECODER_H
 #define MESSAGECODER_H
 
-#include "ProgramVariables.h"
-#include "Traces/Traces.h"
-#include "Board/Board.h"
-#include "Board/PawnPos.h"
-#include "Peers/Peers.h"
+#include <cstring>
+#include "../Traces/Traces.h"
+#include "../Board/Board.h"
+#include "../Board/PawnPos.h"
+#include "../Peers/Peers.h"
 
 class MessageCoder
 {

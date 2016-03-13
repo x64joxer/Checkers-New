@@ -5,6 +5,7 @@
 #include <mutex>
 #include "../Traces/Traces.h"
 #include "../ConnectionManager/ConnectionManager.h"
+#include "MessageCoder.h"
 
 class Scheduler
 {

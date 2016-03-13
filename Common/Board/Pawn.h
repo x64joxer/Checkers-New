@@ -1,7 +1,7 @@
 #ifndef PAWN_H
 #define PAWN_H
 
-#include "../Common/Traces/Traces.h"
+#include "../Traces/Traces.h"
 
 class Pawn
 {

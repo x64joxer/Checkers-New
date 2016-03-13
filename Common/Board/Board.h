@@ -2,14 +2,13 @@
 #define BOARD_H
 
 #include <vector>
-#include <QPoint>
 #include <thread>
 #include <atomic>
 #include <mutex>
-#include "Traces/Traces.h"
-#include "Board/Pawn.h"
-#include "Board/PawnPos.h"
-#include "Board/ThreadIASimpleBoard.h"
+#include "../Traces/Traces.h"
+#include "../Board/Pawn.h"
+#include "../Board/PawnPos.h"
+#include "../Board/ThreadIASimpleBoard.h"
 
 class ThreadIASimpleBoard;
 
