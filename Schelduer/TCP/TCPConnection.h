@@ -10,39 +10,7 @@
 #include "../Traces/Traces.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrSet.h"
-
-class  TCPConnection;
-
-//Helpful types
-
-typedef boost::shared_ptr<TCPConnection> TCPConnection_ptr;
-
-struct Message
-{
-    void CopyData(TCPConnection_ptr connection, const char *wskM)
-    {
-        wskMessage = new char[std::strlen(wskM)];
-        std::strcpy(wskMessage, wskM);
-        connectionWsk = connection;
-    }
-
-    Message & operator=(Message & data)
-    {
-        connectionWsk = data.connectionWsk;
-
-        delete [] wskMessage;
-        wskMessage = new char[std::strlen(data.wskMessage)];
-        std::strcpy(wskMessage, data.wskMessage);
-
-        return *this;
-    }
-
-
-    TCPConnection_ptr connectionWsk;
-    char *wskMessage;
-};
-
-//Main class
+#include "../Scheduler/Message.h"
 
 class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
                       private boost::noncopyable
