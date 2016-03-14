@@ -5,11 +5,12 @@ echo Building...
 g++ main.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
-    Peers/Peers.h \
-    Board/Board.h \
-    Board/Pawn.h \
-    Board/PawnPos.h \
-    Board/ThreadIASimpleBoard.h \
+    Scheduler/MessageCoder.cpp \
+    Peers/Peers.cpp \
+    Board/Board.cpp \
+    Board/Pawn.cpp \
+    Board/PawnPos.cpp \
+    Board/ThreadIASimpleBoard.cpp \
     TCP/TCPConnection.cpp \
     TCP/TCPServer.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \

@@ -1,4 +1,4 @@
-#include "../Common/Board/ThreadIASimpleBoard.h"
+#include "ThreadIASimpleBoard.h"
 
 ThreadIASimpleBoard::ThreadIASimpleBoard()
 {

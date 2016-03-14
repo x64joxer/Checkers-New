@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #include <thread>
+#include <map>
 #include <mutex>
 #include "../Traces/Traces.h"
 #include "../ConnectionManager/ConnectionManager.h"
@@ -13,8 +14,9 @@ class Scheduler
         Scheduler();
 
         ConnectionManager * GetConnectionManager();
+        void MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest);
         void Start(const unsigned short numofthread);
-        void SetConnectionManager(ConnectionManager *wsk);
+        void SetConnectionManager(ConnectionManager *wsk);        
         ~Scheduler();
 
     private:

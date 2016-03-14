@@ -48,6 +48,8 @@ void Scheduler::StartScheduling()
 {
     Traces() << "\n" << "LOG: void Scheduler::StartScheduling()";
 
+    Message tmpMessage;
+
     while (true)
     {
         Traces() << "\n" << "LOG: Waiting for a job..";
@@ -63,15 +65,24 @@ void Scheduler::StartScheduling()
 
         try
         {
-            Message tmpMessage = wskConnectionManager->GetFirstMessage();
+            tmpMessage = wskConnectionManager->GetFirstMessage();
         }
         catch (std::string)
         {
             Traces() << "\n" << "LOG: List empty. Not a bug.";
         }
 
+        std::map<std::string, std::string> messageContent;
+        MessageCoder::MessageToMap(tmpMessage.wskMessage, messageContent);
+
+        MessageInterpreting(tmpMessage.connectionWsk, messageContent);
 
     }
+}
+
+void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
 }
 
 Scheduler::~Scheduler()

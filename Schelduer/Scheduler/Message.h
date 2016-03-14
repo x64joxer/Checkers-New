@@ -19,9 +19,11 @@ class Message
             wskMessage = new char[std::strlen(wskM)];
             std::strcpy(wskMessage, wskM);
             connectionWsk = connection;
-        }
+        }        
 
-        Message & operator=(Message & data)
+
+
+        Message & operator=(const Message  & data)
         {
             Traces() << "\n" << "LOG: Message & operator=(Message & data)";
 
