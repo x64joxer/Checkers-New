@@ -22,6 +22,8 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      void Start();
      void Stop();
      TCPConnection_ptr GetMeWsk() { return meWsk; }
+     std::string GetIp() { return socket_.remote_endpoint().address().to_string(); }
+     int GetPort() { return socket_.remote_endpoint().port(); }
      void HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred);
      void HandleWrite(const boost::system::error_code& e);
      void SendMessage(const std::string message);

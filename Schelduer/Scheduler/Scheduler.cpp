@@ -80,9 +80,27 @@ void Scheduler::StartScheduling()
     }
 }
 
-void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)
+void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data)
 {
     Traces() << "\n" << "LOG: void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+
+    try
+    {
+        std::string action = data.at(MessageCoder::ACTION);
+
+        if (action == MessageCoder::SET_ROLE)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
+        } else
+        {
+            Traces() << "\n" << "ERR: Unexpected action: " << action << " from" << socket->GetIp() << ":" << socket->GetPort();
+        }
+
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+    }
 }
 
 Scheduler::~Scheduler()

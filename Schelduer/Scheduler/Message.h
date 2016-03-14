@@ -25,7 +25,7 @@ class Message
 
         Message & operator=(const Message  & data)
         {
-            Traces() << "\n" << "LOG: Message & operator=(Message & data)";
+            Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
 
             connectionWsk = data.connectionWsk;
 
@@ -38,7 +38,7 @@ class Message
 
     public:
         TCPConnection_ptr connectionWsk;
-        char *wskMessage;
+        char *wskMessage = nullptr;
 };
 
 #endif // MESSAGE_H
