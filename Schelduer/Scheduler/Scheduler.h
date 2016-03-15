@@ -23,6 +23,9 @@ class Scheduler
     private:
         void StartScheduling();
 
+        void AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest);
+        void SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest);
+
         ConnectionManager *wskConnectionManager;
 
         std::thread schedulerThread[8];

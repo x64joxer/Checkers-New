@@ -92,6 +92,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
 
+            SetRole(socket, data);
         } else
         {
             Traces() << "\n" << "ERR: Unexpected action: " << action << " from" << socket->GetIp() << ":" << socket->GetPort();
@@ -101,6 +102,36 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
     catch (std::out_of_range)
     {
         Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+    }
+}
+
+void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+    try
+    {
+        std::string role = dest.at(MessageCoder::ROLE);
+
+        if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::CLIENT)
+        {
+            AddClient(socket, dest);
+        }
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+    }
+}
+
+void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+
+    std::pair<std::map<TCPConnection_ptr, Client>::iterator,bool> ret = clients.insert(std::pair<TCPConnection_ptr, Client>(socket, Client()));
+
+    if (ret.second==false)
+    {
+        Traces() << "\n" << "ERR: Element 'z' already existed!";
     }
 }
 
