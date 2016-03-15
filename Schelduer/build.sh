@@ -14,6 +14,7 @@ g++ main.cpp \
     Board/ThreadIASimpleBoard.cpp \
     TCP/TCPConnection.cpp \
     TCP/TCPServer.cpp \
+    SafeQueue/SharedMap/SharedMap.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
     Traces/Traces.cpp \

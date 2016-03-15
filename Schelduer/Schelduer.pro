@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     Board/PawnPos.cpp \
     Board/ThreadIASimpleBoard.cpp \
     Peers/Peers.cpp \
-    Scheduler/Client.cpp
+    Scheduler/Client.cpp \
+    SafeQueue/SharedMap/SharedMap.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -43,5 +44,6 @@ HEADERS += \
     Board/PawnPos.h \
     Board/ThreadIASimpleBoard.h \
     Peers/Peers.h \
-    Scheduler/Client.h
+    Scheduler/Client.h \
+    SafeQueue/SharedMap/SharedMap.h
 
