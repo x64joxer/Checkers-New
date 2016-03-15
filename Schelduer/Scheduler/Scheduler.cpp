@@ -91,6 +91,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         if (action == MessageCoder::SET_ROLE)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
+
         } else
         {
             Traces() << "\n" << "ERR: Unexpected action: " << action << " from" << socket->GetIp() << ":" << socket->GetPort();

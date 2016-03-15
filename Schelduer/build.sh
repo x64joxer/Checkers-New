@@ -6,6 +6,7 @@ g++ main.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
     Scheduler/MessageCoder.cpp \
+    Scheduler/Client.cpp \
     Peers/Peers.cpp \
     Board/Board.cpp \
     Board/Pawn.cpp \
