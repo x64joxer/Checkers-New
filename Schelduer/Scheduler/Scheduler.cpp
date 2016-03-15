@@ -127,11 +127,10 @@ void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::s
 {
     Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
 
-    std::pair<std::map<TCPConnection_ptr, Client>::iterator,bool> ret = clients.insert(std::pair<TCPConnection_ptr, Client>(socket, Client()));
 
-    if (ret.second==false)
+    if (clients.Insert(socket, Client())  == true)
     {
-        Traces() << "\n" << "ERR: Element 'z' already existed!";
+        Traces() << "\n" << "ERR: Element already existed!";
     }
 }
 
