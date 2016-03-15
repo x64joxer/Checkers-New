@@ -14,11 +14,11 @@ class SharedMap
 	public:
         SharedMap();
 
+        data2 At(data1 &val);
         bool Empty();
         std::condition_variable *GetCondVar();
-        void SetCondVar(std::condition_variable * wsk);
-        data2 At(data1 &val);
         int Insert(data1 key, data2 val);
+        void SetCondVar(std::condition_variable * wsk);
 
         ~SharedMap();
 	private:       
@@ -27,6 +27,24 @@ class SharedMap
         std::condition_variable *condition_var;
         std::condition_variable *org_condition_var;
 };
+
+template<typename data1, typename data2>
+data2 SharedMap<data1, data2>::At(data1 &val)
+{
+    std::lock_guard<std::mutex> ls(mutex);
+
+    Traces() << "\n" << "LOG: data2 SharedMap<data1, data2>::At(data1 &val)";
+
+    try
+    {
+        return mapList.at(val);
+    }
+    catch (const std::out_of_range& oor)
+    {
+        throw;
+    }
+
+}
 
 template<typename data1, typename data2>
 bool SharedMap<data1, data2>::Empty()
@@ -50,8 +68,6 @@ std::condition_variable * SharedMap<data1, data2>::GetCondVar()
     return condition_var;
 }
 
-
-
 template<typename data1, typename data2>
 SharedMap<data1, data2>::~SharedMap()
 {
@@ -60,36 +76,11 @@ SharedMap<data1, data2>::~SharedMap()
 }
 
 template<typename data1, typename data2>
-void SharedMap<data1, data2>::SetCondVar(std::condition_variable * wsk)
-{
-    Traces() << "\n" << "LOG: void SharedMap<data1, data2>::SetCondVar(std::condition_variable * wsk)";
-    condition_var = wsk;
-}
-
-template<typename data1, typename data2>
-data2 SharedMap<data1, data2>::At(data1 &val)
-{
-    Traces() << "\n" << "LOG: data2 At<data1, data2>::operator[] (data1 &val)";
-
-    std::lock_guard<std::mutex> ls(mutex);
-
-    try
-    {
-        return mapList.at(val);
-    }
-    catch (const std::out_of_range& oor)
-    {
-        throw;
-    }
-
-}
-
-template<typename data1, typename data2>
 int SharedMap<data1, data2>::Insert(data1 key, data2 val)
 {
-     Traces() << "\n" << "LOG: int SharedMap<data1, data2>::Insert(data1 key, data2 val)";
-
      std::lock_guard<std::mutex> ls(mutex);
+
+     Traces() << "\n" << "LOG: int SharedMap<data1, data2>::Insert(data1 key, data2 val)";
 
      if (mapList.find(key) == mapList.end())
      {
@@ -98,6 +89,13 @@ int SharedMap<data1, data2>::Insert(data1 key, data2 val)
      }
 
      return true;
+}
+
+template<typename data1, typename data2>
+void SharedMap<data1, data2>::SetCondVar(std::condition_variable * wsk)
+{
+    Traces() << "\n" << "LOG: void SharedMap<data1, data2>::SetCondVar(std::condition_variable * wsk)";
+    condition_var = wsk;
 }
 
 #endif 
