@@ -68,8 +68,7 @@ void TCPHandler::SendRegisterMessage()
     prevousMessageid = MessageCoder::CreateMessageId();
     MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::CLIENT, prevousMessageid, globalData);
     tcpSocket->write(globalData);
-    while(tcpSocket->waitForBytesWritten()) {}
-    tcpSocket->write(globalData);
+    while(tcpSocket->waitForBytesWritten()) {}   
 }
 
 void TCPHandler::SendJob(const Board &board)
