@@ -387,6 +387,6 @@ std::string MessageCoder::WHITE_PONS = GetNextKey("WHITE_PONS_");
 std::string MessageCoder::BLACK_PONS = GetNextKey("BLACK_PONS_");
 
 unsigned int MessageCoder::nextKey = 0;
-bool MessageCoder::debugMode = false;
+bool MessageCoder::debugMode = true;
 unsigned long long MessageCoder::messageId = 0;
 std::mutex MessageCoder::mutex_guard;
