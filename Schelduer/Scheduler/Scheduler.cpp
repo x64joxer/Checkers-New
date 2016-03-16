@@ -131,6 +131,13 @@ void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::s
     if (clients.Insert(socket, Client())  == true)
     {
         Traces() << "\n" << "ERR: Element already existed!";
+    } else
+    {
+        std::string messageId = dest.at(MessageCoder::MESSAGE_ID);
+
+        char *tmpChar = new char[2048];
+        MessageCoder::CreateOkMessage(messageId, tmpChar);
+        delete [] tmpChar;
     }
 }
 
