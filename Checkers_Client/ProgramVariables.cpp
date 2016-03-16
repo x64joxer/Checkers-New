@@ -19,7 +19,7 @@ unsigned long long ProgramVariables::GetMaxTimeWaitToWorkers()
 
 unsigned long long ProgramVariables::GetMaxTimeWaitToServer()
 {
-    return 3000;
+    return 5000;
 }
 
 QString ProgramVariables::GetServerIP()

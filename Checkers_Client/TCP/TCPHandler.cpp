@@ -7,7 +7,7 @@ TCPHandler::TCPHandler(QObject *parent) : QObject(parent)
 
 
 void TCPHandler::Init()
-{
+{       
     globalData = new char[ProgramVariables::K4];
     globalLength = 0;
 
@@ -65,7 +65,8 @@ void TCPHandler::SendRegisterMessage()
 
     while(tcpSocket->waitForBytesWritten()) {}
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
-    MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::CLIENT, MessageCoder::CreateMessageId(), globalData);
+    prevousMessageid = MessageCoder::CreateMessageId();
+    MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::CLIENT, prevousMessageid, globalData);
     tcpSocket->write(globalData);
     while(tcpSocket->waitForBytesWritten()) {}
     tcpSocket->write(globalData);
@@ -133,7 +134,19 @@ void TCPHandler::DecodeMessage(const char * data)
 
             if (connection_state == CONNECTED)
             {
+                waitForOKMessageTimer->stop();
 
+                 if (prevousMessageid == messageContent.at(MessageCoder::MESSAGE_ID))
+                 {
+                     connection_state = ConState::REGISTERED;
+
+                 } else
+                 {
+                    Traces() << "\n" << "ERR: Wrong message ID!";
+
+                    SendRegisterMessage();
+                    waitForOKMessageTimer->start();
+                 }
             } else
             {
                 Traces() << "\n" << "ERR: Wrong connection state";

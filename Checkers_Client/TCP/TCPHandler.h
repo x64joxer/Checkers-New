@@ -45,9 +45,10 @@ class TCPHandler : public QObject
         QTimer *time;
         QString host;
         int port;
+        std::string prevousMessageid;
 
         char *globalData;
-        unsigned int globalLength;
+        unsigned int globalLength;        
 
         QTimer *waitForIATimer;
         QTimer *waitForOKMessageTimer;
