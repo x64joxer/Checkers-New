@@ -35,6 +35,7 @@ class TCPHandler : public QObject
         void Init();
         void Disconnect();
 
+        void DecodeMessage(const char * data);
         void SendRegisterMessage();
 
         QTcpSocket *tcpSocket;

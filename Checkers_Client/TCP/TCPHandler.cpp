@@ -115,10 +115,46 @@ void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
     time->start();
 }
 
+void TCPHandler::DecodeMessage(const char * data)
+{
+    Traces() << "\n" << "LOG: void TCPHandler::DecodeMessage(const char * data)";
+
+    std::map<std::string, std::string> messageContent;
+
+    MessageCoder::MessageToMap(data, messageContent);
+
+    try
+    {
+        std::string action = messageContent.at(MessageCoder::ACTION);
+
+        if (action == MessageCoder::OK)
+        {
+            Traces() << "\n" << "LOG: Message OK received";
+
+            if (connection_state == CONNECTED)
+            {
+
+            } else
+            {
+                Traces() << "\n" << "ERR: Wrong connection state";
+            }
+        }
+
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host: " << tcpSocket->peerAddress().toString().toStdString() << " " << tcpSocket->peerPort();
+    }
+}
 
 void TCPHandler::ReadDataFromServer()
 {
-    Traces() << "\n" << "LOG: Read data from server: " << tcpSocket->readAll().toStdString();
+    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
+    strcpy(globalData, tcpSocket->readAll().toStdString().c_str());
+
+    Traces() << "\n" << "LOG: Read data from server: " <<  std::string(globalData);
+
+    DecodeMessage(globalData);
 
 }
 
