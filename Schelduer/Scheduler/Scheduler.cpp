@@ -137,6 +137,9 @@ void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::s
 
         char *tmpChar = new char[2048];
         MessageCoder::CreateOkMessage(messageId, tmpChar);
+
+        Traces() << "\n" << "LOG: Sending: " << tmpChar;
+
         socket->SendMessage(tmpChar);
         delete [] tmpChar;
     }
