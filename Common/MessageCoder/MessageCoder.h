@@ -24,8 +24,10 @@ class MessageCoder
         static void KeyValuePairToChar(const std::string & key, const bool value, char *dest);
 
         static void BoardToChar(const Board & board, char *dest, const unsigned short numberOfBoard);
+
         static void CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard,  const std::string & id, const std::string & jobId, char *dest);
         static void CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest);
+        static void CreateGetServerStateMessage(const std::string & id, char *dest);
         static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
@@ -40,12 +42,14 @@ class MessageCoder
         //Keys
         static std::string ACTION;
         static std::string OK;
+        static std::string OK_SERVER_STATE;
         static std::string MESSAGE_ID;
         static std::string MESSAGE_END;
 
         static std::string START_WORK;
         static std::string SET_STATE;        
         static std::string SET_ROLE;
+        static std::string GET_SERVER_STATE;
         static std::string BEST_RESULT;
 
         static std::string MAX_TIME;

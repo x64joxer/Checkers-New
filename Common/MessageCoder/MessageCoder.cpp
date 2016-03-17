@@ -304,6 +304,12 @@ void MessageCoder::CreateBestResultMessage(const std::string & id, const std::st
     KeyValuePairToChar(JOB_ID, jobId, dest);    
 }
 
+void MessageCoder::CreateGetServerStateMessage(const std::string & id, char *dest)
+{
+    KeyValuePairToChar(ACTION, GET_SERVER_STATE, dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);
+}
+
 void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest)
 {
     KeyValuePairToChar(ACTION, SET_STATE, dest);
@@ -348,12 +354,14 @@ std::string MessageCoder::CreateMessageId()
 
 std::string MessageCoder::ACTION = GetNextKey("ACTION");
 std::string MessageCoder::OK = GetNextKey("OK");
+std::string MessageCoder::OK_SERVER_STATE = GetNextKey("OK_SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");
 std::string MessageCoder::SET_ROLE = GetNextKey("SET_ROLE");
+std::string MessageCoder::GET_SERVER_STATE  = GetNextKey("GET_SERVER_STATE");
 std::string MessageCoder::BEST_RESULT = GetNextKey("BEST_RESULT");
 
 std::string MessageCoder::MAX_TIME = GetNextKey("MAX_TIME");
