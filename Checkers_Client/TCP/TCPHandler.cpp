@@ -71,6 +71,18 @@ void TCPHandler::SendRegisterMessage()
     while(tcpSocket->waitForBytesWritten()) {}   
 }
 
+void TCPHandler::SendGetServerStateMessage()
+{
+    Traces() << "\n" << "LOG: void TCPHandler::SendGetServerStateMessage()";
+
+    while(tcpSocket->waitForBytesWritten()) {}
+    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
+    prevousMessageid = MessageCoder::CreateMessageId();
+    MessageCoder::CreateGetServerStateMessage(prevousMessageid, globalData);
+    tcpSocket->write(globalData);
+    while(tcpSocket->waitForBytesWritten()) {}
+}
+
 void TCPHandler::SendJob(const Board &board)
 {
     while(tcpSocket->waitForBytesWritten()) {}
@@ -138,7 +150,8 @@ void TCPHandler::DecodeMessage(const char * data)
                  if (prevousMessageid == messageContent.at(MessageCoder::MESSAGE_ID))
                  {
                      connection_state = ConState::REGISTERED;
-
+                     SendGetServerStateMessage();
+                     waitForOKMessageTimer->start();
                  } else
                  {
                     Traces() << "\n" << "ERR: Wrong message ID!";
@@ -189,7 +202,8 @@ void TCPHandler::NoResponseFromServer()
     } else
     if (connection_state == REGISTERED)
     {
-
+        SendGetServerStateMessage();
+        waitForOKMessageTimer->start();
     } else
     if (connection_state == DISCONNECTED)
     {
