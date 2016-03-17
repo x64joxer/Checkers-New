@@ -9,6 +9,7 @@
 #include "MessageCoder.h"
 #include "Client.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
+#include "../Scheduler/ServerState.h"
 
 class Scheduler
 {
@@ -33,6 +34,8 @@ class Scheduler
         std::mutex mutex;
         std::condition_variable *condition_var;
         SharedMap<TCPConnection_ptr, Client> clients;
+
+        ServerState state;
 };
 
 #endif // SCHEDULER_H

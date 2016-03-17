@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     Board/ThreadIASimpleBoard.cpp \
     Peers/Peers.cpp \
     Scheduler/Client.cpp \
-    SafeQueue/SharedMap/SharedMap.cpp
+    SafeQueue/SharedMap/SharedMap.cpp \
+    Scheduler/ServerState.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -45,5 +46,6 @@ HEADERS += \
     Board/ThreadIASimpleBoard.h \
     Peers/Peers.h \
     Scheduler/Client.h \
-    SafeQueue/SharedMap/SharedMap.h
+    SafeQueue/SharedMap/SharedMap.h \
+    Scheduler/ServerState.h
 
