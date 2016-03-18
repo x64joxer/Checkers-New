@@ -9,18 +9,18 @@ class ServerState
     public:
         ServerState();
 
-        void SetBoard(const Board & board) { std::lock_guard<std::mutex> ls(mutex); current = board; }
-        Board GetBoard() { std::lock_guard<std::mutex> ls(mutex); return current; }
-        void SetThinking(const bool flag) { std::lock_guard<std::mutex> ls(mutex); thinking = flag; }
-        bool IsThinking() { std::lock_guard<std::mutex> ls(mutex); return thinking; }
-        void SetStartTime(const unsigned long long val) { std::lock_guard<std::mutex> ls(mutex); startTime = val; }
-        void SetMaxTime(const unsigned long long val) { std::lock_guard<std::mutex> ls(mutex); maxTime = val;}
-        void SetTimeToEnd(const unsigned long long val) { std::lock_guard<std::mutex> ls(mutex); timeToEnd = val; }
-        unsigned long long GetStartTime() { std::lock_guard<std::mutex> ls(mutex); return startTime; }
-        unsigned long long GetMaxTime() { std::lock_guard<std::mutex> ls(mutex); return maxTime; }
-        unsigned long long GetTimeToEnd() { std::lock_guard<std::mutex> ls(mutex); return startTime; }
+        void SetBoard(const Board & board) { std::lock_guard<std::mutex> ls(*mutex); current = board; }
+        Board GetBoard() const { std::lock_guard<std::mutex> ls(*mutex); return current; }
+        void SetThinking(const bool flag) { std::lock_guard<std::mutex> ls(*mutex); thinking = flag; }
+        bool IsThinking() const { std::lock_guard<std::mutex> ls(*mutex); return thinking; }
+        void SetStartTime(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); startTime = val; }
+        void SetMaxTime(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); maxTime = val;}
+        void SetTimeToEnd(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); timeToEnd = val; }
+        unsigned long long GetStartTime() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
+        unsigned long long GetMaxTime() const { std::lock_guard<std::mutex> ls(*mutex); return maxTime; }
+        unsigned long long GetTimeToEnd() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
 
-        ServerState & operator=(const ServerState  & data);
+        const ServerState & operator=(const ServerState  & data);
 
         ~ServerState();
 
@@ -31,7 +31,7 @@ class ServerState
         unsigned long long maxTime;
         unsigned long long timeToEnd;
 
-        std::mutex mutex;
+        std::mutex *mutex;
 
 };
 

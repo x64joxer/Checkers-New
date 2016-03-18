@@ -321,7 +321,15 @@ void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned in
 
 void MessageCoder::CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest)
 {
+    KeyValuePairToChar(ACTION, SERVER_STATE, dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);
 
+    KeyValuePairToChar(IS_THINKING, serverState.IsThinking(), dest);
+    KeyValuePairToChar(MAX_IA_TIME, serverState.GetMaxTime(), dest);
+    KeyValuePairToChar(START_TIME, serverState.GetStartTime(), dest);
+    KeyValuePairToChar(TIME_TO_END, serverState.GetTimeToEnd(), dest);
+
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
 }
 
 void MessageCoder::CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest)
@@ -359,7 +367,7 @@ std::string MessageCoder::CreateMessageId()
 
 std::string MessageCoder::ACTION = GetNextKey("ACTION");
 std::string MessageCoder::OK = GetNextKey("OK");
-std::string MessageCoder::OK_SERVER_STATE = GetNextKey("OK_SERVER_STATE");
+std::string MessageCoder::SERVER_STATE = GetNextKey("OK_SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 
@@ -368,6 +376,11 @@ std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");
 std::string MessageCoder::SET_ROLE = GetNextKey("SET_ROLE");
 std::string MessageCoder::GET_SERVER_STATE  = GetNextKey("GET_SERVER_STATE");
 std::string MessageCoder::BEST_RESULT = GetNextKey("BEST_RESULT");
+
+std::string MessageCoder::IS_THINKING = GetNextKey("IS_THINKING");
+std::string MessageCoder::MAX_IA_TIME = GetNextKey("MAX_IA_TIME");
+std::string MessageCoder::START_TIME = GetNextKey("START_TIME");
+std::string MessageCoder::TIME_TO_END = GetNextKey("TIME_TO_END");
 
 std::string MessageCoder::MAX_TIME = GetNextKey("MAX_TIME");
 std::string MessageCoder::NUM_OF_ANALYSED = GetNextKey("NUM_OF_ANALYSED");

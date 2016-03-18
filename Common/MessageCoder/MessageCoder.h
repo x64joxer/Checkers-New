@@ -44,7 +44,7 @@ class MessageCoder
         //Keys
         static std::string ACTION;
         static std::string OK;
-        static std::string OK_SERVER_STATE;
+        static std::string SERVER_STATE;
         static std::string MESSAGE_ID;
         static std::string MESSAGE_END;
 
@@ -53,6 +53,11 @@ class MessageCoder
         static std::string SET_ROLE;
         static std::string GET_SERVER_STATE;
         static std::string BEST_RESULT;
+
+        static std::string IS_THINKING;
+        static std::string MAX_IA_TIME;
+        static std::string START_TIME;
+        static std::string TIME_TO_END;
 
         static std::string MAX_TIME;
         static std::string NUM_OF_ANALYSED;
@@ -64,13 +69,13 @@ class MessageCoder
 
         static std::string PREVIOUS_MURDER;
         static std::string WHITE_PATCH_END;
-        static std::string  BLACK_WHITE;
+        static std::string BLACK_WHITE;
 
-        static std::string  ORIGIN_NUMBER_BLACK;
-        static std::string  ORIGIN_NUMBER_WHITE;
-        static std::string  ORIGIN_WHITE_X;
+        static std::string ORIGIN_NUMBER_BLACK;
+        static std::string ORIGIN_NUMBER_WHITE;
+        static std::string ORIGIN_WHITE_X;
         static std::string ORIGIN_BLACK_X;
-        static std::string  ORIGIN_WHITE_Y;
+        static std::string ORIGIN_WHITE_Y;
         static std::string ORIGIN_BLACK_Y;
         static std::string ORIGIN_WHITE_PONS;
         static std::string ORIGIN_BLACK_PONS;

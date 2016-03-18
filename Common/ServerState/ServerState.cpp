@@ -13,12 +13,17 @@ ServerState::ServerState() : thinking(false)
     std::string("|b| |b| |b| |b| |");
 }
 
-ServerState & ServerState::operator=(const ServerState  & data)
+const ServerState & ServerState::operator=(const ServerState  & data)
 {
-    std::lock_guard<std::mutex> ls(mutex);
+    std::lock_guard<std::mutex> ls(*mutex);
     Traces() << "\n" << "LOG: ServerState & ServerState::operator=(const ServerState  & data)";
 
-    *this = data;
+    current = data.current;
+    thinking = data.thinking;
+    startTime = data.startTime;
+    maxTime = data.maxTime;
+    timeToEnd = data.timeToEnd;
+
     return *this;
 }
 
