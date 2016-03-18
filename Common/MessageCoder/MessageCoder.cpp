@@ -319,6 +319,11 @@ void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned in
     KeyValuePairToChar(MESSAGE_END, 0, dest);    
 }
 
+void MessageCoder::CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest)
+{
+
+}
+
 void MessageCoder::CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest)
 {
     KeyValuePairToChar(ACTION, SET_ROLE, dest);

@@ -23,7 +23,7 @@ SOURCES += main.cpp \
     Peers/Peers.cpp \
     Scheduler/Client.cpp \
     SafeQueue/SharedMap/SharedMap.cpp \
-    Scheduler/ServerState.cpp
+    ServerState/ServerState.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -47,5 +47,5 @@ HEADERS += \
     Peers/Peers.h \
     Scheduler/Client.h \
     SafeQueue/SharedMap/SharedMap.h \
-    Scheduler/ServerState.h
+    ServerState/ServerState.h
 

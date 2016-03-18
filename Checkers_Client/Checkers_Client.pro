@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     ProgramVariables.cpp \
     Traces/Traces.cpp \
     MessageCoder/MessageCoder.cpp \
-    Peers/Peers.cpp
+    Peers/Peers.cpp \
+    ServerState/ServerState.cpp
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
     Board/Board.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     ProgramVariables.h \
     Traces/Traces.h \
     MessageCoder/MessageCoder.h \
-    Peers/Peers.h
+    Peers/Peers.h \
+    ServerState/ServerState.h
 
 FORMS    += mainwindow.ui \
     GUI/CheckerArea.ui

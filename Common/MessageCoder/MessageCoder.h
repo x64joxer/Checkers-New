@@ -6,6 +6,7 @@
 #include "../Board/Board.h"
 #include "../Board/PawnPos.h"
 #include "../Peers/Peers.h"
+#include "../ServerState/ServerState.h"
 
 class MessageCoder
 {
@@ -29,6 +30,7 @@ class MessageCoder
         static void CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest);
         static void CreateGetServerStateMessage(const std::string & id, char *dest);
         static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
+        static void CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest);
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 

@@ -5,7 +5,7 @@ echo Building...
 g++ main.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
-    Scheduler/ServerState.cpp \
+    ServerState/ServerState.cpp \
     Scheduler/MessageCoder.cpp \
     Scheduler/Client.cpp \
     Peers/Peers.cpp \

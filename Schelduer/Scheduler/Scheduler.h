@@ -9,7 +9,7 @@
 #include "MessageCoder.h"
 #include "Client.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
-#include "../Scheduler/ServerState.h"
+#include "../ServerState/ServerState.h"
 
 class Scheduler
 {
