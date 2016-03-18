@@ -111,16 +111,16 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
     }
 }
 
-void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)
+void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data)
 {
     Traces() << "\n" << "LOG: void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
     try
     {
-        std::string role = dest.at(MessageCoder::ROLE);
+        std::string role = data.at(MessageCoder::ROLE);
 
         if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::CLIENT)
         {
-            AddClient(socket, dest);
+            AddClient(socket, data);
         }
     }
     catch (std::out_of_range)
@@ -152,9 +152,9 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     }
 }
 
-void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)
+void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data)
 {
-    Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+    Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data)";
 
 
     if (clients.Insert(socket, Client())  == true)
@@ -162,7 +162,7 @@ void Scheduler::AddClient(TCPConnection_ptr socket, std::map<std::string, std::s
         Traces() << "\n" << "ERR: Element already existed!";
     } else
     {
-        std::string messageId = dest.at(MessageCoder::MESSAGE_ID);
+        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
 
         char *tmpChar = new char[2048];
         MessageCoder::ClearChar(tmpChar, 2048);
