@@ -316,7 +316,7 @@ void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned in
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(STATE, stat, dest);
     KeyValuePairToChar(NUM_OF_THREAD, numOfThread, dest);
-    KeyValuePairToChar(MESSAGE_END, 0, dest);    
+    KeyValuePairToChar(MESSAGE_END, 0, dest);        
 }
 
 void MessageCoder::CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest)
@@ -328,6 +328,7 @@ void MessageCoder::CreateServerStateMessage(const ServerState & serverState, con
     KeyValuePairToChar(MAX_IA_TIME, serverState.GetMaxTime(), dest);
     KeyValuePairToChar(START_TIME, serverState.GetStartTime(), dest);
     KeyValuePairToChar(TIME_TO_END, serverState.GetTimeToEnd(), dest);
+    BoardToChar(serverState.GetBoard(), dest + strlen(dest) , 1);
 
     KeyValuePairToChar(MESSAGE_END, 0, dest);
 }

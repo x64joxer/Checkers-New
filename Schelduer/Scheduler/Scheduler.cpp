@@ -94,6 +94,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
             SetRole(socket, data);
         } else
+        if (action == MessageCoder::GET_SERVER_STATE)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::GET_SERVER_STATE";
+            SendServerState(socket, state, data);
+        }
+        else
         {
             Traces() << "\n" << "ERR: Unexpected action: " << action << " from" << socket->GetIp() << ":" << socket->GetPort();
         }
@@ -116,6 +122,29 @@ void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::str
         {
             AddClient(socket, dest);
         }
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+    }
+}
+
+void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data)
+{
+    Traces() << "\n" << "void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data)";
+    try
+    {
+        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+
+        char *tmpChar = new char[4048];
+        MessageCoder::ClearChar(tmpChar, 4048);
+
+        MessageCoder::CreateServerStateMessage(serverState, messageId, tmpChar);
+
+        Traces() << "\n" << "LOG: Sending: " << tmpChar;
+
+        socket->SendMessage(tmpChar);
+        delete [] tmpChar;
     }
     catch (std::out_of_range)
     {

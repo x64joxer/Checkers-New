@@ -27,6 +27,7 @@ class Scheduler
 
         void AddClient(TCPConnection_ptr socket, std::map<std::string, std::string> & dest);
         void SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest);
+        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data);
 
         ConnectionManager *wskConnectionManager;
 

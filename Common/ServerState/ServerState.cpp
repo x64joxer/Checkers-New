@@ -11,12 +11,14 @@ ServerState::ServerState() : thinking(false)
     std::string("|b| |b| |b| |b| |") +
     std::string("| |b| |b| |b| |b|") +
     std::string("|b| |b| |b| |b| |");
+
+    mutex = new std::mutex();
 }
 
 const ServerState & ServerState::operator=(const ServerState  & data)
 {
     std::lock_guard<std::mutex> ls(*mutex);
-    Traces() << "\n" << "LOG: ServerState & ServerState::operator=(const ServerState  & data)";
+    Traces() << "\n" << "LOG: const ServerState & ServerState::operator=(const ServerState  & data)";
 
     current = data.current;
     thinking = data.thinking;
@@ -29,5 +31,5 @@ const ServerState & ServerState::operator=(const ServerState  & data)
 
 ServerState::~ServerState()
 {
-
+    delete mutex;
 }
