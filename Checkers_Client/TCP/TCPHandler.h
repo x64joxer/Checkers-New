@@ -40,7 +40,7 @@ class TCPHandler : public QObject
         void SendGetServerStateMessage();
 
         QTcpSocket *tcpSocket;
-        enum ConState { DISCONNECTED, CONNECTED, REGISTERED } connection_state;
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, UPDATED } connection_state;
         MessageState messageState;
         unsigned short numOfReattempt;
         QTimer *time;
