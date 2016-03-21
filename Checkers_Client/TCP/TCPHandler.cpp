@@ -163,6 +163,35 @@ void TCPHandler::DecodeMessage(const char * data)
             {
                 Traces() << "\n" << "ERR: Wrong connection state";
             }
+        } else
+        if (action == MessageCoder::SERVER_STATE)
+        {
+            Traces() << "\n" << "LOG: Message SERVER_STATE received";
+
+            if (connection_state == REGISTERED)
+            {
+                waitForOKMessageTimer->stop();
+
+                if (prevousMessageid == messageContent.at(MessageCoder::MESSAGE_ID))
+                {
+                    connection_state = ConState::UPDATED;
+
+                } else
+                {
+                   Traces() << "\n" << "ERR: Wrong message ID!";
+
+                   SendGetServerStateMessage();
+                   waitForOKMessageTimer->start();
+                }
+
+            } else
+            {
+                Traces() << "\n" << "ERR: Wrong connection state";
+            }
+
+        } else
+        {
+            Traces() << "\n" << "ERR: Wrong action = " << action;
         }
 
     }
