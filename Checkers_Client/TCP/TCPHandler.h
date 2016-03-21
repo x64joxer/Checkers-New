@@ -7,6 +7,7 @@
 #include "Board/Board.h"
 #include "MessageCoder/MessageCoder.h"
 #include "ProgramVariables.h"
+#include "ServerState/ServerState.h"
 
 class TCPHandler : public QObject
 {
@@ -21,7 +22,7 @@ class TCPHandler : public QObject
 
         ~TCPHandler();
     signals:
-
+        void ServerStateReceived(const ServerState state);
     public slots:
         void ReadDataFromServer();
         void Reconnect();

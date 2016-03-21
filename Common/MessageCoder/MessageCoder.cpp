@@ -368,7 +368,7 @@ std::string MessageCoder::CreateMessageId()
 
 std::string MessageCoder::ACTION = GetNextKey("ACTION");
 std::string MessageCoder::OK = GetNextKey("OK");
-std::string MessageCoder::SERVER_STATE = GetNextKey("OK_SERVER_STATE");
+std::string MessageCoder::SERVER_STATE = GetNextKey("SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 

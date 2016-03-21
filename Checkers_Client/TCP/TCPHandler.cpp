@@ -174,8 +174,18 @@ void TCPHandler::DecodeMessage(const char * data)
 
                 if (prevousMessageid == messageContent.at(MessageCoder::MESSAGE_ID))
                 {
-                    connection_state = ConState::UPDATED;
 
+                    Board tmpBoard;
+                    MessageCoder::MapToBoard(messageContent, &tmpBoard);
+
+                    emit ServerStateReceived(ServerState(tmpBoard,
+                                                         atof(messageContent.at((MessageCoder::IS_THINKING)).c_str()),
+                                                         atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
+                                                         atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
+                                                         atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str())
+                                                         ));
+
+                    connection_state = ConState::UPDATED;
                 } else
                 {
                    Traces() << "\n" << "ERR: Wrong message ID!";
