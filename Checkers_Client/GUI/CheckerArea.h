@@ -12,6 +12,7 @@
 #include "Board/PossibleMoves.h"
 #include "TCP/TCPHandler.h"
 #include "ProgramVariables.h"
+#include "ServerState/ServerState.h"
 
 
 namespace Ui {
@@ -27,6 +28,9 @@ class CheckerArea : public QWidget
         void SetBoard(Board *wsk);        
         ~CheckerArea();
 
+    public slots:
+        void GetServerState(const ServerState &state);
+
     private:
         Ui::CheckerArea *ui;
         QColor field1;
@@ -37,6 +41,7 @@ class CheckerArea : public QWidget
         Board *board;
         Board previousBoard;
         unsigned short int displayedBoard;
+        ServerState serverState;
 
         PossibleMoves possibleMoves;
 

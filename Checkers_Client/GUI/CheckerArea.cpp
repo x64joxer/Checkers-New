@@ -29,9 +29,11 @@ CheckerArea::CheckerArea(QWidget *parent) :
     displayedBoard = 0;
     waitForIATimer = new QTimer();
     waitForIATimer->setInterval(50);
-    connect(waitForIATimer,SIGNAL(timeout()), this, SLOT(CheckStatus()));        
+    connect(waitForIATimer,SIGNAL(timeout()), this, SLOT(CheckStatus()));
 
     agentTCP = new TCPHandler(this);
+
+    connect(agentTCP, SIGNAL(ServerStateReceived(ServerState)), this, SLOT(GetServerState(ServerState)));
 }
 
 //███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
@@ -346,6 +348,15 @@ void CheckerArea::TakeKeyPressed(QKeyEvent *event)
 //╚════██║██║     ██║   ██║   ██║   ╚════██║
 //███████║███████╗╚██████╔╝   ██║   ███████║
 //╚══════╝╚══════╝ ╚═════╝    ╚═╝   ╚══════╝
+
+void CheckerArea::GetServerState(const ServerState &state)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::GetServerState(const ServerState &state)";
+
+    serverState = state;
+    *board = serverState.GetBoard();
+    repaint();
+}
 
 void CheckerArea::CheckStatus()
 {
