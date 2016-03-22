@@ -39,6 +39,7 @@ class TCPHandler : public QObject
         void DecodeMessage(const char * data);
         void SendRegisterMessage();
         void SendGetServerStateMessage();
+        void SendOkMessage(const std::string messageId);
 
         QTcpSocket *tcpSocket;
         enum ConState { DISCONNECTED, CONNECTED, REGISTERED, UPDATED } connection_state;
