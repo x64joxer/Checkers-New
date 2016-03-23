@@ -47,10 +47,13 @@ class CheckerArea : public QWidget
 
         enum CursorState
         { Free, Grab, WaitForIA } cursorState;
+
         int mouseX;
         int mouseY;
         unsigned short grabbed;
         unsigned short currentPercentOfSteps;
+
+        QString messageWindow;
 
         QTimer *waitForIATimer;
         TCPHandler *agentTCP;
@@ -60,6 +63,7 @@ class CheckerArea : public QWidget
         void PaintPawn(QPainter *painter);
         void PaintGrabbedBlackPawn(QPainter *painter);
         void PaintPercentageEllipse(QPainter *painter);
+        void PaintMessage(QPainter *painter);
         void DrawPawn(QPainter *painter, const int x, const int y, const int widthField, const int heightField, const bool blackWhite, const bool pons);
 
         void StartThinking();

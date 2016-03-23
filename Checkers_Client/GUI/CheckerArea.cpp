@@ -51,7 +51,8 @@ void CheckerArea::Paint()
     PaintFields(&painter);
     PaintPawn(&painter);
     PaintGrabbedBlackPawn(&painter);
-    PaintPercentageEllipse(&painter);
+    PaintPercentageEllipse(&painter);    
+    PaintMessage(&painter);
 
     painter.end();
 }
@@ -189,6 +190,39 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
                          startAngle,
                          spanAngle);
     };
+}
+
+void CheckerArea::PaintMessage(QPainter *painter)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::PaintMessage(QPainter *painter)";
+
+    if (messageWindow != "")
+    {
+        QRectF rectangle = QRectF(0,
+                  (height() / 2) - ((height() / 7) / 2),
+                  width(),
+                  (height() / 7));
+
+        painter->setBrush(QColor(0,255,255));
+        painter->setPen(QColor(0,255,255));
+        painter->drawRect(rectangle);
+
+        painter->setBrush(QColor(0, 0, 0));
+        painter->setPen(QColor(0, 0, 0));
+
+        QFont font;
+        font.setPixelSize(rectangle.height());
+        painter->setFont(font);
+
+
+
+        painter->drawText(rectangle.x(),
+                          rectangle.y(),
+                          rectangle.width(),
+                          rectangle.height(),
+                          Qt::AlignCenter,
+                          messageWindow);
+    }
 }
 
 void CheckerArea::DrawPawn(QPainter *painter, const int x, const int y, const int widthField, const int heightField, const bool blackWhite, const bool pons)
