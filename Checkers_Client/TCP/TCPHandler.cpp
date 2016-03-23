@@ -70,6 +70,7 @@ void TCPHandler::SendRegisterMessage()
 {
     Traces() << "\n" << "LOG: void TCPHandler::SendRegisterMessage()";
 
+    emit StateRegister(host + ":" + QString::number(port));
     while(tcpSocket->waitForBytesWritten()) {}
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
     prevousMessageid = MessageCoder::CreateMessageId();
@@ -82,6 +83,7 @@ void TCPHandler::SendGetServerStateMessage()
 {
     Traces() << "\n" << "LOG: void TCPHandler::SendGetServerStateMessage()";
 
+    emit StateUpdating(host + ":" + QString::number(port));
     while(tcpSocket->waitForBytesWritten()) {}
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
     prevousMessageid = MessageCoder::CreateMessageId();
@@ -129,6 +131,9 @@ void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
 {
     switch (socketError) {
     case QAbstractSocket::RemoteHostClosedError:
+        Traces() << "\n" << "ERROR: Disconnected" ;
+        connection_state = DISCONNECTED;
+        emit StateConnecting(host + ":" + QString::number(port));
         break;
     case QAbstractSocket::HostNotFoundError:
         Traces() << "\n" << "ERROR:The host was not found. Please check the host name and port settings";
@@ -205,6 +210,8 @@ void TCPHandler::DecodeMessage(const char * data)
                                                          ));
 
                     connection_state = ConState::UPDATED;
+
+                    emit StateUpdated(host + ":" + QString::number(port));
                 } else
                 {
                    Traces() << "\n" << "ERR: Wrong message ID!";

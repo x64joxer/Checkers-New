@@ -35,6 +35,9 @@ CheckerArea::CheckerArea(QWidget *parent) :
 
     connect(agentTCP, SIGNAL(ServerStateReceived(ServerState)), this, SLOT(GetServerState(ServerState)));
     connect(agentTCP, SIGNAL(StateConnecting(const QString)), this, SLOT(StateConnecting(const QString)));
+    connect(agentTCP, SIGNAL(StateRegister(const QString)), this, SLOT(StateRegister(const QString)));
+    connect(agentTCP, SIGNAL(StateUpdating(const QString)), this, SLOT(StateUpdating(const QString)));
+    connect(agentTCP, SIGNAL(StateUpdated(QString)), this, SLOT(StateUpdated(const QString)));
 
     agentTCP->Start();
 }
@@ -405,6 +408,26 @@ void CheckerArea::StateConnecting(const QString data)
 {
     Traces() << "\n" << "LOG: void CheckerArea::StateConnecting(const QString data)";
     messageWindow = "Connecting to: " + data;
+    repaint();
+}
+
+void CheckerArea::StateRegister(const QString server)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::StateRegister(const QString server)";
+    messageWindow = "Registering...";
+    repaint();
+}
+
+void CheckerArea::StateUpdating(const QString server)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::StateUpdating(const QString server)";
+    messageWindow = "Updating status...";
+    repaint();
+}
+void CheckerArea::StateUpdated(const QString server)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::StateUpdated(const QString server)";
+    messageWindow = "";
     repaint();
 }
 

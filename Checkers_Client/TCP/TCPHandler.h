@@ -25,6 +25,9 @@ class TCPHandler : public QObject
     signals:
         void ServerStateReceived(const ServerState state);
         void StateConnecting(const QString server);
+        void StateRegister(const QString server);
+        void StateUpdating(const QString server);
+        void StateUpdated(const QString server);
 
     public slots:
         void ReadDataFromServer();
