@@ -81,6 +81,7 @@ class CheckerArea : public QWidget
 
     private slots:
         void CheckStatus();
+        void StateConnecting(const QString data);
 };
 
 #endif // CHECKERAREA_H

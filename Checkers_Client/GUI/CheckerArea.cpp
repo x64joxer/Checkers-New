@@ -34,6 +34,9 @@ CheckerArea::CheckerArea(QWidget *parent) :
     agentTCP = new TCPHandler(this);
 
     connect(agentTCP, SIGNAL(ServerStateReceived(ServerState)), this, SLOT(GetServerState(ServerState)));
+    connect(agentTCP, SIGNAL(StateConnecting(const QString)), this, SLOT(StateConnecting(const QString)));
+
+    agentTCP->Start();
 }
 
 //███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
@@ -211,7 +214,7 @@ void CheckerArea::PaintMessage(QPainter *painter)
         painter->setPen(QColor(0, 0, 0));
 
         QFont font;
-        font.setPixelSize(rectangle.height());
+        font.setPixelSize(rectangle.height() / 1.5);
         painter->setFont(font);
 
 
@@ -395,6 +398,13 @@ void CheckerArea::GetServerState(const ServerState &state)
 void CheckerArea::CheckStatus()
 {
 
+    repaint();
+}
+
+void CheckerArea::StateConnecting(const QString data)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::StateConnecting(const QString data)";
+    messageWindow = "Connecting to: " + data;
     repaint();
 }
 

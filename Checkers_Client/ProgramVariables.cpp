@@ -34,7 +34,7 @@ int ProgramVariables::GetServerPort()
 
 unsigned int ProgramVariables::GetRecconectingTime()
 {
-    return 20000;
+    return 5000;
 }
 
 unsigned long long ProgramVariables::GetMaxSecondsToEnd()

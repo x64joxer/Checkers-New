@@ -24,9 +24,7 @@ void TCPHandler::Init()
     connect(tcpSocket,SIGNAL(connected()),this,SLOT(Connected()));
 
     waitForIATimer = new QTimer();
-    waitForIATimer->setInterval(10);
-
-    ConnectToServer(ProgramVariables::GetServerIP(), ProgramVariables::GetServerPort());
+    waitForIATimer->setInterval(10);    
 }
 
 void TCPHandler::ConnectToServer(const QString ho,  int po)
@@ -35,6 +33,8 @@ void TCPHandler::ConnectToServer(const QString ho,  int po)
     port = po;
 
     Traces() << "\n" << "LOG: Connecting to host:" << host.toStdString() << " port:" << port;
+
+    emit StateConnecting(host + ":" + QString::number(port));
     tcpSocket->connectToHost(host,port);
 }
 
@@ -45,6 +45,7 @@ void TCPHandler::Reconnect()
     if (connection_state == ConState::DISCONNECTED)
     {
         Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
+        emit StateConnecting(host + ":" + QString::number(port));
         tcpSocket->connectToHost(host,port);
     } else
     if (connection_state == ConState::CONNECTED)
@@ -57,6 +58,12 @@ void TCPHandler::Reconnect()
     {
         Traces() << "\n" << "ERROR: Wrong connection state!";
     }
+}
+
+void TCPHandler::Start()
+{
+    Traces() << "\n" << "LOG: void TCPHandler::Start()";
+    ConnectToServer(ProgramVariables::GetServerIP(), ProgramVariables::GetServerPort());
 }
 
 void TCPHandler::SendRegisterMessage()

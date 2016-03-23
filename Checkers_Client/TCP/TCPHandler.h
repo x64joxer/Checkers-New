@@ -17,12 +17,15 @@ class TCPHandler : public QObject
 
         void ConnectToServer(const QString ho, int po);
         void SendJob(const Board &board);
+        void Start();
 
         enum MessageState { NONE_OK, STATE_OK, BEST_RESULT_OK };
 
         ~TCPHandler();
     signals:
         void ServerStateReceived(const ServerState state);
+        void StateConnecting(const QString server);
+
     public slots:
         void ReadDataFromServer();
         void Reconnect();
