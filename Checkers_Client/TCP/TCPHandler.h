@@ -30,18 +30,17 @@ class TCPHandler : public QObject
         void StateUpdated(const QString server);
 
     public slots:
+        void Disconnect();
+
+    private slots:
+        void NoResponseFromServer();
         void ReadDataFromServer();
         void Reconnect();
         void ConnectionError(QAbstractSocket::SocketError socketError);
         void Connected();
 
-    private slots:
-        void NoResponseFromServer();
-
     private:
-        void Init();
-        void Disconnect();
-
+        void Init();       
         void DecodeMessage(const char * data);
         void SendRegisterMessage();
         void SendGetServerStateMessage();

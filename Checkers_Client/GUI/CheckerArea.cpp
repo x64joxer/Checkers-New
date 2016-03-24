@@ -26,6 +26,9 @@ CheckerArea::CheckerArea(QWidget *parent) :
 
     cursorState = Free;
 
+    disconnectTimer = new QTimer();
+    disconnectTimer->setInterval(10);
+
     displayedBoard = 0;
     waitForIATimer = new QTimer();
     waitForIATimer->setInterval(50);
@@ -39,7 +42,11 @@ CheckerArea::CheckerArea(QWidget *parent) :
     connect(agentTCP, SIGNAL(StateUpdating(const QString)), this, SLOT(StateUpdating(const QString)));
     connect(agentTCP, SIGNAL(StateUpdated(QString)), this, SLOT(StateUpdated(const QString)));
 
+    connect(disconnectTimer, SIGNAL(timeout()), this, SLOT(DisconnectFromServer()));
+    connect(this, SIGNAL(Disconnect()), agentTCP, SLOT(Disconnect()));
+
     agentTCP->Start();
+
 }
 
 //███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
@@ -180,7 +187,12 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
 
         currentPercentOfSteps = 100 - currentPercentOfSteps;
 
-      //  if (currentPercentOfSteps == 100) SetMessageText("Waiting for result from server...");
+        if (currentPercentOfSteps == 100)
+        {
+            SetMessageText("Waiting for result from server...");
+            waitForIATimer->stop();
+            disconnectTimer->start(ProgramVariables::GetMaxTimeWaitToServer());
+        }
 
         int size = 5;
         QRectF rectangle(width() -(width() / size) -10,
@@ -212,7 +224,7 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
 
 void CheckerArea::PaintMessage(QPainter *painter)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::PaintMessage(QPainter *painter)";
+    //Traces() << "\n" << "LOG: void CheckerArea::PaintMessage(QPainter *painter)";
 
     if (messageWindow != "")
     {
@@ -420,8 +432,17 @@ void CheckerArea::GetServerState(const ServerState &state)
 
 void CheckerArea::CheckStatus()
 {
-
     repaint();
+}
+
+void CheckerArea::DisconnectFromServer()
+{
+    Traces() << "\n" << "LOG: void CheckerArea::DisconnectFromServer()";
+
+    disconnectTimer->stop();
+    cursorState = Free;
+    SetMessageText("");
+    emit Disconnect();
 }
 
 void CheckerArea::StateConnecting(const QString data)

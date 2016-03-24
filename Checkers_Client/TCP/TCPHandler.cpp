@@ -264,7 +264,10 @@ void TCPHandler::ReadDataFromServer()
 
 void TCPHandler::Disconnect()
 {
-    tcpSocket->disconnectFromHost();
+    Traces() << "\n" << "LOG: void TCPHandler::Disconnect()";
+
+    connection_state = DISCONNECTED;
+    tcpSocket->close();
     time->start();
 }
 

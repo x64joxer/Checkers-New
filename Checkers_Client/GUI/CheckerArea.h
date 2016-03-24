@@ -32,6 +32,9 @@ class CheckerArea : public QWidget
     public slots:
         void GetServerState(const ServerState &state);
 
+    signals:
+        void Disconnect();
+
     private:
         Ui::CheckerArea *ui;
         QColor field1;
@@ -43,6 +46,7 @@ class CheckerArea : public QWidget
         Board previousBoard;
         unsigned short int displayedBoard;
         ServerState serverState;
+        QTimer *disconnectTimer;
 
         PossibleMoves possibleMoves;
 
@@ -83,6 +87,7 @@ class CheckerArea : public QWidget
 
     private slots:
         void CheckStatus();
+        void DisconnectFromServer();
         void StateConnecting(const QString data);        
         void StateRegister(const QString server);
         void StateUpdating(const QString server);
