@@ -68,6 +68,11 @@ void CheckerArea::SetBoard(Board *wsk)
     board = wsk;
 }
 
+void CheckerArea::SetMessageText(const QString & text)
+{
+    messageWindow = text;
+}
+
 void CheckerArea::PaintFields(QPainter *painter)
 {
     int widthField = width() / 8;
@@ -175,6 +180,8 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
 
         currentPercentOfSteps = 100 - currentPercentOfSteps;
 
+      //  if (currentPercentOfSteps == 100) SetMessageText("Waiting for result from server...");
+
         int size = 5;
         QRectF rectangle(width() -(width() / size) -10,
                          height() - (height() / size) - 10,
@@ -184,7 +191,7 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
         int startAngle = 0 * 16;
         int spanAngle;
 
-        if (currentPercentOfSteps ==0)
+        if (currentPercentOfSteps == 0)
         {
             spanAngle = ((((360*16)) * currentPercentOfSteps) /100);
         } else
@@ -404,8 +411,7 @@ void CheckerArea::GetServerState(const ServerState &state)
     if (serverState.IsThinking())
     {
         cursorState = WaitForIA;
-        startTime = Traces::GetCurrentDateLL();
-        qDebug() << "startTime" << startTime;
+        startTime = Traces::GetCurrentDateLL();        
         waitForIATimer->start();
     }
 
