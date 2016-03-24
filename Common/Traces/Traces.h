@@ -22,6 +22,7 @@ class Traces
 
         static unsigned long long GetCurrentTime();
         static std::string GetCurrentDate();
+        static unsigned long long GetCurrentDateLL();
 
         static void TurnOnTraces();
         static void TurnOffTraces();

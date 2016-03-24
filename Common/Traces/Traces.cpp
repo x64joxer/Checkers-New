@@ -137,6 +137,14 @@ std::string Traces::GetCurrentDate()
     return result;
 }
 
+
+unsigned long long Traces::GetCurrentDateLL()
+{
+    unsigned long long milliseconds_since_epoch = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
+
+    return milliseconds_since_epoch;
+}
+
 void Traces::StringToFile(std::string log)
 {    
     static std::ofstream logFile;

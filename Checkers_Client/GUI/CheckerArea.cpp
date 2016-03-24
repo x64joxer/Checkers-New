@@ -170,6 +170,11 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
 
     if (cursorState == WaitForIA)
     {
+        currentPercentOfSteps = (Traces::GetCurrentDateLL() / 1000) - (startTime / 1000);
+        currentPercentOfSteps = ((serverState.GetMaxTime() - currentPercentOfSteps) * 100) / serverState.GetMaxTime();
+
+        currentPercentOfSteps = 100 - currentPercentOfSteps;
+
         int size = 5;
         QRectF rectangle(width() -(width() / size) -10,
                          height() - (height() / size) - 10,
@@ -395,6 +400,15 @@ void CheckerArea::GetServerState(const ServerState &state)
 
     serverState = state;
     *board = serverState.GetBoard();
+
+    if (serverState.IsThinking())
+    {
+        cursorState = WaitForIA;
+        startTime = Traces::GetCurrentDateLL();
+        qDebug() << "startTime" << startTime;
+        waitForIATimer->start();
+    }
+
     repaint();
 }
 
