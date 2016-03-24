@@ -223,9 +223,7 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
 }
 
 void CheckerArea::PaintMessage(QPainter *painter)
-{
-    //Traces() << "\n" << "LOG: void CheckerArea::PaintMessage(QPainter *painter)";
-
+{  
     if (messageWindow != "")
     {
         QRectF rectangle = QRectF(0,
