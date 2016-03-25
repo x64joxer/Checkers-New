@@ -1,13 +1,61 @@
 #include "TCPHandler.h"
 
+//██████╗ ██████╗ ███╗   ██╗███████╗████████╗██████╗ ██╗   ██╗ ██████╗████████╗ ██████╗ ██████╗ ███████╗
+//██╔════╝██╔═══██╗████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║   ██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝
+//██║     ██║   ██║██╔██╗ ██║███████╗   ██║   ██████╔╝██║   ██║██║        ██║   ██║   ██║██████╔╝███████╗
+//██║     ██║   ██║██║╚██╗██║╚════██║   ██║   ██╔══██╗██║   ██║██║        ██║   ██║   ██║██╔══██╗╚════██║
+//╚██████╗╚██████╔╝██║ ╚████║███████║   ██║   ██║  ██║╚██████╔╝╚██████╗   ██║   ╚██████╔╝██║  ██║███████║
+//╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
 TCPHandler::TCPHandler(QObject *parent) : QObject(parent)
 {
     Init();
 }
 
+//███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
+//██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+//█████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
+//██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║╚════██║
+//██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
+//╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+
+void TCPHandler::ConnectToServer(const QString ho,  int po)
+{
+    host = ho;
+    port = po;
+
+    Traces() << "\n" << "LOG: Connecting to host:" << host.toStdString() << " port:" << port;
+
+    emit StateConnecting(host + ":" + QString::number(port));
+    tcpSocket->connectToHost(host,port);
+}
+
+void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
+{
+    switch (socketError) {
+    case QAbstractSocket::RemoteHostClosedError:
+        Traces() << "\n" << "ERROR: Disconnected" ;
+        connection_state = DISCONNECTED;
+        emit StateConnecting(host + ":" + QString::number(port));
+        break;
+    case QAbstractSocket::HostNotFoundError:
+        Traces() << "\n" << "ERROR:The host was not found. Please check the host name and port settings";
+        break;
+    case QAbstractSocket::ConnectionRefusedError:
+        Traces() << "\n" << "ERROR:The connection was refused by the peer" ;
+        connection_state = DISCONNECTED;
+        break;
+    default:
+        Traces() << "\n" << "ERROR:The following error occurred:" << tcpSocket->errorString().toStdString();
+        connection_state = DISCONNECTED;
+    }
+
+    time->setInterval(ProgramVariables::GetRecconectingTime());
+    time->start();
+}
 
 void TCPHandler::Init()
-{       
+{
     globalData = new char[ProgramVariables::K4];
     globalLength = 0;
 
@@ -24,46 +72,7 @@ void TCPHandler::Init()
     connect(tcpSocket,SIGNAL(connected()),this,SLOT(Connected()));
 
     waitForIATimer = new QTimer();
-    waitForIATimer->setInterval(10);    
-}
-
-void TCPHandler::ConnectToServer(const QString ho,  int po)
-{
-    host = ho;
-    port = po;
-
-    Traces() << "\n" << "LOG: Connecting to host:" << host.toStdString() << " port:" << port;
-
-    emit StateConnecting(host + ":" + QString::number(port));
-    tcpSocket->connectToHost(host,port);
-}
-
-void TCPHandler::Reconnect()
-{
-    time->stop();
-
-    if (connection_state == ConState::DISCONNECTED)
-    {
-        Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
-        emit StateConnecting(host + ":" + QString::number(port));
-        tcpSocket->connectToHost(host,port);
-    } else
-    if (connection_state == ConState::CONNECTED)
-    {
-        Traces() << "\n" << "LOG: Registering as client";
-        SendRegisterMessage();
-        waitForOKMessageTimer->start();
-
-    } else
-    {
-        Traces() << "\n" << "ERROR: Wrong connection state!";
-    }
-}
-
-void TCPHandler::Start()
-{
-    Traces() << "\n" << "LOG: void TCPHandler::Start()";
-    ConnectToServer(ProgramVariables::GetServerIP(), ProgramVariables::GetServerPort());
+    waitForIATimer->setInterval(10);
 }
 
 void TCPHandler::SendRegisterMessage()
@@ -119,36 +128,10 @@ void TCPHandler::SendJob(const Board &board)
     tcpSocket->write(globalData);
 }
 
-void TCPHandler::Connected()
+void TCPHandler::Start()
 {
-    Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
-
-    time->start();
-    connection_state = CONNECTED;        
-}
-
-void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
-{
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        Traces() << "\n" << "ERROR: Disconnected" ;
-        connection_state = DISCONNECTED;
-        emit StateConnecting(host + ":" + QString::number(port));
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        Traces() << "\n" << "ERROR:The host was not found. Please check the host name and port settings";
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-        Traces() << "\n" << "ERROR:The connection was refused by the peer" ;
-        connection_state = DISCONNECTED;
-        break;
-    default:
-        Traces() << "\n" << "ERROR:The following error occurred:" << tcpSocket->errorString().toStdString();
-        connection_state = DISCONNECTED;
-    }
-
-    time->setInterval(ProgramVariables::GetRecconectingTime());
-    time->start();
+    Traces() << "\n" << "LOG: void TCPHandler::Start()";
+    ConnectToServer(ProgramVariables::GetServerIP(), ProgramVariables::GetServerPort());
 }
 
 void TCPHandler::DecodeMessage(const char * data)
@@ -251,15 +234,19 @@ void TCPHandler::DecodeMessage(const char * data)
     }
 }
 
-void TCPHandler::ReadDataFromServer()
+//███████╗██╗      ██████╗ ████████╗███████╗
+//██╔════╝██║     ██╔═══██╗╚══██╔══╝██╔════╝
+//███████╗██║     ██║   ██║   ██║   ███████╗
+//╚════██║██║     ██║   ██║   ██║   ╚════██║
+//███████║███████╗╚██████╔╝   ██║   ███████║
+//╚══════╝╚══════╝ ╚═════╝    ╚═╝   ╚══════╝
+
+void TCPHandler::Connected()
 {
-    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
-    strcpy(globalData, tcpSocket->readAll().toStdString().c_str());
+    Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
 
-    Traces() << "\n" << "LOG: Read data from server: " <<  std::string(globalData);
-
-    DecodeMessage(globalData);
-
+    time->start();
+    connection_state = CONNECTED;
 }
 
 void TCPHandler::Disconnect()
@@ -292,6 +279,47 @@ void TCPHandler::NoResponseFromServer()
 
     };
 }
+
+void TCPHandler::Reconnect()
+{
+    time->stop();
+
+    if (connection_state == ConState::DISCONNECTED)
+    {
+        Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
+        emit StateConnecting(host + ":" + QString::number(port));
+        tcpSocket->connectToHost(host,port);
+    } else
+    if (connection_state == ConState::CONNECTED)
+    {
+        Traces() << "\n" << "LOG: Registering as client";
+        SendRegisterMessage();
+        waitForOKMessageTimer->start();
+
+    } else
+    {
+        Traces() << "\n" << "ERROR: Wrong connection state!";
+    }
+}
+
+void TCPHandler::ReadDataFromServer()
+{
+    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
+    strcpy(globalData, tcpSocket->readAll().toStdString().c_str());
+
+    Traces() << "\n" << "LOG: Read data from server: " <<  std::string(globalData);
+
+    DecodeMessage(globalData);
+
+}
+
+
+//██████╗ ███████╗███████╗████████╗██████╗ ██╗   ██╗ ██████╗████████╗ ██████╗ ██████╗
+//██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██║   ██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗
+//██║  ██║█████╗  ███████╗   ██║   ██████╔╝██║   ██║██║        ██║   ██║   ██║██████╔╝
+//██║  ██║██╔══╝  ╚════██║   ██║   ██╔══██╗██║   ██║██║        ██║   ██║   ██║██╔══██╗
+//██████╔╝███████╗███████║   ██║   ██║  ██║╚██████╔╝╚██████╗   ██║   ╚██████╔╝██║  ██║
+//╚═════╝ ╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
 
 TCPHandler::~TCPHandler()
 {

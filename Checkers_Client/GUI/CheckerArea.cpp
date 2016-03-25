@@ -411,23 +411,6 @@ void CheckerArea::TakeKeyPressed(QKeyEvent *event)
 //███████║███████╗╚██████╔╝   ██║   ███████║
 //╚══════╝╚══════╝ ╚═════╝    ╚═╝   ╚══════╝
 
-void CheckerArea::GetServerState(const ServerState &state)
-{
-    Traces() << "\n" << "LOG: void CheckerArea::GetServerState(const ServerState &state)";
-
-    serverState = state;
-    *board = serverState.GetBoard();
-
-    if (serverState.IsThinking())
-    {
-        cursorState = WaitForIA;
-        startTime = Traces::GetCurrentDateLL();        
-        waitForIATimer->start();
-    }
-
-    repaint();
-}
-
 void CheckerArea::CheckStatus()
 {
     repaint();
@@ -441,6 +424,23 @@ void CheckerArea::DisconnectFromServer()
     cursorState = Free;
     SetMessageText("");
     emit Disconnect();
+}
+
+void CheckerArea::GetServerState(const ServerState &state)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::GetServerState(const ServerState &state)";
+
+    serverState = state;
+    *board = serverState.GetBoard();
+
+    if (serverState.IsThinking())
+    {
+        cursorState = WaitForIA;
+        startTime = Traces::GetCurrentDateLL();
+        waitForIATimer->start();
+    }
+
+    repaint();
 }
 
 void CheckerArea::StateConnecting(const QString data)
@@ -510,7 +510,8 @@ void CheckerArea::keyPressEvent(QKeyEvent *event)
 //╚═════╝ ╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
 
 CheckerArea::~CheckerArea()
-{
+{    
     delete agentTCP;
+    delete disconnectTimer;
     delete ui;
 }
