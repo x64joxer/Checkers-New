@@ -16,6 +16,7 @@ class SharedMap
 
         data2 At(data1 &val);
         bool Empty();
+        void Erase(data1 key);
         std::condition_variable *GetCondVar();
         int Insert(data1 key, data2 val);
         void SetCondVar(std::condition_variable * wsk);
@@ -37,13 +38,21 @@ data2 SharedMap<data1, data2>::At(data1 &val)
 
     try
     {
-        return mapList.at(val);
+        return mapList.at(val);        
     }
     catch (const std::out_of_range& oor)
     {
         throw;
     }
 
+}
+
+template<typename data1, typename data2>
+void SharedMap<data1, data2>::Erase(data1 key)
+{
+    std::lock_guard<std::mutex> ls(mutex);
+    Traces() << "\n" << "LOG: void SharedMap<data1, data2>::Erase(data1 key)";
+    mapList.erase(key);
 }
 
 template<typename data1, typename data2>

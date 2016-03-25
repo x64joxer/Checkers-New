@@ -16,6 +16,7 @@ class ConnectionManager
 
         Message GetFirstMessage();
         void NewConnection(TCPConnection_ptr wsk);
+        void CloseConnection(TCPConnection_ptr wsk);
         void SetConditionVariable(std::condition_variable *wsk) { messageQueue->SetCondVar(wsk); }
         bool IsNewMessage() { return !messageQueue->Empty(); }
 

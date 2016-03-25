@@ -11,6 +11,7 @@
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrSet.h"
 #include "../Scheduler/Message.h"
+#include "../Scheduler/MessageCoder.h"
 
 class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
                       private boost::noncopyable

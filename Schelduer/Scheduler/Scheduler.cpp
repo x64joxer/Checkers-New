@@ -65,7 +65,7 @@ void Scheduler::StartScheduling()
 
         try
         {
-            tmpMessage = wskConnectionManager->GetFirstMessage();
+            tmpMessage = wskConnectionManager->GetFirstMessage();            
         }
         catch (std::string)
         {
@@ -88,6 +88,22 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
     {
         std::string action = data.at(MessageCoder::ACTION);
 
+        if (action == MessageCoder::CLOSE_CNNECTION)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
+
+            try
+            {
+                clients.At(socket);
+                clients.Erase(socket);
+                wskConnectionManager->CloseConnection(socket);
+            }
+            catch (const std::out_of_range& oor)
+            {
+                throw;
+            }
+
+        } else
         if (action == MessageCoder::SET_ROLE)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";

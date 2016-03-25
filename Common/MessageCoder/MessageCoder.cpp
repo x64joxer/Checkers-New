@@ -287,6 +287,12 @@ void MessageCoder::MapToBoard(const std::map<std::string, std::string> & dest, B
     }
 }
 
+void MessageCoder::CreateCloseConnectionMessage(char *dest)
+{
+    KeyValuePairToChar(ACTION, CLOSE_CNNECTION, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+}
+
 void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, char *dest)
 {    
     KeyValuePairToChar(ACTION, START_WORK, dest);
@@ -294,6 +300,7 @@ void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsig
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);
     KeyValuePairToChar(NUM_OF_BOARD, numberOfBoard, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
 }
 
 void MessageCoder::CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest)
@@ -302,12 +309,14 @@ void MessageCoder::CreateBestResultMessage(const std::string & id, const std::st
     KeyValuePairToChar(NUM_OF_ANALYSED, numOfAnalysed, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);    
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
 }
 
 void MessageCoder::CreateGetServerStateMessage(const std::string & id, char *dest)
 {
     KeyValuePairToChar(ACTION, GET_SERVER_STATE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
 }
 
 void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest)
@@ -371,6 +380,7 @@ std::string MessageCoder::OK = GetNextKey("OK");
 std::string MessageCoder::SERVER_STATE = GetNextKey("SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
+std::string MessageCoder::CLOSE_CNNECTION = GetNextKey("CLOSE_CNNECTION");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");

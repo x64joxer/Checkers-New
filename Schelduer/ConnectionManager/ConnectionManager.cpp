@@ -1,9 +1,17 @@
 #include "ConnectionManager.h"
 
-ConnectionManager::ConnectionManager()
+void ConnectionManager::CloseConnection(TCPConnection_ptr wsk)
 {
     Traces() << "\n" << "LOG: ConnectionManager::ConnectionManager()";
-    messageQueue = new SharedPtrList<Message>;
+    connections_.erase(wsk);
+
+    Traces() << "\n" << "LOG: Number of connections: " <<  connections_.size();
+}
+
+ConnectionManager::ConnectionManager()
+{
+    Traces() << "\n" << "LOG: void ConnectionManager::CloseConnection(TCPConnection_ptr wsk)";
+    messageQueue = new SharedPtrList<Message>;        
 }
 
 Message ConnectionManager::GetFirstMessage()
@@ -27,6 +35,8 @@ void ConnectionManager::NewConnection(TCPConnection_ptr wsk)
     wsk->SetMessageQueue(messageQueue);
     connections_.insert(wsk);
     wsk->Start();
+
+    Traces() << "\n" << "LOG: Number of connections: " <<  connections_.size();
 }
 
 ConnectionManager::~ConnectionManager()

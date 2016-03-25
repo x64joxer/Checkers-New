@@ -74,8 +74,14 @@ void TCPConnection::Stop()
 {
   Traces() << "\n" << "LOG: void TCPConnection::Stop()";
 
-  socketActive = false;
-  socket_.close();
+  socketActive = false;  
+
+  Message tempMessage;
+  char *buffer = new char[500];
+  MessageCoder::ClearChar(buffer, 500);
+  MessageCoder::CreateCloseConnectionMessage(buffer);
+  tempMessage.CopyData(meWsk, buffer);
+  messageQueue->PushBack(tempMessage);
 }
 
 boost::asio::ip::tcp::socket& TCPConnection::Socket()
