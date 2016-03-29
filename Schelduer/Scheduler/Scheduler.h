@@ -17,7 +17,7 @@ class Scheduler
         Scheduler();
 
         ConnectionManager * GetConnectionManager();
-        void MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest);
+        void MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data, char * dest);
         void Start(const unsigned short numofthread);
         void SetConnectionManager(ConnectionManager *wsk);        
         ~Scheduler();
@@ -25,9 +25,9 @@ class Scheduler
     private:
         void StartScheduling();
 
-        void AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data);
-        void SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data);
-        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data);
+        void AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);
 
         ConnectionManager *wskConnectionManager;
 

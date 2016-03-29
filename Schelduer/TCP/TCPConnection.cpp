@@ -77,12 +77,12 @@ void TCPConnection::Stop()
   socketActive = false;  
 
   Message tempMessage;
-  char *buffer = new char[512];
-  MessageCoder::ClearChar(buffer, 512);
+  char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
+  MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
   tempMessage.CopyData(meWsk, buffer);
   messageQueue->PushBack(tempMessage);
-  delete  [] buffer;
+  delete [] buffer;
 }
 
 boost::asio::ip::tcp::socket& TCPConnection::Socket()

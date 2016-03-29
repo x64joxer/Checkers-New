@@ -56,7 +56,7 @@ void TCPHandler::ConnectionError(QAbstractSocket::SocketError socketError)
 
 void TCPHandler::Init()
 {
-    globalData = new char[ProgramVariables::K4];
+    globalData = new char[MessageCoder::MaxMessageSize()];
     globalLength = 0;
 
     time = new QTimer();

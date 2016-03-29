@@ -49,6 +49,7 @@ void Scheduler::StartScheduling()
     Traces() << "\n" << "LOG: void Scheduler::StartScheduling()";
 
     Message tmpMessage;
+    char *dest = new char[MessageCoder::MaxMessageSize()];
 
     while (true)
     {
@@ -75,14 +76,15 @@ void Scheduler::StartScheduling()
         std::map<std::string, std::string> messageContent;
         MessageCoder::MessageToMap(tmpMessage.wskMessage, messageContent);
 
-        MessageInterpreting(tmpMessage.connectionWsk, messageContent);
-
+        MessageInterpreting(tmpMessage.connectionWsk, messageContent, dest);
     }
+
+    delete [] dest;
 }
 
-void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data)
+void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+    Traces() << "\n" << "LOG: void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest, char * data, char * dest)";
 
     try
     {
@@ -108,12 +110,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
 
-            SetRole(socket, data);
+            SetRole(socket, data, dest);
         } else
         if (action == MessageCoder::GET_SERVER_STATE)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::GET_SERVER_STATE";
-            SendServerState(socket, state, data);
+            SendServerState(socket, state, data, dest);
         }
         else
         {
@@ -127,7 +129,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
     }
 }
 
-void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data)
+void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
     Traces() << "\n" << "LOG: void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
     try
@@ -136,7 +138,7 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
 
         if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::CLIENT)
         {
-            AddClient(socket, data);
+            AddClient(socket, data, dest);
         }
     }
     catch (std::out_of_range)
@@ -145,22 +147,19 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
     }
 }
 
-void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data)
+void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data)";
+    Traces() << "\n" << "void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)";
     try
     {
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
 
-        char *tmpChar = new char[4048];
-        MessageCoder::ClearChar(tmpChar, 4048);
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+        MessageCoder::CreateServerStateMessage(serverState, messageId, dest);
 
-        MessageCoder::CreateServerStateMessage(serverState, messageId, tmpChar);
+        Traces() << "\n" << "LOG: Sending: " << dest;
 
-        Traces() << "\n" << "LOG: Sending: " << tmpChar;
-
-        socket->SendMessage(tmpChar);
-        delete [] tmpChar;
+        socket->SendMessage(dest);
     }
     catch (std::out_of_range)
     {
@@ -168,9 +167,9 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     }
 }
 
-void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data)
+void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data)";
+    Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
 
     if (clients.Insert(socket, Client())  == true)
@@ -180,15 +179,13 @@ void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, 
     {
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
 
-        char *tmpChar = new char[2048];
-        MessageCoder::ClearChar(tmpChar, 2048);
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
 
-        MessageCoder::CreateOkMessage(messageId, tmpChar);
+        MessageCoder::CreateOkMessage(messageId, dest);
 
-        Traces() << "\n" << "LOG: Sending: " << tmpChar;
+        Traces() << "\n" << "LOG: Sending: " << dest;
 
-        socket->SendMessage(tmpChar);
-        delete [] tmpChar;
+        socket->SendMessage(dest);
     }
 }
 

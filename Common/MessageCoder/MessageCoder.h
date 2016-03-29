@@ -40,6 +40,9 @@ class MessageCoder
         static void MessageToMap(const char *source, std::map<std::string, std::string> & dest);
         static void MapToBoard(const std::map<std::string, std::string> & dest, Board *board);        
 
+        static unsigned int MaxMessageSize() { return 4048; }
+        static unsigned int MaxMessageConnectionCloseSize() { return 48; }
+
         static std::string CreateMessageId();
 
         //Keys
