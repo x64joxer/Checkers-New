@@ -1,10 +1,12 @@
 #ifndef TCPSOCKET_H
 #define TCPSOCKET_H
 
+#include <iostream>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
 
+using namespace std;
 using boost::asio::ip::tcp;
 
 class TCPSocket
