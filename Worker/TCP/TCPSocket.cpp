@@ -1,15 +1,19 @@
 #include "TCPSocket.h"
 
-TCPSocket::TCPSocket(boost::asio::io_service& io_service,
-                       tcp::resolver::iterator endpoint_iterator)
-                     : io_service_(io_service),
-                       socket_(io_service)
+TCPSocket::TCPSocket(const std::string &adress, const std::string &port)
+                     : socket_(io_service),
+                       resolver(io_service)
 {
 
-  boost::asio::async_connect(socket_, endpoint_iterator,
+ tcp::resolver::query query(adress, port);
+ querywsk = new tcp::resolver::query(" ", " ");
+
+ *querywsk = query;
+ iterator = resolver.resolve(*querywsk);
+
+  boost::asio::async_connect(socket_, iterator,
         boost::bind(&TCPSocket::HandleConnect, this,
         boost::asio::placeholders::error));
-
 
 }
 
