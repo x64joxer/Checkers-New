@@ -14,6 +14,8 @@ class TCPSocket
 {
     public:
         TCPSocket(const std::string &adress, const std::string &port);
+        void Write(char *dataToSend);
+        void HandleWrite(const boost::system::error_code& error);
 
     private:
       void HandleConnect(const boost::system::error_code& error);
@@ -21,8 +23,6 @@ class TCPSocket
 
 
       char *data;
-
-
 
       boost::asio::io_service io_service;
       tcp::socket socket_;

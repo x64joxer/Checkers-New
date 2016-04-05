@@ -22,15 +22,40 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
   if (!error)
   {
      boost::asio::async_read(socket_,
-        boost::asio::buffer(data, 100),
-        boost::bind(&TCPSocket::HandleReadHeader, this,
+        boost::asio::buffer(data, std::strlen(data)),
+        boost::bind(&TCPSocket::HandleConnect, this,
           boost::asio::placeholders::error));
   } else
   {
-      int *i;
-      i = new int();
-      delete i;
-      delete i;
+
+  }
+}
+
+void TCPSocket::Write(char *dataToSend)
+{
+    data = dataToSend;
+
+    boost::asio::async_write(socket_,
+        boost::asio::buffer(data, std::strlen(data)),
+        boost::bind(&TCPSocket::HandleWrite, this,
+          boost::asio::placeholders::error));
+
+}
+
+void TCPSocket::HandleWrite(const boost::system::error_code& error)
+{
+  if (!error)
+  {
+
+      boost::asio::async_write(socket_,
+          boost::asio::buffer(data,
+            100),
+          boost::bind(&TCPSocket::HandleWrite, this,
+            boost::asio::placeholders::error));
+  }
+  else
+  {
+    //do_close();
   }
 }
 
@@ -38,9 +63,9 @@ void TCPSocket::HandleReadHeader(const boost::system::error_code& error)
 {
   if (!error)
   {      
-  //  boost::asio::async_read(socket_,
-  //      boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
-  //      boost::bind(&chat_client::handle_read_body, this,
-  //        boost::asio::placeholders::error));
+   // boost::asio::async_read(socket_,
+     //   boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
+       // boost::bind(&TCPSocket::HandleReadHeader, this,
+         // boost::asio::placeholders::error));
  }
 }
