@@ -4,6 +4,7 @@ TCPSocket::TCPSocket(const std::string &adress, const std::string &port)
                      : socket_(io_service),
                        resolver(io_service)
 {
+ Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
 
  tcp::resolver::query query(adress, port);
  querywsk = new tcp::resolver::query(" ", " ");
@@ -19,6 +20,8 @@ TCPSocket::TCPSocket(const std::string &adress, const std::string &port)
 
 void TCPSocket::HandleConnect(const boost::system::error_code& error)
 {
+  Traces() << "\n" << "LOG: void TCPSocket::HandleConnect(const boost::system::error_code& error)";
+
   if (!error)
   {
      boost::asio::async_read(socket_,
@@ -33,6 +36,8 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
 
 void TCPSocket::Write(char *dataToSend)
 {
+    Traces() << "\n" << "LOG: void TCPSocket::Write(char *dataToSend)";
+
     data = dataToSend;
 
     boost::asio::async_write(socket_,
@@ -44,6 +49,8 @@ void TCPSocket::Write(char *dataToSend)
 
 void TCPSocket::HandleWrite(const boost::system::error_code& error)
 {
+  Traces() << "\n" << "LOG: void TCPSocket::HandleWrite(const boost::system::error_code& error)";
+
   if (!error)
   {
 

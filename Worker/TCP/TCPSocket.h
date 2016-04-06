@@ -6,6 +6,7 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
+#include "../Traces/Traces.h"
 
 using namespace std;
 using boost::asio::ip::tcp;

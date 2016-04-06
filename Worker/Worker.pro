@@ -4,11 +4,13 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    TCP/TCPSocket.cpp
+    TCP/TCPSocket.cpp \
+    Traces/Traces.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
 
 HEADERS += \
-    TCP/TCPSocket.h
+    TCP/TCPSocket.h \
+    Traces/Traces.h
 
