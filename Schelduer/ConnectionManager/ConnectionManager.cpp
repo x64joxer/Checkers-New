@@ -35,6 +35,9 @@ void ConnectionManager::NewConnection(TCPConnection_ptr wsk)
     wsk->SetMessageQueue(messageQueue);
     connections_.insert(wsk);
     wsk->Start();
+    wsk->SendMessage("Roman"+ char(0));
+    wsk->SendMessage("Mirek"+ char(0));
+    wsk->SendMessage("GrzegorzNowakZOkolicZnina"+ char(0));
 
     Traces() << "\n" << "LOG: Number of connections: " <<  connections_.size();
 }
