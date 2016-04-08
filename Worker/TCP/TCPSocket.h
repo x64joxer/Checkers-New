@@ -15,7 +15,7 @@ using boost::asio::ip::tcp;
 class TCPSocket
 {
     public:
-        TCPSocket(const std::string &adress, const std::string &port, boost::asio::io_service & serviceio);
+        TCPSocket(const std::string &adress, const std::string &port);
         void WriteMessage(char *dataToSend);
         void Write(char *dataToSend);
         void HandleWrite(const boost::system::error_code& error);
@@ -26,13 +26,15 @@ class TCPSocket
       char *data;
       char *data_to_read;
 
-      boost::asio::io_service &io_service;
       tcp::socket socket_;
       tcp::resolver resolver;
       tcp::resolver::iterator iterator;
       tcp::resolver::query *querywsk;
 
+      boost::thread thread_io_service;
 
+      static boost::asio::io_service io_service_global;
+      static bool io_service_thread_active;
 };
 
 #endif // TCPSOCKET_H

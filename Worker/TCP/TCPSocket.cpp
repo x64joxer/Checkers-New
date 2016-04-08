@@ -1,9 +1,8 @@
 #include "TCPSocket.h"
 
-TCPSocket::TCPSocket(const std::string &adress, const std::string &port, boost::asio::io_service & serviceio)
-                     : io_service(serviceio),
-                       socket_(io_service),
-                       resolver(io_service)
+TCPSocket::TCPSocket(const std::string &adress, const std::string &port)
+                     : socket_(io_service_global),
+                       resolver(io_service_global)
 
 {
  Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
@@ -13,14 +12,18 @@ TCPSocket::TCPSocket(const std::string &adress, const std::string &port, boost::
  tcp::resolver::query query(adress, port);
  querywsk = new tcp::resolver::query(" ", " ");
 
-
-
  *querywsk = query;
  iterator = resolver.resolve(*querywsk);
 
   boost::asio::async_connect(socket_, iterator,
         boost::bind(&TCPSocket::HandleConnect, this,
         boost::asio::placeholders::error));
+
+  if (!io_service_thread_active)
+  {
+      io_service_thread_active = true;
+      thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
+  }
 
 }
 
@@ -47,7 +50,7 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
 
 void TCPSocket::WriteMessage(char *dataToSend)
 {
-    io_service.post(boost::bind(&TCPSocket::Write, this, dataToSend));
+    io_service_global.post(boost::bind(&TCPSocket::Write, this, dataToSend));
 }
 
 void TCPSocket::Write(char *dataToSend)
@@ -82,3 +85,5 @@ void TCPSocket::HandleWrite(const boost::system::error_code& error)
   }
 }
 
+boost::asio::io_service TCPSocket::io_service_global;
+bool TCPSocket::io_service_thread_active = false;

@@ -9,26 +9,27 @@ int main()
 {
     Traces::SetTraceFolder("trace");
 
-    boost::asio::io_service io_service;    
-
-    TCPSocket socket("192.168.0.7", "6000", io_service);
-
-    boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
+    TCPSocket socket("192.168.0.7", "6000");
+    TCPSocket socket2("192.168.0.7", "6000");
 
     char *c = new char[100];
-
+    char *c2 = new char[100];
 
     while (true) {
 
         std::cin >> *c;
 
         std::strcpy(c, "Roman");
+        std::strcpy(c2, "Mirek");
 
         socket.WriteMessage(c);
+        socket2.WriteMessage(c2);
 
     }
 
     delete [] c;
+    delete [] c2;
+
     return 0;
 }
 
