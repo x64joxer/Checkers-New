@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <thread>
+#include <mutex>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -26,15 +27,15 @@ class TCPSocket
       char *data;
       char *data_to_read;
 
+      boost::thread thread_io_service;
+      boost::asio::io_service io_service_global;
+
       tcp::socket socket_;
       tcp::resolver resolver;
       tcp::resolver::iterator iterator;
       tcp::resolver::query *querywsk;
 
-      boost::thread thread_io_service;
 
-      static boost::asio::io_service io_service_global;
-      static bool io_service_thread_active;
 };
 
 #endif // TCPSOCKET_H

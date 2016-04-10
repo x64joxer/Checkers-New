@@ -17,14 +17,9 @@ TCPSocket::TCPSocket(const std::string &adress, const std::string &port)
 
   boost::asio::async_connect(socket_, iterator,
         boost::bind(&TCPSocket::HandleConnect, this,
-        boost::asio::placeholders::error));
+        boost::asio::placeholders::error));  
 
-  if (!io_service_thread_active)
-  {
-      io_service_thread_active = true;
-      thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
-  }
-
+  thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
 }
 
 void TCPSocket::HandleConnect(const boost::system::error_code& error)
@@ -85,5 +80,4 @@ void TCPSocket::HandleWrite(const boost::system::error_code& error)
   }
 }
 
-boost::asio::io_service TCPSocket::io_service_global;
-bool TCPSocket::io_service_thread_active = false;
+

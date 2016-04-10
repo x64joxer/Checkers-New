@@ -19,8 +19,8 @@ int main()
 
         std::cin >> *c;
 
-        std::strcpy(c, "Roman");
-        std::strcpy(c2, "Mirek");
+        std::strcpy(c, "Message1");
+        std::strcpy(c2, "Message2");
 
         socket.WriteMessage(c);
         socket2.WriteMessage(c2);
