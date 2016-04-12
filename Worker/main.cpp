@@ -12,8 +12,9 @@ int main()
     TCPSocket socket;
     TCPSocket socket2;
 
-    socket.Connect("192.168.0.7", "6000");;
+    socket.Connect("192.168.0.7", "6000");
     socket2.Connect("192.168.0.7", "6000");;
+
 
     char *c = new char[100];
     char *c2 = new char[100];

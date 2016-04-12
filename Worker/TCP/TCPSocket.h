@@ -17,10 +17,12 @@ class TCPSocket
 {
     public:
         TCPSocket();
+        void Close();
         void Connect(const std::string &adress, const std::string &port);
         void WriteMessage(char *dataToSend);
 
     private:
+      void DoClose();
       void HandleConnect(const boost::system::error_code& error);      
       void HandleWrite(const boost::system::error_code& error);
       void Write(char *dataToSend);

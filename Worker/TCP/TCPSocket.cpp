@@ -6,6 +6,11 @@ TCPSocket::TCPSocket() : socket_(io_service_global),
     Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
 }
 
+void TCPSocket::Close()
+{
+  io_service_global.post(boost::bind(&TCPSocket::DoClose, this));
+}
+
 void TCPSocket::Connect(const std::string &adress, const std::string &port)
 {
     Traces() << "\n" << "LOG: void TCPSocket::Connect(const std::string &adress, const std::string &port)";
@@ -41,7 +46,8 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
      Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
   } else
   {
-        Traces() << "\n" << "ERR:";
+        Traces() << "\n" << "ERR: Connection error!";
+        DoClose();
   }
 }
 
@@ -79,8 +85,12 @@ void TCPSocket::HandleWrite(const boost::system::error_code& error)
   }
   else
   {
-        Traces() << "\n" << "ERR:";
+        Traces() << "\n" << "ERR: Read error!";
+        DoClose();
   }
 }
 
-
+void TCPSocket::DoClose()
+{
+  socket_.close();
+}
