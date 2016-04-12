@@ -16,13 +16,14 @@ using boost::asio::ip::tcp;
 class TCPSocket
 {
     public:
-        TCPSocket(const std::string &adress, const std::string &port);
+        TCPSocket();
+        void Connect(const std::string &adress, const std::string &port);
         void WriteMessage(char *dataToSend);
-        void Write(char *dataToSend);
-        void HandleWrite(const boost::system::error_code& error);
 
     private:
       void HandleConnect(const boost::system::error_code& error);      
+      void HandleWrite(const boost::system::error_code& error);
+      void Write(char *dataToSend);
 
       char *data;
       char *data_to_read;

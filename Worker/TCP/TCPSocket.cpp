@@ -1,25 +1,28 @@
 #include "TCPSocket.h"
 
-TCPSocket::TCPSocket(const std::string &adress, const std::string &port)
-                     : socket_(io_service_global),
-                       resolver(io_service_global)
-
+TCPSocket::TCPSocket() : socket_(io_service_global),
+                         resolver(io_service_global)
 {
- Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
+    Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
+}
 
- data_to_read = new char[100];
+void TCPSocket::Connect(const std::string &adress, const std::string &port)
+{
+    Traces() << "\n" << "LOG: void TCPSocket::Connect(const std::string &adress, const std::string &port)";
 
- tcp::resolver::query query(adress, port);
- querywsk = new tcp::resolver::query(" ", " ");
+    data_to_read = new char[100];
 
- *querywsk = query;
- iterator = resolver.resolve(*querywsk);
+    tcp::resolver::query query(adress, port);
+    querywsk = new tcp::resolver::query(" ", " ");
 
-  boost::asio::async_connect(socket_, iterator,
-        boost::bind(&TCPSocket::HandleConnect, this,
-        boost::asio::placeholders::error));  
+    *querywsk = query;
+    iterator = resolver.resolve(*querywsk);
 
-  thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
+     boost::asio::async_connect(socket_, iterator,
+           boost::bind(&TCPSocket::HandleConnect, this,
+           boost::asio::placeholders::error));
+
+     thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
 }
 
 void TCPSocket::HandleConnect(const boost::system::error_code& error)

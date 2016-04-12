@@ -9,8 +9,11 @@ int main()
 {
     Traces::SetTraceFolder("trace");
 
-    TCPSocket socket("192.168.0.7", "6000");
-    TCPSocket socket2("192.168.0.7", "6000");
+    TCPSocket socket;
+    TCPSocket socket2;
+
+    socket.Connect("192.168.0.7", "6000");;
+    socket2.Connect("192.168.0.7", "6000");;
 
     char *c = new char[100];
     char *c2 = new char[100];
