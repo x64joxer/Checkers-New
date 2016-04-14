@@ -37,9 +37,7 @@ class TCPSocket
       tcp::socket socket_;
       tcp::resolver resolver;
       tcp::resolver::iterator iterator;
-      tcp::resolver::query *querywsk;
-
-
+      tcp::resolver::query *querywsk;      
 };
 
 #endif // TCPSOCKET_H

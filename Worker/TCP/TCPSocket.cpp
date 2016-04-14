@@ -4,6 +4,7 @@ TCPSocket::TCPSocket() : socket_(io_service_global),
                          resolver(io_service_global)
 {
     Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
+
 }
 
 void TCPSocket::Close()
@@ -13,9 +14,7 @@ void TCPSocket::Close()
 
 void TCPSocket::Connect(const std::string &adress, const std::string &port)
 {
-    Traces() << "\n" << "LOG: void TCPSocket::Connect(const std::string &adress, const std::string &port)";
-
-    data_to_read = new char[100];
+    Traces() << "\n" << "LOG: void TCPSocket::Connect(const std::string &adress, const std::string &port)";    
 
     tcp::resolver::query query(adress, port);
     querywsk = new tcp::resolver::query(" ", " ");
@@ -38,8 +37,11 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
   {
      Traces() << "\n" << "LOG: Read data";
 
+     data_to_read = new char[MessageCoder::MaxMessageSize()];
+     MessageCoder::ClearChar(data_to_read, MessageCoder::MaxMessageSize());
+
      boost::asio::async_read(socket_,
-        boost::asio::buffer(data_to_read, std::strlen(data)),
+        boost::asio::buffer(data_to_read, MessageCoder::MaxMessageSize()), boost::asio::transfer_all(),
         boost::bind(&TCPSocket::HandleConnect, this,
           boost::asio::placeholders::error));
 
