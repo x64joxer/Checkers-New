@@ -10,6 +10,7 @@ g++ main.cpp \
     Board/Pawn.cpp \
     Board/PawnPos.cpp \
     Board/ThreadIASimpleBoard.cpp \
+    SafeQueue/SharedPtrSet/SharedPtrList.cpp \
     Traces/Traces.cpp	-I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Worker/worker -pthread -lboost_thread 
 
 echo ...end of building

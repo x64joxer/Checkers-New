@@ -10,6 +10,7 @@
 #include <boost/thread/thread.hpp>
 #include "../Traces/Traces.h"
 #include "../Worker/MessageCoder.h"
+#include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 
 using namespace std;
 using boost::asio::ip::tcp;
@@ -29,7 +30,7 @@ class TCPSocket
       void Write(char *dataToSend);
 
       char *data;
-      char *data_to_read;
+      char *data_to_read;      
 
       boost::thread thread_io_service;
       boost::asio::io_service io_service_global;
