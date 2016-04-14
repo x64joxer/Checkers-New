@@ -30,6 +30,8 @@ class TCPSocket
       void HandleWrite(const boost::system::error_code& error);
       void Write(char *dataToSend);
 
+      TCPSocket_ptr meWsk;
+
       char *data;
       char *data_to_read;      
       SharedPtrList<Message> *messageQueue;

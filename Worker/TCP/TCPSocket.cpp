@@ -4,7 +4,7 @@ TCPSocket::TCPSocket() : socket_(io_service_global),
                          resolver(io_service_global)
 {
     Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
-
+    meWsk = TCPSocket_ptr(this);
 }
 
 void TCPSocket::Close()
