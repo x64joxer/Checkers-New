@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     Board/PossibleMoves.cpp \
     Board/ThreadIASimpleBoard.cpp \
     Peers/Peers.cpp \
-    ServerState/ServerState.cpp
+    ServerState/ServerState.cpp \
+    Worker/Message.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -28,5 +29,6 @@ HEADERS += \
     Board/PossibleMoves.h \
     Board/ThreadIASimpleBoard.h \
     Peers/Peers.h \
-    ServerState/ServerState.h
+    ServerState/ServerState.h \
+    Worker/Message.h
 

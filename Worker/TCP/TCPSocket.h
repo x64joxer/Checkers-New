@@ -10,6 +10,7 @@
 #include <boost/thread/thread.hpp>
 #include "../Traces/Traces.h"
 #include "../Worker/MessageCoder.h"
+#include "../Worker/Message.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 
 using namespace std;
@@ -31,6 +32,7 @@ class TCPSocket
 
       char *data;
       char *data_to_read;      
+      SharedPtrList<Message> *messageQueue;
 
       boost::thread thread_io_service;
       boost::asio::io_service io_service_global;
