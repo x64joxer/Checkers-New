@@ -98,9 +98,8 @@ void TCPSocket::DoClose()
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
-  tempMessage.CopyData(meWsk, buffer);
+  tempMessage.CopyWsk(meWsk, buffer);
   messageQueue->PushBack(tempMessage);
-  delete [] buffer;
 
   socket_.close();
 }

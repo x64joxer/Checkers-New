@@ -42,6 +42,14 @@ class Message
             connectionWsk = connection;
         }        
 
+        void CopyWsk(TCPSocket_ptr connection, char *wskM)
+        {
+            Traces() << "\n" << "LOG: void CopyWsk(TCPSocket_ptr connection, const char *wskM)";
+
+            wskMessage = wskM;
+            connectionWsk = connection;
+        }
+
         Message & operator=(const Message  & data)
         {
             Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
