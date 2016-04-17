@@ -80,9 +80,8 @@ void TCPConnection::Stop()
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
-  tempMessage.CopyData(meWsk, buffer);
-  messageQueue->PushBack(tempMessage);
-  delete [] buffer;
+  tempMessage.CopyWsk(meWsk, buffer);
+  messageQueue->PushBack(tempMessage);  
 }
 
 boost::asio::ip::tcp::socket& TCPConnection::Socket()
