@@ -94,5 +94,13 @@ void TCPSocket::HandleWrite(const boost::system::error_code& error)
 
 void TCPSocket::DoClose()
 {
+  Message tempMessage;
+  char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
+  MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
+  MessageCoder::CreateCloseConnectionMessage(buffer);
+  tempMessage.CopyData(meWsk, buffer);
+  messageQueue->PushBack(tempMessage);
+  delete [] buffer;
+
   socket_.close();
 }
