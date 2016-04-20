@@ -14,7 +14,11 @@ SOURCES += main.cpp \
     Board/ThreadIASimpleBoard.cpp \
     Peers/Peers.cpp \
     ServerState/ServerState.cpp \
-    Worker/Message.cpp
+    Worker/Message.cpp \
+    QueueTimer/QueueTimer.cpp \
+    SafeQueue/SharedMap/SharedMap.cpp \
+    SafeQueue/SharedPtrSet/SharedPtrList.cpp \
+    SafeQueue/SharedPtrSet/SharedPtrSet.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -30,5 +34,9 @@ HEADERS += \
     Board/ThreadIASimpleBoard.h \
     Peers/Peers.h \
     ServerState/ServerState.h \
-    Worker/Message.h
+    Worker/Message.h \
+    QueueTimer/QueueTimer.h \
+    SafeQueue/SharedMap/SharedMap.h \
+    SafeQueue/SharedPtrSet/SharedPtrList.h \
+    SafeQueue/SharedPtrSet/SharedPtrSet.h
 

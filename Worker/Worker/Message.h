@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-
+#include <cstring>
 #include <boost/shared_ptr.hpp>
 #include "../Traces/Traces.h"
 
@@ -13,7 +13,7 @@ class Message
 {
     public:         
 
-        Message() {}
+        Message() : wskMessage(nullptr), connectionWsk(nullptr) {}
 
         Message(const Message & data)
         {
@@ -21,14 +21,21 @@ class Message
 
             connectionWsk = data.connectionWsk;
 
-            delete [] wskMessage;
-            wskMessage = new char[std::strlen(data.wskMessage)];
-            std::strcpy(wskMessage, data.wskMessage);
+            if (data.wskMessage)
+            {
+                wskMessage = new char[std::strlen(data.wskMessage)];
+                std::strcpy(wskMessage, data.wskMessage);
+            } else
+            {
+                wskMessage = nullptr;
+            }
+
         }
 
         ~Message()
         {
-            Traces() << "\n" << "LOG: ~Message()" << wskMessage;
+            Traces() << "\n" << "LOG: ~Message()";
+
             delete [] wskMessage;
             wskMessage = nullptr;
         }
@@ -54,18 +61,27 @@ class Message
         {
             Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
 
-            connectionWsk = data.connectionWsk;
+            if (this != &data)
+            {
+                connectionWsk = data.connectionWsk;
+                delete [] wskMessage;
 
-            delete [] wskMessage;
-            wskMessage = new char[std::strlen(data.wskMessage)];
-            std::strcpy(wskMessage, data.wskMessage);
+                if (data.wskMessage)
+                {
+                    wskMessage = new char[std::strlen(data.wskMessage)];
+                    std::strcpy(wskMessage, data.wskMessage);
+                } else
+                {
+                    wskMessage = nullptr;
+                }
+            }
 
             return *this;
         }
 
     public:
         TCPSocket_ptr connectionWsk;
-        char *wskMessage = nullptr;
+        char *wskMessage;
 };
 
 #endif // MESSAGE_H
