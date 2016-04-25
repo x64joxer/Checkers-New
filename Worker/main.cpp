@@ -9,6 +9,9 @@ using namespace std;
 int main()
 {
     Traces::SetTraceFolder("trace");
+    Worker worker;
+
+    worker.Start();
     /*
     //TCPSocket socket;
     //TCPSocket socket2;
@@ -48,6 +51,7 @@ int main()
 
     delete [] c;
     delete [] c2; */
+
 
     return 0;
 }
