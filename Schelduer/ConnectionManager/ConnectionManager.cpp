@@ -36,12 +36,6 @@ void ConnectionManager::NewConnection(TCPConnection_ptr wsk)
     connections_.insert(wsk);
     wsk->Start();
 
-    char *tmp = new char[MessageCoder::MaxMessageSize()];
-    MessageCoder::ClearChar(tmp, MessageCoder::MaxMessageSize());
-    MessageCoder::BoardToChar(Board(), tmp, 1);
-    wsk->SendMessage(tmp);
-
-
     Traces() << "\n" << "LOG: Number of connections: " <<  connections_.size();
 }
 
