@@ -1,15 +1,15 @@
 #include <iostream>
 #include <thread>
 #include <boost/thread/thread.hpp>
-#include "TCP/TCPSocket.h"
 #include "QueueTimer/QueueTimer.h"
+#include "Worker/Worker.h"
 
 using namespace std;
 
 int main()
 {
     Traces::SetTraceFolder("trace");
-
+    /*
     //TCPSocket socket;
     //TCPSocket socket2;
     QueueTimer timer;
@@ -47,7 +47,7 @@ int main()
     }
 
     delete [] c;
-    delete [] c2;
+    delete [] c2; */
 
     return 0;
 }

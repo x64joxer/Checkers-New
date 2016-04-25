@@ -3,6 +3,7 @@ mkdir -p ../build-Worker
 echo Building...
 
 g++ main.cpp \
+    Worker/Worker.cpp \
     TCP/TCPSocket.cpp \
     QueueTimer/QueueTimer.cpp \
     Worker/MessageCoder.cpp \

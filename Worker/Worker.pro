@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     QueueTimer/QueueTimer.cpp \
     SafeQueue/SharedMap/SharedMap.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
-    SafeQueue/SharedPtrSet/SharedPtrSet.cpp
+    SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
+    Worker/Worker.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -38,5 +39,6 @@ HEADERS += \
     QueueTimer/QueueTimer.h \
     SafeQueue/SharedMap/SharedMap.h \
     SafeQueue/SharedPtrSet/SharedPtrList.h \
-    SafeQueue/SharedPtrSet/SharedPtrSet.h
+    SafeQueue/SharedPtrSet/SharedPtrSet.h \
+    Worker/Worker.h
 
