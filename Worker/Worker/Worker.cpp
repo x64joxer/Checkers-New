@@ -13,6 +13,42 @@ void Worker::Start()
 
     socketToServer.SetMessageQueue(messageQueue);
     socketToServer.Connect("192.168.0.7", "6000");
+
+    workerThread = std::move(std::thread(&Worker::StartWorking,
+                                          this));
+
+    workerThread.join();
+}
+
+void Worker::StartWorking()
+{
+    Traces() << "\n" << "LOG: void Worker::StartWorking()";
+
+    condition_var = messageQueue->GetCondVar();
+    Message tmpMessage;
+
+    while(true)
+    {
+        Traces() << "\n" << "LOG: Waiting for a job..";
+        std::mutex tmpMutex;
+        std::unique_lock<std::mutex> guard(tmpMutex);
+
+        condition_var->wait(guard,[this]
+        {
+            return !messageQueue->Empty();
+        }
+        );
+
+        try
+        {
+            tmpMessage = messageQueue->PopFront();
+        }
+        catch (std::string)
+        {
+            Traces() << "\n" << "LOG: List empty. Not a bug.";
+        }
+
+    }
 }
 
 Worker::~Worker()
