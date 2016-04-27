@@ -57,6 +57,9 @@ class Message
             connectionWsk = connection;
         }
 
+        char *GetWskMessage() { return wskMessage; }
+        TCPSocket_ptr GetTCPSocket_ptr() { return connectionWsk; }
+
         Message & operator=(const Message  & data)
         {
             Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
@@ -79,9 +82,10 @@ class Message
             return *this;
         }
 
-    public:
+    private:
         TCPSocket_ptr connectionWsk;
         char *wskMessage;
+
 };
 
 #endif // MESSAGE_H
