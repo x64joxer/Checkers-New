@@ -287,6 +287,12 @@ void MessageCoder::MapToBoard(const std::map<std::string, std::string> & dest, B
     }
 }
 
+void MessageCoder::CreateConnectedMessage(char *dest)
+{
+    KeyValuePairToChar(ACTION, CONNECTED, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+}
+
 void MessageCoder::CreateCloseConnectionMessage(char *dest)
 {
     KeyValuePairToChar(ACTION, CLOSE_CNNECTION, dest);
@@ -381,6 +387,7 @@ std::string MessageCoder::SERVER_STATE = GetNextKey("SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 std::string MessageCoder::CLOSE_CNNECTION = GetNextKey("CLOSE_CNNECTION");
+std::string MessageCoder::CONNECTED = GetNextKey("CONNECTED");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");

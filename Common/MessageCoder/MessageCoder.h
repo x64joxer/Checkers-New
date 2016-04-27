@@ -27,6 +27,7 @@ class MessageCoder
         static void BoardToChar(const Board & board, char *dest, const unsigned short numberOfBoard);
 
         static void CreateCloseConnectionMessage(char *dest);
+        static void CreateConnectedMessage(char *dest);
         static void CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard,  const std::string & id, const std::string & jobId, char *dest);
         static void CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest);
         static void CreateGetServerStateMessage(const std::string & id, char *dest);
@@ -42,6 +43,7 @@ class MessageCoder
 
         static unsigned int MaxMessageSize() { return 4048; }
         static unsigned int MaxMessageConnectionCloseSize() { return 48; }
+        static unsigned int MaxMessageConnectedSize() { return 48; }
 
         static std::string CreateMessageId();
 
@@ -52,6 +54,7 @@ class MessageCoder
         static std::string MESSAGE_ID;
         static std::string MESSAGE_END;
         static std::string CLOSE_CNNECTION;
+        static std::string CONNECTED;
 
         static std::string START_WORK;
         static std::string SET_STATE;        

@@ -37,6 +37,13 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
   {
      Traces() << "\n" << "LOG: Read data";
 
+     Message tempMessage;
+     char *buffer = new char[MessageCoder::MaxMessageConnectedSize()];
+     MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectedSize());
+     MessageCoder::CreateConnectedMessage(buffer);
+     tempMessage.CopyWsk(meWsk, buffer);
+     messageQueue->PushBack(tempMessage);
+
      data_to_read = new char[MessageCoder::MaxMessageSize()];
      MessageCoder::ClearChar(data_to_read, MessageCoder::MaxMessageSize());
 

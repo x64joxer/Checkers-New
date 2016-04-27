@@ -39,14 +39,7 @@ void Worker::StartWorking()
         }
         );
 
-        try
-        {
-            tmpMessage = messageQueue->PopFront();
-        }
-        catch (std::string)
-        {
-            Traces() << "\n" << "LOG: List empty. Not a bug.";
-        }
+        tmpMessage = messageQueue->PopFront();
 
     }
 }
