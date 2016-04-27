@@ -74,9 +74,9 @@ void Scheduler::StartScheduling()
         }
 
         std::map<std::string, std::string> messageContent;
-        MessageCoder::MessageToMap(tmpMessage.wskMessage, messageContent);
+        MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
 
-        MessageInterpreting(tmpMessage.connectionWsk, messageContent, dest);
+        MessageInterpreting(tmpMessage.GetTCPConnection_ptr(), messageContent, dest);
     }
 
     delete [] dest;

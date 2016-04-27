@@ -50,6 +50,9 @@ class Message
             connectionWsk = connection;
         }
 
+        char *GetWskMessage() { return wskMessage; }
+        TCPConnection_ptr GetTCPConnection_ptr() { return connectionWsk; }
+
         Message & operator=(const Message  & data)
         {
             Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
@@ -63,7 +66,7 @@ class Message
             return *this;
         }
 
-    public:
+    private:
         TCPConnection_ptr connectionWsk;
         char *wskMessage = nullptr;
 };
