@@ -25,6 +25,8 @@ void Worker::StartWorking()
     Traces() << "\n" << "LOG: void Worker::StartWorking()";
 
     condition_var = messageQueue->GetCondVar();
+    char *dest = new char[MessageCoder::MaxMessageSize()];
+
     Message tmpMessage;
 
     while(true)
@@ -41,6 +43,37 @@ void Worker::StartWorking()
 
         tmpMessage = messageQueue->PopFront();
 
+        std::map<std::string, std::string> messageContent;
+        MessageCoder::MessageToMap(tmpMessage.wskMessage, messageContent);
+
+        MessageInterpreting(tmpMessage.connectionWsk, messageContent, dest);
+    }
+
+    delete [] dest;
+}
+
+void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest)
+{
+    Traces() << "\n" << "LOG: void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest)";
+
+    try
+    {
+        std::string action = data.at(MessageCoder::ACTION);
+
+        if (action == MessageCoder::CLOSE_CNNECTION)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
+
+
+        } else
+        {
+            Traces() << "\n" << "ERR: Unexpected action: " << action;
+        }
+
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error";
     }
 }
 
