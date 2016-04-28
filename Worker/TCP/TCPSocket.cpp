@@ -56,7 +56,7 @@ void TCPSocket::HandleConnect(const boost::system::error_code& error)
   } else
   {
         Traces() << "\n" << "ERR: Connection error!";
-        DoClose();
+        Close();
   }
 }
 
@@ -95,18 +95,18 @@ void TCPSocket::HandleWrite(const boost::system::error_code& error)
   else
   {
         Traces() << "\n" << "ERR: Read error!";
-        DoClose();
+        Close();
   }
 }
 
 void TCPSocket::DoClose()
 {
+  socket_.close();
+
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
   tempMessage.CopyWsk(meWsk, buffer);
-  messageQueue->PushBack(tempMessage);
-
-  socket_.close();
+  messageQueue->PushBack(tempMessage);  
 }

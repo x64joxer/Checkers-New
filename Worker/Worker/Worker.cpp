@@ -33,6 +33,8 @@ void Worker::StartWorking()
     Message timeoutMessage;
 
     char *tmpChar = new char[MessageCoder::MaxMessageTimeoutSize()];
+    MessageCoder::ClearChar(tmpChar, MessageCoder::MaxMessageTimeoutSize());
+    MessageCoder::CreateTimeoutMessage(tmpChar);
     timeoutMessage.CopyWsk(socketToServer.GeetMyWsk(), tmpChar);
 
     reconnectionTimer.SetTime(5000);
@@ -74,6 +76,13 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         {
             Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
             reconnectionTimer.Start();
+
+        } else            
+        if (action == MessageCoder::TIMEOUT)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
+
+            socket.get()->Connect("192.168.0.7", "6000");
 
         } else
         {
