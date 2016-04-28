@@ -299,6 +299,12 @@ void MessageCoder::CreateCloseConnectionMessage(char *dest)
     KeyValuePairToChar(MESSAGE_END, 0, dest);
 }
 
+void MessageCoder::CreateTimeoutMessage(char *dest)
+{
+    KeyValuePairToChar(ACTION, TIMEOUT, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+}
+
 void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, char *dest)
 {    
     KeyValuePairToChar(ACTION, START_WORK, dest);
@@ -388,6 +394,7 @@ std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 std::string MessageCoder::CLOSE_CNNECTION = GetNextKey("CLOSE_CNNECTION");
 std::string MessageCoder::CONNECTED = GetNextKey("CONNECTED");
+std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");

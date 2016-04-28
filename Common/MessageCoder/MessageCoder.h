@@ -34,6 +34,7 @@ class MessageCoder
         static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
         static void CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest);
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
+        static void CreateTimeoutMessage(char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 
         static void ClearChar(char *dest, const unsigned int num);        
@@ -44,6 +45,7 @@ class MessageCoder
         static unsigned int MaxMessageSize() { return 4048; }
         static unsigned int MaxMessageConnectionCloseSize() { return 48; }
         static unsigned int MaxMessageConnectedSize() { return 48; }
+        static unsigned int MaxMessageTimeoutSize() { return 48; }
 
         static std::string CreateMessageId();
 
@@ -55,6 +57,7 @@ class MessageCoder
         static std::string MESSAGE_END;
         static std::string CLOSE_CNNECTION;
         static std::string CONNECTED;
+        static std::string TIMEOUT;
 
         static std::string START_WORK;
         static std::string SET_STATE;        

@@ -24,6 +24,7 @@ class TCPSocket
         void Connect(const std::string &adress, const std::string &port);
         void SetMessageQueue(SharedPtrList<Message> *message) { messageQueue = message; }
         void WriteMessage(char *dataToSend);
+        TCPSocket_ptr GeetMyWsk() { return meWsk; }
 
     private:
       void DoClose();
