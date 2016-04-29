@@ -5,6 +5,7 @@ echo Building...
 g++ main.cpp \
     Worker/Worker.cpp \
     TCP/TCPSocket.cpp \
+    TCP/TCPSocketBody.cpp \
     QueueTimer/QueueTimer.cpp \
     Worker/MessageCoder.cpp \
     Peers/Peers.cpp \

@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     SafeQueue/SharedMap/SharedMap.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
-    Worker/Worker.cpp
+    Worker/Worker.cpp \
+    TCP/TCPSocketBody.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -40,5 +41,6 @@ HEADERS += \
     SafeQueue/SharedMap/SharedMap.h \
     SafeQueue/SharedPtrSet/SharedPtrList.h \
     SafeQueue/SharedPtrSet/SharedPtrSet.h \
-    Worker/Worker.h
+    Worker/Worker.h \
+    TCP/TCPSocketBody.h
 
