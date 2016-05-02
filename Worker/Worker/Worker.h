@@ -17,7 +17,8 @@ class Worker
 
     private:
         void StartWorking();
-        void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer);
+        void SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
+        void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
 
         std::thread workerThread;
         TCPSocket socketToServer;

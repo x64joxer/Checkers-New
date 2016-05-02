@@ -24,6 +24,8 @@ void Worker::StartWorking()
 {
     Traces() << "\n" << "LOG: void Worker::StartWorking()";
 
+    std::string prevousMessageid;
+
     condition_var = messageQueue->GetCondVar();
     char *dest = new char[MessageCoder::MaxMessageSize()];
 
@@ -58,20 +60,28 @@ void Worker::StartWorking()
         std::map<std::string, std::string> messageContent;
         MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
 
-        MessageInterpreting(tmpMessage.GetTCPSocket_ptr(), messageContent, dest, reconnectionTimer);
+        MessageInterpreting(tmpMessage.GetTCPSocket_ptr(), messageContent, dest, reconnectionTimer, prevousMessageid);
     }
 
     delete [] dest;
 }
 
-void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer)
+void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)
 {
-    Traces() << "\n" << "LOG: void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest)";
+    Traces() << "\n" << "LOG: void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
 
     try
     {
         std::string action = data.at(MessageCoder::ACTION);
 
+
+        if (action == MessageCoder::CONNECTED)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::CONNECTED";
+            reconnectionTimer.Start();
+            SendRegisterMessage(socket, dest, prevousMessageid);
+
+        } else
         if (action == MessageCoder::CLOSE_CNNECTION)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
@@ -94,6 +104,17 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
     {
         Traces() << "\n" << "ERR: Protocol error";
     }
+}
+
+void Worker::SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)
+{
+    Traces() << "\n" << "LOG: void Worker::SendRegisterMessage()";
+
+    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+    prevousMessageid = MessageCoder::CreateMessageId();
+    MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::WORKER, prevousMessageid, dest);
+    socket->WriteMessage(dest);
+
 }
 
 Worker::~Worker()

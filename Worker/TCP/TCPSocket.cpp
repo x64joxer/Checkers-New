@@ -20,9 +20,12 @@ void TCPSocket::Connect(const std::string &adress, const std::string &port)
 
     if (bodySocket != nullptr)
     {
+        if (bodySocket->IsConneted()) bodySocket->Close();
+
         delete bodySocket;
         bodySocket = new TCPSocketBody();
         bodySocket->SetMessageQueue(messageQueue);
+        bodySocket->SetMyWsk(meWsk);
     }
 
     bodySocket->Connect(adress,port);

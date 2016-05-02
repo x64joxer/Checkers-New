@@ -29,6 +29,7 @@ class TCPSocketBody
         void SetMessageQueue(SharedPtrList<Message> *message) { messageQueue = message; }
         void WriteMessage(char *dataToSend);       
         void SetMyWsk(TCPSocket_ptr wsk) { meWsk = wsk; }
+        bool IsConneted() { return connected; }
 
     private:
       void DoClose();
@@ -40,9 +41,10 @@ class TCPSocketBody
       char *data_to_read;      
       SharedPtrList<Message> *messageQueue;
       TCPSocket_ptr meWsk;
+      bool connected;
 
       boost::thread thread_io_service;
-      boost::asio::io_service io_service_global;
+      boost::asio::io_service io_service_global;      
 
       tcp::socket socket_;
       tcp::resolver resolver;

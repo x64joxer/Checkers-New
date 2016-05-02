@@ -32,7 +32,7 @@ class TCPSocket
 
       TCPSocketBody *bodySocket;
       TCPSocket_ptr meWsk;
-      SharedPtrList<Message> *messageQueue;      
+      SharedPtrList<Message> *messageQueue;
 };
 
 #endif // TCPSOCKET_H

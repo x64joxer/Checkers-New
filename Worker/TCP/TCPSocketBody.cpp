@@ -1,7 +1,8 @@
 #include "TCPSocketBody.h"
 
 TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
-                         resolver(io_service_global)
+                                 resolver(io_service_global),
+                                 connected(false)
 {
     Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";
 }
@@ -35,6 +36,8 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
   if (!error)
   {
      Traces() << "\n" << "LOG: Read data";
+
+     connected = true;
 
      Message tempMessage;
      char *buffer = new char[MessageCoder::MaxMessageConnectedSize()];
@@ -101,6 +104,8 @@ void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
 void TCPSocketBody::DoClose()
 {
   socket_.close();
+
+  connected = false;
 
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];

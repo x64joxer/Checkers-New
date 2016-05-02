@@ -30,6 +30,7 @@ class Message
                 wskMessage = nullptr;
             }
 
+            Traces() << "\n" << "LOG: Number of connectionWsk = " << connectionWsk.use_count();
         }
 
         ~Message()
@@ -38,6 +39,8 @@ class Message
 
             delete [] wskMessage;
             wskMessage = nullptr;
+
+            Traces() << "\n" << "LOG: Number of connectionWsk = " << connectionWsk.use_count();
         }
 
         void CopyData(TCPSocket_ptr connection, const char *wskM)
@@ -47,6 +50,8 @@ class Message
             wskMessage = new char[std::strlen(wskM)];
             std::strcpy(wskMessage, wskM);
             connectionWsk = connection;
+
+            Traces() << "\n" << "LOG: Number of connectionWsk = " << connectionWsk.use_count();
         }        
 
         void CopyWsk(TCPSocket_ptr connection, char *wskM)
@@ -55,7 +60,9 @@ class Message
 
             wskMessage = wskM;
             connectionWsk = connection;
-        }
+
+            Traces() << "\n" << "LOG: Number of connectionWsk = " << connectionWsk.use_count();
+        }       
 
         char *GetWskMessage() { return wskMessage; }
         TCPSocket_ptr GetTCPSocket_ptr() { return connectionWsk; }
@@ -78,6 +85,8 @@ class Message
                     wskMessage = nullptr;
                 }
             }
+
+            Traces() << "\n" << "LOG: Number of connectionWsk = " << connectionWsk.use_count();
 
             return *this;
         }
