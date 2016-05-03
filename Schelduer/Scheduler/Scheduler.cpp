@@ -139,6 +139,10 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
         if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::CLIENT)
         {
             AddClient(socket, data, dest);
+        } else
+        if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::WORKER)
+        {
+            AddWorker(socket, data, dest);
         }
     }
     catch (std::out_of_range)
@@ -187,6 +191,28 @@ void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, 
 
         socket->SendMessage(dest);
     }
+}
+
+void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+
+    if (workers.Insert(socket, Worker())  == true)
+    {
+        Traces() << "\n" << "ERR: Element already existed!";
+    } else
+    {
+        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+        MessageCoder::CreateOkMessage(messageId, dest);
+
+        Traces() << "\n" << "LOG: Sending: " << dest;
+
+        socket->SendMessage(dest);
+    }
+
 }
 
 Scheduler::~Scheduler()

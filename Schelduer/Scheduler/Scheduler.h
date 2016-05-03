@@ -8,6 +8,7 @@
 #include "../ConnectionManager/ConnectionManager.h"
 #include "MessageCoder.h"
 #include "Client.h"
+#include "Worker.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../ServerState/ServerState.h"
 
@@ -26,8 +27,9 @@ class Scheduler
         void StartScheduling();
 
         void AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
-        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);
+        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
 
         ConnectionManager *wskConnectionManager;
 
@@ -35,6 +37,7 @@ class Scheduler
         std::mutex mutex;
         std::condition_variable *condition_var;
         SharedMap<TCPConnection_ptr, Client> clients;
+        SharedMap<TCPConnection_ptr, Worker> workers;
 
         ServerState state;
 };

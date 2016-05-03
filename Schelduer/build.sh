@@ -8,6 +8,7 @@ g++ main.cpp \
     ServerState/ServerState.cpp \
     Scheduler/MessageCoder.cpp \
     Scheduler/Client.cpp \
+    Scheduler/Worker.cpp \
     Peers/Peers.cpp \
     Board/Board.cpp \
     Board/Pawn.cpp \
