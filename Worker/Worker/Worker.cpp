@@ -1,6 +1,6 @@
 #include "Worker.h"
 
-Worker::Worker()
+Worker::Worker() : connection_state(DISCONNECTED)
 {
     Traces() << "\n" << "LOG: Worker::Worker()";
 
@@ -74,17 +74,43 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
     {
         std::string action = data.at(MessageCoder::ACTION);
 
+        if (action == MessageCoder::OK)
+        {
+            Traces() << "\n" << "LOG: Message OK received";
 
+            if (connection_state == CONNECTED)
+            {
+                reconnectionTimer.Stop();
+
+                 if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
+                 {
+                     connection_state = ConState::REGISTERED;
+                     //SendGetServerStateMessage();
+                     //waitForOKMessageTimer->start();
+                 } else
+                 {
+                    Traces() << "\n" << "ERR: Wrong message ID!";
+
+                    //SendRegisterMessage();
+                    //waitForOKMessageTimer->start();
+                 }
+            } else
+            {
+                Traces() << "\n" << "ERR: Wrong connection state";
+            }
+        } else
         if (action == MessageCoder::CONNECTED)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::CONNECTED";
-            reconnectionTimer.Start();
+            connection_state = CONNECTED;
+            //reconnectionTimer.Start();
             SendRegisterMessage(socket, dest, prevousMessageid);
 
         } else
         if (action == MessageCoder::CLOSE_CNNECTION)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
+            connection_state = DISCONNECTED;
             reconnectionTimer.Start();
 
         } else            
@@ -92,6 +118,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         {
             Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
 
+            connection_state = DISCONNECTED;
             socket.get()->Connect("192.168.0.7", "6000");
 
         } else

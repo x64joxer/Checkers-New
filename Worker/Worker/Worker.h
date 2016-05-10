@@ -24,6 +24,7 @@ class Worker
         TCPSocket socketToServer;
         SharedPtrList<Message> *messageQueue;
         std::condition_variable *condition_var;
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED } connection_state;
 };
 
 #endif // WORKER_H
