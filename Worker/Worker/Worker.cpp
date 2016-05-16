@@ -86,13 +86,13 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
                  {
                      connection_state = ConState::REGISTERED;
                      //SendGetServerStateMessage();
-                     //waitForOKMessageTimer->start();
+                     reconnectionTimer.Start();
                  } else
                  {
                     Traces() << "\n" << "ERR: Wrong message ID!";
 
-                    //SendRegisterMessage();
-                    //waitForOKMessageTimer->start();
+                    SendRegisterMessage(socket, dest, prevousMessageid);
+                    reconnectionTimer.Start();
                  }
             } else
             {
@@ -103,7 +103,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         {
             Traces() << "\n" << "LOG: action == MessageCoder::CONNECTED";
             connection_state = CONNECTED;
-            //reconnectionTimer.Start();
+            reconnectionTimer.Start();
             SendRegisterMessage(socket, dest, prevousMessageid);
 
         } else

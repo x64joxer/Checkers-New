@@ -4,7 +4,7 @@ TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
                                  resolver(io_service_global),
                                  connected(false)
 {
-    Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";
+    Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";    
 }
 
 void TCPSocketBody::Close()
@@ -20,11 +20,13 @@ void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
     querywsk = new tcp::resolver::query(" ", " ");
 
     *querywsk = query;
-    iterator = resolver.resolve(*querywsk);
+    iterator = resolver.resolve(*querywsk);    
 
      boost::asio::async_connect(socket_, iterator,
            boost::bind(&TCPSocketBody::HandleConnect, this,
-           boost::asio::placeholders::error));
+           boost::asio::placeholders::error));     
+
+     socket_.set_option(boost::asio::ip::tcp::no_delay(true));
 
      thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
 }
@@ -57,11 +59,24 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
 
 
      boost::asio::async_read(socket_,
-        boost::asio::buffer(data_to_read, MessageCoder::MaxMessageSize()), boost::asio::transfer_all(),
+        boost::asio::buffer(data_to_read,10), boost::asio::transfer_all(),
         boost::bind(&TCPSocketBody::HandleConnect, this,
           boost::asio::placeholders::error));
 
-     if (tmpFlag) Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
+     boost::asio::async_read(socket_,
+        boost::asio::buffer(data_to_read,40), boost::asio::transfer_all(),
+        boost::bind(&TCPSocketBody::HandleConnect, this,
+          boost::asio::placeholders::error));
+
+     if (tmpFlag)
+     {
+         Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
+
+         Message tempMessage;
+         tempMessage.CopyWsk(meWsk, data_to_read);
+         messageQueue->PushBack(tempMessage);
+     }
+
 
   } else
   {
