@@ -39,6 +39,11 @@ class MessageCoder
 
         static void ClearChar(char *dest, const unsigned int num);        
 
+        static void InsertHeader(char *dest);        
+        static void InsertLenMessageHeader(char *dest);
+        static void InsertLenMessageHeader(const unsigned int val, char *dest);
+        static unsigned int HeaderToVal(char *dest);
+
         static void MessageToMap(const char *source, std::map<std::string, std::string> & dest);
         static void MapToBoard(const std::map<std::string, std::string> & dest, Board *board);        
 
@@ -46,6 +51,7 @@ class MessageCoder
         static unsigned int MaxMessageConnectionCloseSize() { return 48; }
         static unsigned int MaxMessageConnectedSize() { return 48; }
         static unsigned int MaxMessageTimeoutSize() { return 48; }
+        static unsigned int BufferSize() { return 4; }
 
         static std::string CreateMessageId();
 

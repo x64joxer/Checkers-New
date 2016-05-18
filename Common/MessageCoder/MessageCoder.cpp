@@ -63,12 +63,48 @@ void MessageCoder::KeyValuePairToChar(const std::string & key, const bool value,
 
 void MessageCoder::ClearChar(char *dest, const unsigned int num)
 {
-    for (unsigned int i=0;i<num;i++) dest[i] = 0;
+    for (unsigned int i=MessageCoder::BufferSize();i<num;i++) dest[i] = 0;
+    for (unsigned int i=0;i<MessageCoder::BufferSize();i++) dest[i] = 65;
+}
+
+void MessageCoder::InsertHeader(char *dest)
+{
+    for (unsigned int i=0;i<MessageCoder::BufferSize();i++) dest[0] = 65;
+}
+
+
+void MessageCoder::InsertLenMessageHeader(char *dest)
+{
+    unsigned int size = strlen(dest);    
+
+    dest[0] = (size & 0x000F) + 65;
+    dest[1] = ((size & 0x00F0) >> 4) + 65;
+    dest[2] = ((size & 0x0F00) >> 8) + 65;
+    dest[3] = ((size & 0xF000) >> 12) + 65;
+}
+
+void MessageCoder::InsertLenMessageHeader(const unsigned int val, char *dest)
+{
+    dest[0] = (val & 0x000F) + 65;
+    dest[1] = ((val & 0x00F0) >> 4) + 65;
+    dest[2] = ((val & 0x0F00) >> 8) + 65;
+    dest[3] = ((val & 0xF000) >> 12) + 65;
+}
+
+unsigned int MessageCoder::HeaderToVal(char *dest)
+{
+     unsigned int result;
+     result = (dest[0] - 65) ;
+     result += (dest[1] - 65) * 16;
+     result += (dest[2] - 65) * 256;
+     result += (dest[3] - 65) * 4096;
+
+     return result;
 }
 
 void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::string> & dest)
 {
-    unsigned int i = 0;
+    unsigned int i = MessageCoder::BufferSize();
     unsigned int begin;
     unsigned int end;
     unsigned int begin_val;
@@ -93,7 +129,7 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
             {
                 end_val = i;
                 key = false;
-                keyString = std::string(source + begin + 1, source + end);
+                keyString = std::string(source + begin + 1, source + end);                
                 dest[keyString] = std::string(source + begin_val + 1, source + end_val);
             };
         }
@@ -102,6 +138,7 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
 
         i++;
     };
+
 }
 
 void MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned short numberOfBoard)
@@ -289,59 +326,74 @@ void MessageCoder::MapToBoard(const std::map<std::string, std::string> & dest, B
 
 void MessageCoder::CreateConnectedMessage(char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, CONNECTED, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateCloseConnectionMessage(char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, CLOSE_CNNECTION, dest);
-    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);    
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateTimeoutMessage(char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, TIMEOUT, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, char *dest)
-{    
+{
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_WORK, dest);
     KeyValuePairToChar(MAX_TIME, respTime, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);
     KeyValuePairToChar(NUM_OF_BOARD, numberOfBoard, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, BEST_RESULT, dest);
     KeyValuePairToChar(NUM_OF_ANALYSED, numOfAnalysed, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);    
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateGetServerStateMessage(const std::string & id, char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, GET_SERVER_STATE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, SET_STATE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(STATE, stat, dest);
     KeyValuePairToChar(NUM_OF_THREAD, numOfThread, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);        
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, SERVER_STATE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
 
@@ -352,21 +404,26 @@ void MessageCoder::CreateServerStateMessage(const ServerState & serverState, con
     BoardToChar(serverState.GetBoard(), dest + strlen(dest) , 1);
 
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, SET_ROLE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(ROLE, role, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 void MessageCoder::CreateOkMessage(const std::string  & id, char *dest)
 {
+    InsertHeader(dest);
     KeyValuePairToChar(ACTION, OK, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
 }
 
 std::string MessageCoder::GetNextKey(const std::string & debug_key)
@@ -384,7 +441,7 @@ std::string MessageCoder::GetNextKey(const std::string & debug_key)
 std::string MessageCoder::CreateMessageId()
 {
     std::lock_guard<std::mutex> guard(mutex_guard);
-    return std::to_string(++messageId);
+    return std::to_string(++messageId);    
 }
 
 std::string MessageCoder::ACTION = GetNextKey("ACTION");

@@ -2,7 +2,8 @@
 
 TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
                                  resolver(io_service_global),
-                                 connected(false)
+                                 connected(false),
+                                 expectedMessage(0)
 {
     Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";    
 }
@@ -50,6 +51,8 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
          tempMessage.CopyWsk(meWsk, buffer);
          messageQueue->PushBack(tempMessage);
 
+         Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;
+
          data_to_read = new char[MessageCoder::MaxMessageSize()];
          MessageCoder::ClearChar(data_to_read, MessageCoder::MaxMessageSize());
      } else
@@ -59,22 +62,28 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
 
 
      boost::asio::async_read(socket_,
-        boost::asio::buffer(data_to_read,10), boost::asio::transfer_all(),
+        boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
         boost::bind(&TCPSocketBody::HandleConnect, this,
           boost::asio::placeholders::error));
+
+     expectedMessage = MessageCoder::HeaderToVal(data_to_read);
+
+     Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
 
      boost::asio::async_read(socket_,
-        boost::asio::buffer(data_to_read,40), boost::asio::transfer_all(),
+        boost::asio::buffer(data_to_read+MessageCoder::BufferSize(), expectedMessage), boost::asio::transfer_all(),
         boost::bind(&TCPSocketBody::HandleConnect, this,
           boost::asio::placeholders::error));
 
-     if (tmpFlag)
+     if ((tmpFlag)&&(expectedMessage > 0))
      {
          Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
 
          Message tempMessage;
+         MessageCoder::InsertLenMessageHeader(expectedMessage, data_to_read);
          tempMessage.CopyWsk(meWsk, data_to_read);
          messageQueue->PushBack(tempMessage);
+         expectedMessage = 0;
      }
 
 

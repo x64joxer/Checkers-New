@@ -50,6 +50,7 @@ class TCPSocketBody
       tcp::resolver resolver;
       tcp::resolver::iterator iterator;
       tcp::resolver::query *querywsk;      
+      unsigned int expectedMessage;
 };
 
 #endif // TCPSOCKEDBODY_H
