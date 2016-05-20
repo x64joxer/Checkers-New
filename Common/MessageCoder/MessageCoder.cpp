@@ -7,7 +7,7 @@ MessageCoder::MessageCoder()
 
 void MessageCoder::KeyValuePairToChar(const std::string & key, const std::string & value, char *dest)
 {
-        int len = strlen(dest);
+        int len = strlen(dest);       
 
         dest[len] = '<';
         dest[len+1] = 0;
@@ -69,7 +69,7 @@ void MessageCoder::ClearChar(char *dest, const unsigned int num)
 
 void MessageCoder::InsertHeader(char *dest)
 {
-    for (unsigned int i=0;i<MessageCoder::BufferSize();i++) dest[0] = 65;
+    for (unsigned int i=0;i<MessageCoder::BufferSize();i++) dest[i] = 65;
 }
 
 
@@ -94,10 +94,10 @@ void MessageCoder::InsertLenMessageHeader(const unsigned int val, char *dest)
 unsigned int MessageCoder::HeaderToVal(char *dest)
 {
      unsigned int result;
-     result = (dest[0] - 65) ;
-     result += (dest[1] - 65) * 16;
-     result += (dest[2] - 65) * 256;
-     result += (dest[3] - 65) * 4096;
+     result = (dest[0] - 65);
+     result += (dest[1] - 65) << 4;
+     result += (dest[2] - 65) << 8;
+     result += (dest[3] - 65) << 12;
 
      return result;
 }

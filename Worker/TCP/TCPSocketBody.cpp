@@ -3,7 +3,9 @@
 TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
                                  resolver(io_service_global),
                                  connected(false),
-                                 expectedMessage(0)
+                                 expectedMessage(0),
+                                 waitForHeader(false),
+                                 waitForMessage(false)
 {
     Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";    
 }
@@ -60,23 +62,30 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
          Traces() << "\n" << "LOG: Read data";
      }
 
-
+    if (!waitForHeader)
+    {
      boost::asio::async_read(socket_,
         boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
         boost::bind(&TCPSocketBody::HandleConnect, this,
           boost::asio::placeholders::error));
 
-     expectedMessage = MessageCoder::HeaderToVal(data_to_read);
+        waitForHeader = true;
+    } else
+    {
+         expectedMessage = MessageCoder::HeaderToVal(data_to_read);
+         Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
 
-     Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
+         boost::asio::async_read(socket_,
+            boost::asio::buffer(data_to_read+MessageCoder::BufferSize(), expectedMessage), boost::asio::transfer_all(),
+            boost::bind(&TCPSocketBody::HandleConnect, this,
+              boost::asio::placeholders::error));
 
-     boost::asio::async_read(socket_,
-        boost::asio::buffer(data_to_read+MessageCoder::BufferSize(), expectedMessage), boost::asio::transfer_all(),
-        boost::bind(&TCPSocketBody::HandleConnect, this,
-          boost::asio::placeholders::error));
+        waitForMessage = true;
+    }
 
-     if ((tmpFlag)&&(expectedMessage > 0))
-     {
+
+    if ((waitForMessage)&&(expectedMessage > 0))
+    {
          Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
 
          Message tempMessage;
@@ -84,7 +93,16 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
          tempMessage.CopyWsk(meWsk, data_to_read);
          messageQueue->PushBack(tempMessage);
          expectedMessage = 0;
-     }
+
+
+         boost::asio::async_read(socket_,
+            boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
+            boost::bind(&TCPSocketBody::HandleConnect, this,
+              boost::asio::placeholders::error));
+
+         waitForHeader = true;
+         waitForMessage = false;
+    }
 
 
   } else
