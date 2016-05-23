@@ -1,6 +1,8 @@
 #include "Worker.h"
 
-Worker::Worker() : connection_state(DISCONNECTED)
+Worker::Worker() : connection_state(DISCONNECTED),
+                   myState(Peers::STATE::FREE),
+                   maxThread(1)
 {
     Traces() << "\n" << "LOG: Worker::Worker()";
 
@@ -84,14 +86,30 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
 
                  if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
                  {
-                     connection_state = ConState::REGISTERED;
-                     //SendGetServerStateMessage();
+                     connection_state = ConState::REGISTERED;                                          
+
+                     SendStateMessage(socket, dest, prevousMessageid);
                      reconnectionTimer.Start();
                  } else
                  {
                     Traces() << "\n" << "ERR: Wrong message ID!";
 
                     SendRegisterMessage(socket, dest, prevousMessageid);
+                    reconnectionTimer.Start();
+                 }
+            } else                
+            if (connection_state == REGISTERED)
+            {
+                reconnectionTimer.Stop();
+
+                 if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
+                 {
+                     connection_state = ConState::STATEUPDATED;
+                 } else
+                 {
+                    Traces() << "\n" << "ERR: Wrong message ID!";
+
+                    SendStateMessage(socket, dest, prevousMessageid);
                     reconnectionTimer.Start();
                  }
             } else
@@ -141,7 +159,17 @@ void Worker::SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string 
     prevousMessageid = MessageCoder::CreateMessageId();
     MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::WORKER, prevousMessageid, dest);
     socket->WriteMessage(dest);
+}
 
+void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)
+{
+    Traces() << "\n" << "LOG: void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)";
+
+    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+    prevousMessageid = MessageCoder::CreateMessageId();
+
+    MessageCoder::CreateStateMessage(myState, maxThread, prevousMessageid, dest);
+    socket->WriteMessage(dest);
 }
 
 Worker::~Worker()

@@ -24,7 +24,7 @@ unsigned long long ProgramVariables::GetMaxTimeWaitToServer()
 
 QString ProgramVariables::GetServerIP()
 {
-    return "192.168.0.6";
+    return "192.168.0.7";
 }
 
 int ProgramVariables::GetServerPort()
