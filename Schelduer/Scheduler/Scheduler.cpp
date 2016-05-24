@@ -106,6 +106,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             }
 
         } else
+        if (action == MessageCoder::SET_STATE)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::SET_STATE";
+
+            SetState(socket, data, dest);
+        } else            
         if (action == MessageCoder::SET_ROLE)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
@@ -144,6 +150,31 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
         {
             AddWorker(socket, data, dest);
         }
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+    }
+}
+
+void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::SetState(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+    try
+    {
+       Worker & tmpWorker = workers.At(socket);
+       tmpWorker.SetMaxThread(std::stoi(data.at(MessageCoder::NUM_OF_THREAD)));
+       tmpWorker.SetState(static_cast<Peers::STATE>(std::stoi(data.at(MessageCoder::STATE))));
+
+       std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+
+       MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+       MessageCoder::CreateOkMessage(messageId, dest);
+
+       Traces() << "\n" << "LOG: Sending: " << dest;
+
+       socket->SendMessage(dest);
     }
     catch (std::out_of_range)
     {

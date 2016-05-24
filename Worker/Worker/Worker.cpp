@@ -112,7 +112,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
                     SendStateMessage(socket, dest, prevousMessageid);
                     reconnectionTimer.Start();
                  }
-            } else
+            } else                
             {
                 Traces() << "\n" << "ERR: Wrong connection state";
             }
