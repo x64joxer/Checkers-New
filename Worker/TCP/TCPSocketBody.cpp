@@ -12,6 +12,8 @@ TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
 
 void TCPSocketBody::Close()
 {
+  Traces() << "\n" << "LOG: void TCPSocketBody::Close()";
+
   io_service_global.post(boost::bind(&TCPSocketBody::DoClose, this));
 }
 
@@ -72,15 +74,24 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
         waitForHeader = true;
     } else
     {
-         expectedMessage = MessageCoder::HeaderToVal(data_to_read);
+         expectedMessage = MessageCoder::HeaderToVal(data_to_read);         
          Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
 
-         boost::asio::async_read(socket_,
-            boost::asio::buffer(data_to_read+MessageCoder::BufferSize(), expectedMessage), boost::asio::transfer_all(),
-            boost::bind(&TCPSocketBody::HandleConnect, this,
-              boost::asio::placeholders::error));
+         if (expectedMessage > MessageCoder::MaxMessageSize())
+         {
+            Traces() << "\n" << "ERR: Protocol error. Message too long.";
 
-        waitForMessage = true;
+            expectedMessage = 0;
+            Close();
+         } else
+         {
+             boost::asio::async_read(socket_,
+                boost::asio::buffer(data_to_read+MessageCoder::BufferSize(), expectedMessage), boost::asio::transfer_all(),
+                boost::bind(&TCPSocketBody::HandleConnect, this,
+                  boost::asio::placeholders::error));
+
+            waitForMessage = true;
+         }
     }
 
 
@@ -153,14 +164,15 @@ void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
 
 void TCPSocketBody::DoClose()
 {
+  Traces() << "\n" << "LOG: void TCPSocketBody::DoClose()";
+
   socket_.close();
-
   connected = false;
-
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
   tempMessage.CopyWsk(meWsk, buffer);
   messageQueue->PushBack(tempMessage);  
+
 }

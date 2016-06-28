@@ -45,6 +45,8 @@ void Worker::StartWorking()
     reconnectionTimer.SetMessageToSend(timeoutMessage);
     reconnectionTimer.SetQueue(messageQueue);
 
+    bool popFrontException = false;
+
     while(true)
     {
         Traces() << "\n" << "LOG: Waiting for a job..";
@@ -57,12 +59,26 @@ void Worker::StartWorking()
         }
         );
 
-        tmpMessage = messageQueue->PopFront();
+        try
+        {
+            tmpMessage = messageQueue->PopFront();
+        }
+        catch (...)
+        {
+            Traces() << "\n" << "LOG: Pop front rxeception";
 
-        std::map<std::string, std::string> messageContent;
-        MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
+            popFrontException = true;
+        }
 
-        MessageInterpreting(tmpMessage.GetTCPSocket_ptr(), messageContent, dest, reconnectionTimer, prevousMessageid);
+        if (!popFrontException)
+        {
+            std::map<std::string, std::string> messageContent;
+            MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
+
+            MessageInterpreting(tmpMessage.GetTCPSocket_ptr(), messageContent, dest, reconnectionTimer, prevousMessageid);
+        }
+
+        popFrontException = false;
     }
 
     delete [] dest;
@@ -81,7 +97,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
             Traces() << "\n" << "LOG: Message OK received";
 
             if (connection_state == CONNECTED)
-            {
+            {                
                 reconnectionTimer.Stop();
 
                  if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
@@ -100,7 +116,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
             } else                
             if (connection_state == REGISTERED)
             {
-                reconnectionTimer.Stop();
+                 reconnectionTimer.Stop();
 
                  if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
                  {
