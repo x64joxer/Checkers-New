@@ -6,12 +6,13 @@ TCPSocket::TCPSocket() : bodySocket (nullptr)
     meWsk = TCPSocket_ptr(this);
 
     bodySocket = new TCPSocketBody();
+    bodySocket->SetMessageQueue(messageQueue);
     bodySocket->SetMyWsk(meWsk);
 }
 
 void TCPSocket::Close()
 {
-  bodySocket->Close(); 
+  bodySocket->Close();
 }
 
 void TCPSocket::Connect(const std::string &adress, const std::string &port)
@@ -45,3 +46,7 @@ void TCPSocket::WriteMessage(char *dataToSend)
 }
 
 
+TCPSocket::~TCPSocket()
+{
+  Traces() << "\n" << "LOG:  TCPSocket::~TCPSocket()";
+}

@@ -44,6 +44,7 @@ void Worker::StartWorking()
     reconnectionTimer.SetTime(5000);
     reconnectionTimer.SetMessageToSend(timeoutMessage);
     reconnectionTimer.SetQueue(messageQueue);
+    reconnectionTimer.Start();
 
     bool popFrontException = false;
 
@@ -65,7 +66,7 @@ void Worker::StartWorking()
         }
         catch (...)
         {
-            Traces() << "\n" << "LOG: Pop front rxeception";
+            Traces() << "\n" << "LOG: Pop front exception";
 
             popFrontException = true;
         }
@@ -79,6 +80,7 @@ void Worker::StartWorking()
         }
 
         popFrontException = false;
+
     }
 
     delete [] dest;
@@ -154,6 +156,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
 
             connection_state = DISCONNECTED;
             socket.get()->Connect("192.168.0.7", "6000");
+            reconnectionTimer.Start();
 
         } else
         {

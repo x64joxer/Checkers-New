@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../Worker/Message.h"
 
@@ -24,6 +25,7 @@ class QueueTimer
         Message messageToSend;
         std::thread thread;
         std::atomic_bool *stop_flag;
+        std::mutex mutex_guard;
 
 };
 

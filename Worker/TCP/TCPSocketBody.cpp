@@ -21,11 +21,7 @@ void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
 {
     Traces() << "\n" << "LOG: void TCPSocketBody::Connect(const std::string &adress, const std::string &port)";
 
-    tcp::resolver::query query(adress, port);
-    querywsk = new tcp::resolver::query(" ", " ");
-
-    *querywsk = query;
-    iterator = resolver.resolve(*querywsk);    
+    iterator = resolver.resolve({adress, port});
 
      boost::asio::async_connect(socket_, iterator,
            boost::bind(&TCPSocketBody::HandleConnect, this,

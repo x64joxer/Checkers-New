@@ -21,6 +21,7 @@ class TCPSocket
 {
     public:
         TCPSocket();
+        ~TCPSocket();
         void Close();
         void Connect(const std::string &adress, const std::string &port);
         void SetMessageQueue(SharedPtrList<Message> *message) { messageQueue = message; bodySocket->SetMessageQueue(message); }
@@ -32,7 +33,7 @@ class TCPSocket
 
       TCPSocketBody *bodySocket;
       TCPSocket_ptr meWsk;
-      SharedPtrList<Message> *messageQueue;
+      SharedPtrList<Message> *messageQueue;      
 };
 
 #endif // TCPSOCKET_H
