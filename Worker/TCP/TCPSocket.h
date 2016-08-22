@@ -24,14 +24,14 @@ class TCPSocket
         ~TCPSocket();
         void Close();
         void Connect(const std::string &adress, const std::string &port);
-        void SetMessageQueue(SharedPtrList<Message> *message) { messageQueue = message; bodySocket->SetMessageQueue(message); }
+        void SetMessageQueue(SharedPtrList<Message> *message) { messageQueue = message; bodySocket.SetMessageQueue(message); }
         void WriteMessage(char *dataToSend);
         TCPSocket_ptr GeetMyWsk() { return meWsk; }
 
     private:
       void HandleConnect(const boost::system::error_code& error);      
 
-      TCPSocketBody *bodySocket;
+      TCPSocketBody bodySocket;
       TCPSocket_ptr meWsk;
       SharedPtrList<Message> *messageQueue;      
 };
