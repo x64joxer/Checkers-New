@@ -63,8 +63,7 @@ void MessageCoder::KeyValuePairToChar(const std::string & key, const bool value,
 
 void MessageCoder::ClearChar(char *dest, const unsigned int num)
 {
-    for (unsigned int i=MessageCoder::BufferSize();i<num;i++) dest[i] = 0;
-    for (unsigned int i=0;i<MessageCoder::BufferSize();i++) dest[i] = 65;
+    for (unsigned int i=0;i<num;i++) dest[i] = 0;
 }
 
 void MessageCoder::InsertHeader(char *dest)
@@ -75,7 +74,7 @@ void MessageCoder::InsertHeader(char *dest)
 
 void MessageCoder::InsertLenMessageHeader(char *dest)
 {
-    unsigned int size = strlen(dest);    
+    unsigned int size = strlen(dest) - BufferSize();
 
     dest[0] = (size & 0x000F) + 65;
     dest[1] = ((size & 0x00F0) >> 4) + 65;
@@ -103,7 +102,7 @@ unsigned int MessageCoder::HeaderToVal(char *dest)
 }
 
 void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::string> & dest)
-{
+{    
     unsigned int i = MessageCoder::BufferSize();
     unsigned int begin;
     unsigned int end;
@@ -126,11 +125,13 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
         {
             if (source[i] == '<') begin_val = i;
             if (source[i] == '>')
-            {
+            {                
                 end_val = i;
                 key = false;
                 keyString = std::string(source + begin + 1, source + end);                
                 dest[keyString] = std::string(source + begin_val + 1, source + end_val);
+                Traces() << "\n" << "LOG: " << std::string(source + begin + 1, source + end);
+                Traces() << "\n" << "LOG: " << std::string(source + begin_val + 1, source + end_val);;
             };
         }
 
@@ -139,6 +140,7 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
         i++;
     };
 
+    Traces() << "\n" << "LOG: TrapEnd";
 }
 
 void MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned short numberOfBoard)

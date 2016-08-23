@@ -35,6 +35,8 @@ class TCPSocketBody
       void DoClose();
       void HandleConnect(const boost::system::error_code& error);      
       void HandleWrite(const boost::system::error_code& error);
+      void HandleReadHeader(const boost::system::error_code& error);
+      void HandleReadMessage(const boost::system::error_code& error);
       void Write(char *dataToSend);   
 
       char *data;
@@ -50,8 +52,7 @@ class TCPSocketBody
       tcp::resolver resolver;
       tcp::resolver::iterator iterator;      
       unsigned int expectedMessage;
-      bool waitForHeader;
-      bool waitForMessage;
+
 };
 
 #endif // TCPSOCKEDBODY_H
