@@ -1,8 +1,10 @@
 #ifndef QUEUETIMER_H
 #define QUEUETIMER_H
 
-#include <thread>
+
 #include <atomic>
+#include <condition_variable>
+#include <thread>
 #include <mutex>
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../Worker/Message.h"
@@ -18,14 +20,17 @@ class QueueTimer
         void Stop();
 
     private:
-        void doSleep(const unsigned int sleep_time, std::atomic_bool *stop_f);
+        //void DoSleep(std::atomic_bool *stop_flag, std::atomic_bool *threadExist, std::mutex *mutex_guard);
+        void DoSleep();
 
         unsigned int time;
         SharedPtrList<Message> *messageQueue;
         Message messageToSend;
         std::thread thread;
-        std::atomic_bool *stop_flag;
+        std::atomic_bool stop_flag;
+        std::atomic_bool threadExist;
         std::mutex mutex_guard;
+        std::condition_variable mycond;
 
 };
 

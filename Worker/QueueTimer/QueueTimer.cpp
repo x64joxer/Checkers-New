@@ -1,26 +1,36 @@
 #include "QueueTimer.h"
 
 QueueTimer::QueueTimer() : messageQueue(nullptr),
-                           stop_flag(nullptr)
+                           stop_flag(false),
+                           threadExist(false)
 {
-    stop_flag = new std::atomic_bool;
+
 }
 
-void QueueTimer::doSleep(const unsigned int sleep_time, std::atomic_bool *stop_f)
+/*void QueueTimer::DoSleep(std::atomic_bool *stop_flag, std::atomic_bool *threadExist, std::mutex *mutex_guard)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+    bool flag = true;
+    std::unique_lock<std::mutex> lock(*mutex_guard);
+    mycond.wait_for( lock,
+                     std::chrono::milliseconds(time),
+                     [&flag]() { flag = !flag; return flag; } );
 
-    std::lock_guard<std::mutex> ls(mutex_guard);
+    if (*stop_flag == false) messageQueue->PushBack(messageToSend);
+    *threadExist = false;
+    mycond.notify_one();
+}*/
 
-    if (*stop_f == false)
-    {        
-        messageQueue->PushBack(messageToSend);
-        *stop_f = true;
-    } else
-    {
-        delete stop_f;
-    }
+void QueueTimer::DoSleep()
+{
+    bool flag = true;
+    std::unique_lock<std::mutex> lock(mutex_guard);
+    mycond.wait_for( lock,
+                     std::chrono::milliseconds(time),
+                     [&flag]() { flag = !flag; return flag; } );
 
+    if (stop_flag == false) messageQueue->PushBack(messageToSend);
+    threadExist = false;
+    mycond.notify_one();
 }
 
 void QueueTimer::SetMessageToSend(const Message &message)
@@ -44,22 +54,23 @@ void QueueTimer::SetQueue(SharedPtrList<Message> *queue)
 
 void QueueTimer::Start()
 {    
-    std::lock_guard<std::mutex> ls(mutex_guard);
-    if (!*stop_flag)
-    {
-        Stop();
-    } else
-    {
-        delete stop_flag;
-    }
+    Stop();
 
-    stop_flag = new std::atomic_bool;
-    *stop_flag = false;
-    thread = std::move(std::thread(&QueueTimer::doSleep, this, time, stop_flag));
+    threadExist = true;
+    thread = std::move(std::thread(&QueueTimer::DoSleep, this));
     thread.detach();
 }
 
 void QueueTimer::Stop()
 {    
-    *stop_flag = true;
+    if (threadExist)
+    {
+        stop_flag = true;
+        mycond.notify_one();
+
+        std::unique_lock<std::mutex> lock(mutex_guard);
+        mycond.wait( lock, [this]() { return !threadExist; } );
+
+        stop_flag = false;
+    };
 }
