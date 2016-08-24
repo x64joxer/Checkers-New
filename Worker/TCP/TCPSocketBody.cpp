@@ -47,8 +47,7 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
 
       Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;
 
-      data_to_read = new char[MessageCoder::MaxMessageSize()];
-      MessageCoder::ClearChar(data_to_read, MessageCoder::MaxMessageSize());
+      data_to_read = new char[MessageCoder::MaxMessageSize()];      
 
       boost::asio::async_read(socket_,
          boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
@@ -92,10 +91,10 @@ void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)
     Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
 
     Message tempMessage;
-    tempMessage.CopyWsk(meWsk, data_to_read);
+    tempMessage.CopyData(meWsk, data_to_read);
     messageQueue->PushBack(tempMessage);
-    expectedMessage = 0;
-    data_to_read = new char[MessageCoder::MaxMessageSize()];
+    expectedMessage = 0;    
+    MessageCoder::ClearChar(data_to_read, MessageCoder::MaxMessageSize());
 
     boost::asio::async_read(socket_,
        boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),

@@ -103,7 +103,7 @@ unsigned int MessageCoder::HeaderToVal(char *dest)
 
 void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::string> & dest)
 {    
-    unsigned int i = MessageCoder::BufferSize();
+    unsigned int i = 0;
     unsigned int begin;
     unsigned int end;
     unsigned int begin_val;
