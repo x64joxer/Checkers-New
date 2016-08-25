@@ -19,6 +19,8 @@ void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
 {
     Traces() << "\n" << "LOG: void TCPSocketBody::Connect(const std::string &adress, const std::string &port)";
 
+    io_service_global.reset();
+
     iterator = resolver.resolve({adress, port});
 
      boost::asio::async_connect(socket_, iterator,
@@ -144,7 +146,7 @@ void TCPSocketBody::DoClose()
 {
   Traces() << "\n" << "LOG: void TCPSocketBody::DoClose()";
 
-  socket_.close();
+  socket_.close();  
   connected = false;
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];

@@ -20,7 +20,6 @@ class QueueTimer
         void Stop();
 
     private:
-        //void DoSleep(std::atomic_bool *stop_flag, std::atomic_bool *threadExist, std::mutex *mutex_guard);
         void DoSleep();
 
         unsigned int time;

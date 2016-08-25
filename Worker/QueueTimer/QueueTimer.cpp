@@ -7,19 +7,6 @@ QueueTimer::QueueTimer() : messageQueue(nullptr),
 
 }
 
-/*void QueueTimer::DoSleep(std::atomic_bool *stop_flag, std::atomic_bool *threadExist, std::mutex *mutex_guard)
-{
-    bool flag = true;
-    std::unique_lock<std::mutex> lock(*mutex_guard);
-    mycond.wait_for( lock,
-                     std::chrono::milliseconds(time),
-                     [&flag]() { flag = !flag; return flag; } );
-
-    if (*stop_flag == false) messageQueue->PushBack(messageToSend);
-    *threadExist = false;
-    mycond.notify_one();
-}*/
-
 void QueueTimer::DoSleep()
 {
     bool flag = true;

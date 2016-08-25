@@ -130,8 +130,6 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
                 key = false;
                 keyString = std::string(source + begin + 1, source + end);                
                 dest[keyString] = std::string(source + begin_val + 1, source + end_val);
-                Traces() << "\n" << "LOG: " << std::string(source + begin + 1, source + end);
-                Traces() << "\n" << "LOG: " << std::string(source + begin_val + 1, source + end_val);;
             };
         }
 
@@ -140,7 +138,6 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
         i++;
     };
 
-    Traces() << "\n" << "LOG: TrapEnd";
 }
 
 void MessageCoder::BoardToChar(const Board &board, char *dest, const unsigned short numberOfBoard)
