@@ -111,6 +111,8 @@ void MessageCoder::MessageToMap(const char *source, std::map<std::string, std::s
     std::string keyString;
     bool key = false;
 
+    dest.clear();
+
     while (source[i] != 0)
     {
         if (!key)
