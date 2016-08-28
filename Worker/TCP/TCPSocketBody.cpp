@@ -66,6 +66,7 @@ void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
     Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)";
 
     expectedMessage = MessageCoder::HeaderToVal(data_to_read);
+    delete [] data_to_read;
 
     Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
 
@@ -93,8 +94,7 @@ void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)
     Message tempMessage;
     tempMessage.CopyWsk(meWsk, data_to_read);
     messageQueue->PushBack(tempMessage);
-    expectedMessage = 0;    
-    MessageCoder::ClearChar(data_to_read, MessageCoder::MaxMessageSize());
+    expectedMessage = 0;        
 
     boost::asio::async_read(socket_,
        boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
