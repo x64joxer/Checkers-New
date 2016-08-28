@@ -39,6 +39,7 @@ void Message::CopyWsk(TCPSocket_ptr connection, char *wskM)
 {
     Traces() << "\n" << "LOG: void CopyWsk(TCPSocket_ptr connection, const char *wskM)";
 
+    delete [] wskMessage;
     wskMessage = wskM;
     connectionWsk = connection;
 
@@ -73,8 +74,7 @@ Message::~Message()
 {
     Traces() << "\n" << "LOG: ~Message()";
 
-    delete [] wskMessage;
-    wskMessage = nullptr;
+    delete [] wskMessage;    
 
     Traces() << "\n" << "LOG: Number of connectionWsk = " << connectionWsk.use_count();
 }
