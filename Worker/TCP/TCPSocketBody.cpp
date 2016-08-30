@@ -6,6 +6,8 @@ TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
                                  expectedMessage(0)
 {
     Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";    
+
+    data_to_read = new char[MessageCoder::MaxMessageSize()];
 }
 
 void TCPSocketBody::Close()
@@ -29,7 +31,7 @@ void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
 
      socket_.set_option(boost::asio::ip::tcp::no_delay(true));
 
-     thread_io_service = boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
+     boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
 }
 
 void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
@@ -47,7 +49,7 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
       tempMessage.CopyWsk(meWsk, buffer);
       messageQueue->PushBack(tempMessage);
 
-      Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;      
+      Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;            
 
       boost::asio::async_read(socket_,
          boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
@@ -65,8 +67,7 @@ void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
 {
     Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)";
 
-    expectedMessage = MessageCoder::HeaderToVal(data_to_read);
-    delete [] data_to_read;
+    expectedMessage = MessageCoder::HeaderToVal(data_to_read);    
 
     Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
 
@@ -92,7 +93,7 @@ void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)
     Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
 
     Message tempMessage;
-    tempMessage.CopyWsk(meWsk, data_to_read);
+    tempMessage.CopyData(meWsk, data_to_read);
     messageQueue->PushBack(tempMessage);
     expectedMessage = 0;        
 
@@ -153,4 +154,9 @@ void TCPSocketBody::DoClose()
   tempMessage.CopyWsk(meWsk, buffer);
   messageQueue->PushBack(tempMessage);  
 
+}
+
+TCPSocketBody::~TCPSocketBody()
+{
+    delete [] data_to_read;
 }

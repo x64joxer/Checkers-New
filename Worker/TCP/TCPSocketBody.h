@@ -30,6 +30,7 @@ class TCPSocketBody
         void WriteMessage(char *dataToSend);       
         void SetMyWsk(TCPSocket_ptr wsk) { meWsk = wsk; }
         bool IsConneted() { return connected; }
+        ~TCPSocketBody();
 
     private:
       void DoClose();
