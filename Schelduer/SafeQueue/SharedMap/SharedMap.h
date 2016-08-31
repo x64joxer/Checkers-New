@@ -1,1 +1,1 @@
-/media/BIG_DISC/programowanie/PROJEKTY/Checkers_New/Common/SafeQueue/SharedMap/SharedMap.h
+/media/BIG_DISC/programowanie/PROJEKTY/Checkers-New/Common/SafeQueue/SharedMap/SharedMap.h
