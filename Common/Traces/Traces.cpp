@@ -22,6 +22,11 @@ void Traces::SetTraceFolder(const std::string &dir)
     CreateTraceFolder();
 }
 
+void Traces::SetTraceFileNameMethod(const Traces::TraceFileNameMode mode)
+{
+    fileNameModeForTrace = mode;
+}
+
 unsigned long long Traces::GetThreadId()
 {
     std::stringstream ss;
@@ -81,10 +86,19 @@ std::string Traces::FindFirstFreeId()
 
 std::string Traces::GetThreadText()
 {
-    if (IsOnTheList())
+    if (fileNameModeForTrace == TraceFileNameMode::PrefixThreadAndNumberOfthread)
     {
-       return theardsId[GetThreadId()];
-    };
+        if (IsOnTheList())
+        {
+           return theardsId[GetThreadId()];
+        };
+    } else
+    if (fileNameModeForTrace == TraceFileNameMode::OnlyThreadID)
+    {
+        std::stringstream ss;
+        ss << GetThreadId();
+        return ss.str();
+    }
 
     return CreateNewThreadText();
 }
@@ -190,3 +204,4 @@ bool Traces::timeFlag = false;
 unsigned long long Traces::start =0;
 unsigned long long Traces::stop =0;
 std::string Traces::traceFolder = "traces";
+Traces::TraceFileNameMode Traces::fileNameModeForTrace = Traces::TraceFileNameMode::OnlyThreadID;

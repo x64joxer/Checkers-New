@@ -17,6 +17,8 @@ class Traces
     public:
         Traces();
 
+        enum class TraceFileNameMode { OnlyThreadID, PrefixThreadAndNumberOfthread };
+
         Traces& operator <<(const std::string);
         Traces& operator <<(const unsigned long long);
 
@@ -29,6 +31,7 @@ class Traces
         static bool GetTraceFlag();
         static void RemoveThreadID();
         static void SetTraceFolder(const std::string &dir);
+        static void SetTraceFileNameMethod(const Traces::TraceFileNameMode mode);
 
     private:
         static std::string patchAndNameFile;
@@ -45,10 +48,10 @@ class Traces
         std::string CreateNewThreadText();        
         std::string FindFirstFreeId();
         static std::string GenerateText(int);
-
         static bool timeFlag;
         static unsigned long long start,stop;
-        static std::string traceFolder;
+        static std::string traceFolder;        
+        static TraceFileNameMode fileNameModeForTrace;
 };
 
 #endif // TRACES_H
