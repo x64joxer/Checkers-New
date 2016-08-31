@@ -94,16 +94,10 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
 
-            try
-            {
-                clients.At(socket);
-                clients.Erase(socket);
-                wskConnectionManager->CloseConnection(socket);
-            }
-            catch (const std::out_of_range& oor)
-            {
-                throw;
-            }
+            bool removeResult;
+
+            removeResult = RemoveClient(socket);
+            if (!removeResult) removeResult = RemoveWorker(socket);
 
         } else
         if (action == MessageCoder::SET_STATE)
@@ -244,6 +238,50 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
         socket->SendMessage(dest);
     }
 
+}
+
+bool Scheduler::RemoveClient(TCPConnection_ptr socket)
+{
+    Traces() << "\n" << "LOG: void Scheduler::RemoveClient(TCPConnection_ptr socket)";
+
+    bool flag =  false;
+
+    try
+    {
+        clients.At(socket);
+        clients.Erase(socket);
+        wskConnectionManager->CloseConnection(socket);
+    }
+    catch (const std::out_of_range& oor)
+    {
+        flag = true;
+    }
+
+    if (!flag) Traces() << "\n" << "LOG: Client removed";
+
+    return !flag;
+}
+
+bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
+{
+    Traces() << "\n" << "LOG: void Scheduler::RemoveSocket(TCPConnection_ptr socket)";
+
+    bool flag =  false;
+
+    try
+    {
+        workers.At(socket);
+        workers.Erase(socket);
+        wskConnectionManager->CloseConnection(socket);
+    }
+    catch (const std::out_of_range& oor)
+    {
+        flag = true;
+    }
+
+    if (!flag) Traces() << "\n" << "LOG: Worker removed";
+
+    return !flag;
 }
 
 Scheduler::~Scheduler()
