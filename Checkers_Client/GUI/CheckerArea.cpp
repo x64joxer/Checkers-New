@@ -350,9 +350,11 @@ void CheckerArea::TakeMouseReleaseEvent(QMouseEvent *event)
                     {
                         if (board->GetNumberOfWhite()>0)
                         {
-                            Traces() << "\n" << "cursorState = WaitForIA";
+                            Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";
                             previousBoard = *board;
-                            StartThinking();
+                            cursorState = WaitForSerwerStateUpdate;
+                            SendingJob("");
+                            StartThinking();                            
                         } else cursorState = Free;
                     };
                 }
@@ -360,18 +362,22 @@ void CheckerArea::TakeMouseReleaseEvent(QMouseEvent *event)
                 {
                     if (board->GetNumberOfWhite()>0)
                     {
-                        Traces() << "\n" << "cursorState = WaitForIA";
+                        Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";
                         previousBoard = *board;
-                        StartThinking();
+                        cursorState = WaitForSerwerStateUpdate;
+                        SendingJob("");
+                        StartThinking();                        
                     } else cursorState = Free;
                 };
             } else
             {
                 if (board->GetNumberOfWhite()>0)
                 {
-                    Traces() << "\n" << "cursorState = WaitForIA";
+                    Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";
                     board->SetBlackPawnPos(grabbed,x,y);
                     previousBoard = *board;
+                    cursorState = WaitForSerwerStateUpdate;
+                    SendingJob("");
                     StartThinking();
                 } else cursorState = Free;
             }
@@ -466,10 +472,18 @@ void CheckerArea::StateUpdating(const QString server)
     messageWindow = "Updating status...";
     repaint();
 }
+
 void CheckerArea::StateUpdated(const QString server)
 {
     Traces() << "\n" << "LOG: void CheckerArea::StateUpdated(const QString server)";
     messageWindow = "";
+    repaint();
+}
+
+void CheckerArea::SendingJob(const QString server)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::SendingJob(const QString server)";
+    messageWindow = "Sending job...";
     repaint();
 }
 

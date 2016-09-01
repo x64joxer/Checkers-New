@@ -51,7 +51,7 @@ class CheckerArea : public QWidget
         PossibleMoves possibleMoves;
 
         enum CursorState
-        { Free, Grab, WaitForIA } cursorState;
+        { Free, Grab, WaitForSerwerStateUpdate, WaitForIA } cursorState;
 
         int mouseX;
         int mouseY;
@@ -92,6 +92,7 @@ class CheckerArea : public QWidget
         void StateRegister(const QString server);
         void StateUpdating(const QString server);
         void StateUpdated(const QString server);
+        void SendingJob(const QString server);
 };
 
 #endif // CHECKERAREA_H
