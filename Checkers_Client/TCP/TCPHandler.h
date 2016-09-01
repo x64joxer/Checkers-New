@@ -20,6 +20,8 @@ class TCPHandler : public QObject
         void Start();
 
         enum MessageState { NONE_OK, STATE_OK, BEST_RESULT_OK };
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, UPDATED };
+        ConState GecConnectionState() { return connection_state; }
 
         ~TCPHandler();
     signals:
@@ -47,7 +49,7 @@ class TCPHandler : public QObject
         void SendOkMessage(const std::string messageId);
 
         QTcpSocket *tcpSocket;
-        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, UPDATED } connection_state;
+        ConState connection_state;
         MessageState messageState;
         unsigned short numOfReattempt;
         QTimer *time;
