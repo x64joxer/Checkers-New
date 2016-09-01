@@ -26,8 +26,11 @@ CheckerArea::CheckerArea(QWidget *parent) :
 
     cursorState = Free;
 
-    disconnectTimer = new QTimer();
+    disconnectTimer = new QTimer();    
     disconnectTimer->setInterval(10);
+
+    clearMessageTimer = new QTimer();
+    connect(clearMessageTimer,SIGNAL(timeout()), this, SLOT(ClearStateMessage()));
 
     displayedBoard = 0;
     waitForIATimer = new QTimer();
@@ -41,6 +44,7 @@ CheckerArea::CheckerArea(QWidget *parent) :
     connect(agentTCP, SIGNAL(StateRegister(const QString)), this, SLOT(StateRegister(const QString)));
     connect(agentTCP, SIGNAL(StateUpdating(const QString)), this, SLOT(StateUpdating(const QString)));
     connect(agentTCP, SIGNAL(StateUpdated(QString)), this, SLOT(StateUpdated(const QString)));
+    connect(agentTCP, SIGNAL(FailedSendJob(const QString)), this, SLOT(ProblemWithSendingJob(QString)));
 
     connect(disconnectTimer, SIGNAL(timeout()), this, SLOT(DisconnectFromServer()));
     connect(this, SIGNAL(Disconnect()), agentTCP, SLOT(Disconnect()));
@@ -324,8 +328,10 @@ void CheckerArea::TakeMouseReleaseEvent(QMouseEvent *event)
     unsigned short y = (event->y() / heightField);
 
     if (cursorState == Grab)
-    {
+    {                
         Traces() << "\n" << "if (cursorState == Grab)";
+        previousBoard = *board;
+
         if (possibleMoves.CanIPutHere(grabbed, x, y, *board))
         {
             unsigned short killed;
@@ -350,8 +356,7 @@ void CheckerArea::TakeMouseReleaseEvent(QMouseEvent *event)
                     {
                         if (board->GetNumberOfWhite()>0)
                         {
-                            Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";
-                            previousBoard = *board;
+                            Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";                            
                             cursorState = WaitForSerwerStateUpdate;
                             SendingJob("");
                             StartThinking();                            
@@ -362,8 +367,7 @@ void CheckerArea::TakeMouseReleaseEvent(QMouseEvent *event)
                 {
                     if (board->GetNumberOfWhite()>0)
                     {
-                        Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";
-                        previousBoard = *board;
+                        Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";                        
                         cursorState = WaitForSerwerStateUpdate;
                         SendingJob("");
                         StartThinking();                        
@@ -374,8 +378,7 @@ void CheckerArea::TakeMouseReleaseEvent(QMouseEvent *event)
                 if (board->GetNumberOfWhite()>0)
                 {
                     Traces() << "\n" << "cursorState = WaitForSerwerStateUpdate";
-                    board->SetBlackPawnPos(grabbed,x,y);
-                    previousBoard = *board;
+                    board->SetBlackPawnPos(grabbed,x,y);                    
                     cursorState = WaitForSerwerStateUpdate;
                     SendingJob("");
                     StartThinking();
@@ -452,9 +455,19 @@ void CheckerArea::GetServerState(const ServerState &state)
     repaint();
 }
 
+void CheckerArea::ClearStateMessage()
+{
+    Traces() << "\n" << "LOG: void CheckerArea::ClearStateMessage()";
+    messageWindow = "";
+    clearMessageTimer->stop();
+    repaint();
+}
+
 void CheckerArea::StateConnecting(const QString data)
 {
     Traces() << "\n" << "LOG: void CheckerArea::StateConnecting(const QString data)";
+
+    clearMessageTimer->stop();
     messageWindow = "Connecting to: " + data;
     repaint();
 }
@@ -462,6 +475,8 @@ void CheckerArea::StateConnecting(const QString data)
 void CheckerArea::StateRegister(const QString server)
 {
     Traces() << "\n" << "LOG: void CheckerArea::StateRegister(const QString server)";
+
+    clearMessageTimer->stop();
     messageWindow = "Registering...";
     repaint();
 }
@@ -469,6 +484,8 @@ void CheckerArea::StateRegister(const QString server)
 void CheckerArea::StateUpdating(const QString server)
 {
     Traces() << "\n" << "LOG: void CheckerArea::StateUpdating(const QString server)";
+
+    clearMessageTimer->stop();
     messageWindow = "Updating status...";
     repaint();
 }
@@ -483,7 +500,21 @@ void CheckerArea::StateUpdated(const QString server)
 void CheckerArea::SendingJob(const QString server)
 {
     Traces() << "\n" << "LOG: void CheckerArea::SendingJob(const QString server)";
+
+    clearMessageTimer->stop();
     messageWindow = "Sending job...";
+    repaint();
+}
+
+void CheckerArea::ProblemWithSendingJob(const QString server)
+{
+    Traces() << "\n" << "LOG: void CheckerArea::ProblemWithSendingJob(const QString server)";
+
+    clearMessageTimer->stop();
+    messageWindow = "Problem with sending job to server";
+    *board = previousBoard;
+    cursorState = CursorState::Free;
+    clearMessageTimer->start(5000);
     repaint();
 }
 
@@ -530,5 +561,6 @@ CheckerArea::~CheckerArea()
 {    
     delete agentTCP;
     delete disconnectTimer;
+    delete clearMessageTimer;
     delete ui;
 }

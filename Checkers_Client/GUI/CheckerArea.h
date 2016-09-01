@@ -62,6 +62,7 @@ class CheckerArea : public QWidget
         QString messageWindow;
 
         QTimer *waitForIATimer;
+        QTimer *clearMessageTimer;
         TCPHandler *agentTCP;
 
         void Paint();
@@ -88,11 +89,13 @@ class CheckerArea : public QWidget
     private slots:
         void CheckStatus();
         void DisconnectFromServer();
+        void ClearStateMessage();
         void StateConnecting(const QString data);        
         void StateRegister(const QString server);
         void StateUpdating(const QString server);
         void StateUpdated(const QString server);
         void SendingJob(const QString server);
+        void ProblemWithSendingJob(const QString server);
 };
 
 #endif // CHECKERAREA_H

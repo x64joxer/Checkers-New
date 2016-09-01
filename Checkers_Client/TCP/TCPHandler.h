@@ -20,7 +20,7 @@ class TCPHandler : public QObject
         void Start();
 
         enum MessageState { NONE_OK, STATE_OK, BEST_RESULT_OK };
-        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, UPDATED };
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, UPDATED, WAIT_FOR_STATE_UPDATE };
         ConState GecConnectionState() { return connection_state; }
 
         ~TCPHandler();
@@ -30,6 +30,8 @@ class TCPHandler : public QObject
         void StateRegister(const QString server);
         void StateUpdating(const QString server);
         void StateUpdated(const QString server);
+        void FailedSendJob(const QString server);
+
 
     public slots:
         void Disconnect();

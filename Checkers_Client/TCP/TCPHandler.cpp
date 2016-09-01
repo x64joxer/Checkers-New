@@ -126,6 +126,9 @@ void TCPHandler::SendJob(const Board &board)
     Traces() << "\n" << "LOG: Sending job to server " << globalData;
 
     tcpSocket->write(globalData);
+
+    connection_state = WAIT_FOR_STATE_UPDATE;
+    waitForOKMessageTimer->start();
 }
 
 void TCPHandler::Start()
@@ -273,6 +276,14 @@ void TCPHandler::NoResponseFromServer()
     {
         SendGetServerStateMessage();
         waitForOKMessageTimer->start();
+    } else
+    if (connection_state == WAIT_FOR_STATE_UPDATE)
+    {
+        Traces() << "\n" << "ERR: connection_state == WAIT_FOR_STATE_UPDATE emit FailedSendJob()";
+
+        connection_state = UPDATED;
+        emit FailedSendJob("");
+
     } else
     if (connection_state == DISCONNECTED)
     {
