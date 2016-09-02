@@ -117,6 +117,11 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             Traces() << "\n" << "LOG: action == MessageCoder::GET_SERVER_STATE";
             SendServerState(socket, state, data, dest);
         }
+        if (action == MessageCoder::START_WORK)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
+            SendServerState(socket, state, data, dest);
+        }
         else
         {
             Traces() << "\n" << "ERR: Unexpected action: " << action << " from" << socket->GetIp() << ":" << socket->GetPort();
