@@ -450,6 +450,8 @@ void CheckerArea::GetServerState(const ServerState &state)
         cursorState = WaitForIA;
         startTime = Traces::GetCurrentDateLL();
         waitForIATimer->start();
+        clearMessageTimer->stop();
+        ClearStateMessage();
     }
 
     repaint();

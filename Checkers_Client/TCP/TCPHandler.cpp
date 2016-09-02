@@ -221,11 +221,31 @@ void TCPHandler::DecodeMessage(const char * data)
 
                SendOkMessage(messageContent.at(MessageCoder::MESSAGE_ID));
             } else
+            if (connection_state == WAIT_FOR_STATE_UPDATE)
+            {
+                Traces() << "\n" << "LOG: connection_state == WAIT_FOR_STATE_UPDATE";
+
+                waitForOKMessageTimer->stop();
+                Board tmpBoard;
+                MessageCoder::MapToBoard(messageContent, &tmpBoard);
+
+                emit ServerStateReceived(ServerState(tmpBoard,
+                                                     atof(messageContent.at((MessageCoder::IS_THINKING)).c_str()),
+                                                     atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
+                                                     atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
+                                                     atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str())
+                                                     ));
+
+
+               SendOkMessage(messageContent.at(MessageCoder::MESSAGE_ID));
+
+               connection_state = UPDATED;
+            } else
             {
                 Traces() << "\n" << "ERR: Wrong connection state";
             }
 
-        } else
+        } else        
         {
             Traces() << "\n" << "ERR: Wrong action = " << action;
         }
