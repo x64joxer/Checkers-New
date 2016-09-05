@@ -123,7 +123,7 @@ void CheckerArea::PaintPawn(QPainter *painter)
 
     if (cursorState == WaitForIA)
     {
-        boardToPaint = &previousBoard;
+        boardToPaint = board;
     } else
     {
         if (displayedBoard == 0)
