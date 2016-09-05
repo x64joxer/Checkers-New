@@ -349,7 +349,7 @@ void MessageCoder::CreateTimeoutMessage(char *dest)
     InsertLenMessageHeader(dest);
 }
 
-void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, char *dest)
+void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, const Board & board, char *dest)
 {
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_WORK, dest);
@@ -357,6 +357,7 @@ void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsig
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);
     KeyValuePairToChar(NUM_OF_BOARD, numberOfBoard, dest);
+    MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
     InsertLenMessageHeader(dest);
 }

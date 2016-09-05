@@ -120,6 +120,11 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         if (action == MessageCoder::START_WORK)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
+
+            Board tmpBoard;
+            MessageCoder::MapToBoard(data, &tmpBoard);
+            state.SetBoard(tmpBoard);
+            state.SetThinking(true);
             SendServerState(socket, state, data, dest);
         }
         else

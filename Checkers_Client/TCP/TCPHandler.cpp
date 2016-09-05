@@ -103,7 +103,7 @@ void TCPHandler::SendGetServerStateMessage()
 
 void TCPHandler::SendOkMessage(const std::string messageId)
 {
-    Traces() << "\n" << "LOG: void TCPHandler::SendGetServerStateMessage()";
+    Traces() << "\n" << "LOG: void TCPHandler::SendOkMessage(const std::string messageId)";
 
     while(tcpSocket->waitForBytesWritten()) {}
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
@@ -115,13 +115,14 @@ void TCPHandler::SendOkMessage(const std::string messageId)
 
 void TCPHandler::SendJob(const Board &board)
 {
+    Traces() << "\n" << "LOG: void TCPHandler::SendJob(const Board &board)";
+
     while(tcpSocket->waitForBytesWritten()) {}
 
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
     std::string tempId = MessageCoder::CreateMessageId();
     std::string jobId = MessageCoder::CreateMessageId();
-    MessageCoder::CreateStartMessage(ProgramVariables::GetMaxTimeForIa(), 1, tempId, jobId, globalData);
-    MessageCoder::BoardToChar(board, globalData, 1);
+    MessageCoder::CreateStartMessage(ProgramVariables::GetMaxTimeForIa(), 1, tempId, jobId, board, globalData);
 
     Traces() << "\n" << "LOG: Sending job to server " << globalData;
 
