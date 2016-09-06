@@ -11,9 +11,12 @@ Traces::Traces()
 }*/
 
 void Traces::CreateTraceFolder()
-{    
-    std::string mkdirCommand = std::string("mkdir -p ") + traceFolder.c_str();
+{        
+    std::string mkdirCommand = std::string("mkdir -p ") + traceFolder.c_str();    
     system(mkdirCommand.c_str());
+
+    std::string removeOldLogsCommand = std::string("rm -f ") + traceFolder.c_str() + std::string("/*");
+    system(removeOldLogsCommand.c_str());
 }
 
 void Traces::SetTraceFolder(const std::string &dir)
