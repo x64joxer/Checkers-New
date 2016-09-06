@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     Scheduler/Client.cpp \
     SafeQueue/SharedMap/SharedMap.cpp \
     ServerState/ServerState.cpp \
-    Scheduler/Worker.cpp
+    Scheduler/Worker.cpp \
+    QueueTimer/QueueTimer.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -49,5 +50,6 @@ HEADERS += \
     Scheduler/Client.h \
     SafeQueue/SharedMap/SharedMap.h \
     ServerState/ServerState.h \
-    Scheduler/Worker.h
+    Scheduler/Worker.h \
+    QueueTimer/QueueTimer.h
 

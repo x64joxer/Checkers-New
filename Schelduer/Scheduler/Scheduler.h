@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #include <thread>
+#include <iostream>
 #include <map>
 #include <mutex>
 #include "../Traces/Traces.h"

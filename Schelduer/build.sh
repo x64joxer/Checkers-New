@@ -3,8 +3,10 @@ mkdir -p ../build-Scheduler
 echo Building...
 
 g++ main.cpp \
+    Scheduler/Message.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
+    QueueTimer/QueueTimer.cpp \
     ServerState/ServerState.cpp \
     Scheduler/MessageCoder.cpp \
     Scheduler/Client.cpp \
