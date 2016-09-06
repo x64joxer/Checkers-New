@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SHAREMAP_H
 #define SHAREDMAP_H
 

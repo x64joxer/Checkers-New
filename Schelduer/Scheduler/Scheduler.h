@@ -12,6 +12,8 @@
 #include "Worker.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../ServerState/ServerState.h"
+#include "../QueueTimer/QueueTimer.h"
+#include "../QueueTimer/QueueTimerList.h"
 
 class Scheduler
 {
@@ -44,6 +46,7 @@ class Scheduler
         SharedMap<TCPConnection_ptr, Worker> workers;
 
         ServerState state;
+        QueueTimerList tmerList;
 };
 
 #endif // SCHEDULER_H

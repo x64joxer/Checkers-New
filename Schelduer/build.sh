@@ -6,8 +6,6 @@ g++ main.cpp \
     Scheduler/Message.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
-    QueueTimer/QueueTimer.cpp \
-    QueueTimer/QueueTimerList.cpp \
     ServerState/ServerState.cpp \
     Scheduler/MessageCoder.cpp \
     Scheduler/Client.cpp \
@@ -22,6 +20,8 @@ g++ main.cpp \
     SafeQueue/SharedMap/SharedMap.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
+    QueueTimer/QueueTimer.cpp \
+    QueueTimer/QueueTimerList.cpp \
     Traces/Traces.cpp \
     -I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Scheduler/scheduler -pthread
 

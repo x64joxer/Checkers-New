@@ -1,6 +1,7 @@
 #ifndef QUEUETIMERLIST_H
 #define QUEUETIMERLIST_H
 
+#include <boost/shared_ptr.hpp>
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../TCP/TCPConnection.h"
 #include "../Traces/Traces.h"
