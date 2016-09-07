@@ -36,6 +36,7 @@ class Scheduler
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
+        void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
 
         ConnectionManager *wskConnectionManager;
 
@@ -46,7 +47,7 @@ class Scheduler
         SharedMap<TCPConnection_ptr, Worker> workers;
 
         ServerState state;
-        QueueTimerList tmerList;
+        QueueTimerList timerList;
 };
 
 #endif // SCHEDULER_H

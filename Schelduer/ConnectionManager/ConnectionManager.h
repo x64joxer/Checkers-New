@@ -15,6 +15,7 @@ class ConnectionManager
         ConnectionManager();
 
         Message GetFirstMessage();
+        SharedPtrList<Message> * GetMessageQueue() { return messageQueue; }
         void NewConnection(TCPConnection_ptr wsk);
         void CloseConnection(TCPConnection_ptr wsk);
         void SetConditionVariable(std::condition_variable *wsk) { messageQueue->SetCondVar(wsk); }

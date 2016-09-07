@@ -126,6 +126,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
             SendServerState(socket, state, data, dest);
+            CreateTimeoutGuard(socket, 5000);
         }
         else
         {
@@ -292,6 +293,24 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
     if (!flag) Traces() << "\n" << "LOG: Worker removed";
 
     return !flag;
+}
+
+void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
+{
+    Traces() << "\n" << "LOG: void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
+
+    QueueTimer_ptr tmpTimer;
+    tmpTimer = std::shared_ptr<QueueTimer> (new QueueTimer());
+    tmpTimer->SetTime(5000);
+    tmpTimer->SetQueue(wskConnectionManager->GetMessageQueue());
+    char *tmpData = new char[MessageCoder::MaxMessageTimeoutSize()];
+    MessageCoder::ClearChar(tmpData, MessageCoder::MaxMessageTimeoutSize());
+    MessageCoder::CreateTimeoutMessage(tmpData);
+    Message tmpMessage;
+    tmpMessage.CopyWsk(socket, tmpData);
+    tmpTimer->SetMessageToSend(tmpMessage);
+    tmpTimer->Start();
+    timerList.InsertIntoList(socket, tmpTimer);
 }
 
 Scheduler::~Scheduler()
