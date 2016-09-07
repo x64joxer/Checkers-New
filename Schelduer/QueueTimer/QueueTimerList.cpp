@@ -15,6 +15,8 @@ void QueueTimerList::InsertIntoList(TCPConnection_ptr socket, QueueTimer_ptr tim
 void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)
 {
     Traces() << "\n" << "LOG: void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)";
+
+    list.At(socket)->Stop();
     list.Erase(socket);
 }
 

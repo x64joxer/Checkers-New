@@ -48,7 +48,7 @@ Message & Message::operator=(const Message  & data)
 
 Message::~Message()
 {
-    Traces() << "\n" << "LOG: ~Message()" << wskMessage;
+    Traces() << "\n" << "LOG: ~Message()";
     delete [] wskMessage;
     wskMessage = nullptr;
 }

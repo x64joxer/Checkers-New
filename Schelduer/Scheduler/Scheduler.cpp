@@ -126,7 +126,34 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
             SendServerState(socket, state, data, dest);
-            CreateTimeoutGuard(socket, 5000);
+            clients.At(socket).SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
+            CreateTimeoutGuard(socket, 5000);            
+        } else
+        if (action == MessageCoder::OK)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::OK";
+
+            try
+            {
+                Client & tmpClinet = clients.At(socket);
+
+                Traces() << "\n" << "LOG: Client found on the tiemr list";
+
+                if (tmpClinet.GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
+                {
+                    timerList.RemoveFromList(socket);
+                    tmpClinet.SetConnectionState(Client::ConnectionState::None);
+                } else
+                {
+                    Traces() << "\n" << "ERR: Unexpected OK message from client";
+                }
+
+            }
+            catch (const std::out_of_range& oor)
+            {
+
+            }
+
         }
         else
         {
