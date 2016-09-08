@@ -74,7 +74,7 @@ void TCPConnection::Stop()
 {
   Traces() << "\n" << "LOG: void TCPConnection::Stop()";
 
-  socketActive = false;  
+  socketActive = false;    
 
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];

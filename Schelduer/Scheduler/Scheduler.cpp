@@ -154,6 +154,21 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
             }
 
+        } else
+        if (action == MessageCoder::TIMEOUT)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
+
+            try
+            {
+                clients.At(socket);
+                Traces() << "\n" << "LOG: Client found on the tiemr list";
+                socket->Stop();
+            }
+            catch (const std::out_of_range& oor)
+            {
+
+            }
         }
         else
         {
