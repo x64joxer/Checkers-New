@@ -21,7 +21,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      explicit TCPConnection(boost::asio::io_service& io_service);
 
      void Start();
-     void Stop();
+     void Close();
      TCPConnection_ptr GetMeWsk() { return meWsk; }
      std::string GetIp() { return socket_.remote_endpoint().address().to_string(); }
      int GetPort() { return socket_.remote_endpoint().port(); }
@@ -35,10 +35,12 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      boost::asio::ip::tcp::socket& Socket();
 
    private:     
+     void Stop();
      SharedPtrList<Message> *messageQueue;
      boost::array<char, 8192> buffer_;
      TCPConnection_ptr meWsk;
      boost::asio::ip::tcp::socket socket_;
+     boost::asio::io_service& io_service_;
      bool socketActive;
 };
 

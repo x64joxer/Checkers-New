@@ -3,7 +3,8 @@
 
 TCPConnection::TCPConnection(boost::asio::io_service& io_service)
                             : socket_(io_service),
-                              socketActive(true)
+                              socketActive(true),
+                              io_service_(io_service)
 {
     Traces() << "\n" << "LOG: TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)";
 }
@@ -16,6 +17,13 @@ void TCPConnection::Start()
       boost::bind(&TCPConnection::HandleRead, shared_from_this(),
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred));
+}
+
+void TCPConnection::Close()
+{
+  Traces() << "\n" << "LOG: void TCPConnection::Close()";
+
+  io_service_.post(boost::bind(&TCPConnection::Stop, this));
 }
 
 void TCPConnection::HandleRead(const boost::system::error_code& e,
@@ -40,7 +48,7 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
   else if (e != boost::asio::error::operation_aborted)
   {
     Traces() << "\n" << "LOG: Close connection";
-    this->Stop();
+    this->Close();
   }
 }
 

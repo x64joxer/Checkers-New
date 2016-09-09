@@ -163,7 +163,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             {
                 clients.At(socket);
                 Traces() << "\n" << "LOG: Client found on the tiemr list";
-                socket->Stop();
+                socket->Close();
             }
             catch (const std::out_of_range& oor)
             {
