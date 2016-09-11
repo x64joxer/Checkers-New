@@ -48,6 +48,8 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
   else if (e != boost::asio::error::operation_aborted)
   {
     Traces() << "\n" << "LOG: Close connection";
+
+    socketActive = false;
     this->Close();
   }
 }
@@ -82,14 +84,20 @@ void TCPConnection::Stop()
 {
   Traces() << "\n" << "LOG: void TCPConnection::Stop()";
 
-  socketActive = false;    
+  if (socketActive)
+  {
+      socket_.shutdown(socket_.shutdown_both);
+      socket_.close();
+  }
+
+  socketActive = false;
 
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
   tempMessage.CopyWsk(meWsk, buffer);
-  messageQueue->PushBack(tempMessage);  
+  messageQueue->PushBack(tempMessage);
 }
 
 boost::asio::ip::tcp::socket& TCPConnection::Socket()
