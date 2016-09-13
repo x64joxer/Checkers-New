@@ -97,6 +97,7 @@ void TCPConnection::Stop()
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());
   MessageCoder::CreateCloseConnectionMessage(buffer);
   tempMessage.CopyWsk(meWsk, buffer);
+  meWsk.reset();
   messageQueue->PushBack(tempMessage);
 }
 

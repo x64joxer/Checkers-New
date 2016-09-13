@@ -52,7 +52,8 @@ void TCPServer::HandleAccept(const boost::system::error_code& e)
   {
     Traces() << "\n" << "LOG: Adding new connection to ConnectionManager";
     connectionManagerWSk->NewConnection(new_connection_);
-    new_connection_->SetMeWsk(new_connection_);    
+    new_connection_->SetMeWsk(new_connection_);
+    new_connection_.reset();
   }
 
   StartAccept();
