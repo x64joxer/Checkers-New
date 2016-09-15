@@ -33,6 +33,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      bool IsSocketActive() { return socketActive; }
 
      boost::asio::ip::tcp::socket& Socket();
+     ~TCPConnection();
 
    private:     
      void Stop();

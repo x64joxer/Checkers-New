@@ -107,3 +107,9 @@ boost::asio::ip::tcp::socket& TCPConnection::Socket()
 
   return socket_;
 }
+
+
+TCPConnection::~TCPConnection()
+{
+    Traces() << "\n" << "LOG: TCPConnection::~TCPConnection()";
+}
