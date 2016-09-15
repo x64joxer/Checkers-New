@@ -83,6 +83,8 @@ void Scheduler::StartScheduling()
 
             MessageInterpreting(tmpMessage.GetTCPConnection_ptr(), messageContent, dest);
         }
+
+        tmpMessage.Clear();
     }
 
     delete [] dest;

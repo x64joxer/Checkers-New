@@ -18,6 +18,7 @@ class Message
 
         void CopyData(TCPConnection_ptr connection, const char *wskM);
         void CopyWsk(TCPConnection_ptr connection, char *wskM);
+        void Clear() { connectionWsk.reset(); }
         char *GetWskMessage() { return wskMessage; }
         TCPConnection_ptr GetTCPConnection_ptr() { return connectionWsk; }
 
