@@ -50,6 +50,7 @@ void Scheduler::StartScheduling()
 
     Message tmpMessage;
     char *dest = new char[MessageCoder::MaxMessageSize()];
+    bool wasMessage;
 
     while (true)
     {
@@ -66,17 +67,22 @@ void Scheduler::StartScheduling()
 
         try
         {
+            wasMessage = true;
             tmpMessage = wskConnectionManager->GetFirstMessage();            
         }
         catch (std::string)
         {
+            wasMessage = false;
             Traces() << "\n" << "LOG: List empty. Not a bug.";
         }
 
-        std::map<std::string, std::string> messageContent;
-        MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
+        if (wasMessage)
+        {
+            std::map<std::string, std::string> messageContent;
+            MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
 
-        MessageInterpreting(tmpMessage.GetTCPConnection_ptr(), messageContent, dest);
+            MessageInterpreting(tmpMessage.GetTCPConnection_ptr(), messageContent, dest);
+        }
     }
 
     delete [] dest;
@@ -116,7 +122,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             Traces() << "\n" << "LOG: action == MessageCoder::GET_SERVER_STATE";
             SendServerState(socket, state, data, dest);
-        }
+        } else
         if (action == MessageCoder::START_WORK)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
