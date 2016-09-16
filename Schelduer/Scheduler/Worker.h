@@ -1,12 +1,15 @@
 #ifndef WORKER_H
 #define WORKER_H
 
+#include <map>
 #include "../Peers/Peers.h"
+#include "MessageCoder.h"
 
 class Worker
 {
     public:
         Worker();
+        Worker(const std::map<std::string, std::string> & data);
         enum class ConnectionState { None, WaitForOkMessageAfterSendStatus };
 
         Peers::STATE GetState() { return workerState; }

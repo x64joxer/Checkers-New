@@ -283,19 +283,21 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
 {
     Traces() << "\n" << "LOG: void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
-    if (workers.Insert(socket, Worker())  == true)
+    Worker tmpWorker = Worker(data);
+
+
+    if (workers.Insert(socket, tmpWorker)  == true)
     {
         Traces() << "\n" << "ERR: Element already existed!";
     } else
-    {
+    {        
+        UpdateFreeWorkerList(socket, tmpWorker);
+
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
-
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
         MessageCoder::CreateOkMessage(messageId, dest);
 
-        Traces() << "\n" << "LOG: Sending: " << dest;
-
+        Traces() << "\n" << "LOG: Sending: " << dest;                
         socket->SendMessage(dest);
     }
 
@@ -327,11 +329,11 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
 {
     Traces() << "\n" << "LOG: void Scheduler::RemoveSocket(TCPConnection_ptr socket)";
 
-    bool flag =  false;
+    bool flag =  false;    
 
     try
-    {
-        workers.At(socket);
+    {        
+        UpdateFreeWorkerList(socket, workers.At(socket));
         workers.Erase(socket);
         wskConnectionManager->CloseConnection(socket);
     }
@@ -340,7 +342,10 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
         flag = true;
     }
 
-    if (!flag) Traces() << "\n" << "LOG: Worker removed";
+    if (!flag)
+    {
+        Traces() << "\n" << "LOG: Worker removed";
+    }
 
     return !flag;
 }
@@ -361,6 +366,23 @@ void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int 
     tmpTimer->SetMessageToSend(tmpMessage);
     tmpTimer->Start();
     timerList.InsertIntoList(socket, tmpTimer);
+}
+
+void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker & worker)
+{
+    Traces() << "\n" << "LOG: void Scheduler::UpdateFreeWorkerList(const Worker & worker)";
+
+    if (worker.GetState() == Peers::FREE)
+    {
+        Traces() << "\n" << "LOG: Free workers added to free workers list";
+
+        freeWorkers.PushBack(socket);
+    } else
+    {
+        Traces() << "\n" << "LOG: Free workers removed from free workers list";
+
+        freeWorkers.Remove(socket);
+    }
 }
 
 Scheduler::~Scheduler()

@@ -16,6 +16,7 @@ class SharedPtrList
         std::condition_variable *GetCondVar();
         bool Empty();
         void SetCondVar(std::condition_variable * wsk);
+        void Remove(wskType & data);
 
         wskType PopFront();
         void PushBack(wskType wsk);
@@ -23,7 +24,7 @@ class SharedPtrList
         ~SharedPtrList();
 	private:       
         std::mutex mutex;
-        std::list<wskType> setList;
+        std::list<wskType> setList;        
         std::condition_variable *condition_var;
         std::condition_variable *org_condition_var;
 };
@@ -100,6 +101,16 @@ void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)
 
     std::lock_guard<std::mutex> ls(mutex);
     condition_var = wsk;
+}
+
+template<typename wskType>
+void SharedPtrList<wskType>::Remove(wskType & data)
+{
+    Traces() << "\n" << "LOG: void SharedPtrList<wskType>::Remove(wskType data)";
+    std::lock_guard<std::mutex> ls(mutex);
+
+    setList.remove(data);
+
 }
 
 #endif 

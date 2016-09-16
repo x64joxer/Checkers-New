@@ -11,6 +11,7 @@
 #include "Client.h"
 #include "Worker.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
+#include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../ServerState/ServerState.h"
 #include "../QueueTimer/QueueTimer.h"
 #include "../QueueTimer/QueueTimerList.h"
@@ -37,6 +38,7 @@ class Scheduler
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
+        void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker & worker);
 
         ConnectionManager *wskConnectionManager;
 
@@ -45,6 +47,8 @@ class Scheduler
         std::condition_variable *condition_var;
         SharedMap<TCPConnection_ptr, Client> clients;
         SharedMap<TCPConnection_ptr, Worker> workers;
+
+        SharedPtrList<TCPConnection_ptr> freeWorkers;
 
         ServerState state;
         QueueTimerList timerList;
