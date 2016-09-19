@@ -116,9 +116,8 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         } else            
         if (action == MessageCoder::SET_ROLE)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
-
-            SetRole(socket, data, dest);
+            Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";            
+            SetRole(socket, data, dest);            
         } else
         if (action == MessageCoder::GET_SERVER_STATE)
         {
@@ -198,12 +197,12 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
         std::string role = data.at(MessageCoder::ROLE);
 
         if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::CLIENT)
-        {
+        {            
             AddClient(socket, data, dest);
         } else
         if (atoi(role.c_str()) == MessageCoder::ROLE_ENUM::WORKER)
-        {
-            AddWorker(socket, data, dest);
+        {\
+            AddWorker(socket, data, dest);            
         }
     }
     catch (std::out_of_range)
@@ -220,6 +219,8 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
        Worker & tmpWorker = workers.At(socket);
        tmpWorker.SetMaxThread(std::stoi(data.at(MessageCoder::NUM_OF_THREAD)));
        tmpWorker.SetState(static_cast<Peers::STATE>(std::stoi(data.at(MessageCoder::STATE))));
+
+       UpdateFreeWorkerList(socket, tmpWorker);
 
        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
 
@@ -283,24 +284,18 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
 {
     Traces() << "\n" << "LOG: void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
-    Worker tmpWorker = Worker(data);
-
-
-    if (workers.Insert(socket, tmpWorker)  == true)
+    if (workers.Insert(socket, Worker())  == true)
     {
         Traces() << "\n" << "ERR: Element already existed!";
     } else
     {        
-        UpdateFreeWorkerList(socket, tmpWorker);
-
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateOkMessage(messageId, dest);
 
         Traces() << "\n" << "LOG: Sending: " << dest;                
         socket->SendMessage(dest);
-    }
-
+    }    
 }
 
 bool Scheduler::RemoveClient(TCPConnection_ptr socket)
