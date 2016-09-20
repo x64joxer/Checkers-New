@@ -405,6 +405,33 @@ void Scheduler::DistributeWorkToWorkers()
     } else
     {
         Traces() << "\n" << "LOG: freeWorkers.Size() >  1";
+
+        bool listEmpty = false;
+        TCPConnection_ptr tmpWorkerSocket;
+        Worker tmpWorker;
+
+        try
+        {
+            tmpWorkerSocket = freeWorkers.PopFront();
+        }
+        catch (...)
+        {
+            listEmpty = true;
+        }
+
+        try
+        {
+
+        }
+        catch (...)
+        {
+            listEmpty = true;
+        }
+
+        if (!listEmpty)
+        {
+
+        }
     }
 }
 
