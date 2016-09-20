@@ -39,6 +39,7 @@ class Scheduler
         bool RemoveWorker(TCPConnection_ptr socket);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker & worker);
+        void DistributeWorkToWorkers();
 
         ConnectionManager *wskConnectionManager;
 

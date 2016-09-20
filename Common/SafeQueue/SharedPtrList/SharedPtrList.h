@@ -17,6 +17,7 @@ class SharedPtrList
         bool Empty();
         void SetCondVar(std::condition_variable * wsk);
         void Remove(wskType & data);
+        unsigned int Size();
 
         wskType PopFront();
         void PushBack(wskType wsk);
@@ -111,6 +112,15 @@ void SharedPtrList<wskType>::Remove(wskType & data)
 
     setList.remove(data);
 
+}
+
+template<typename wskType>
+unsigned int SharedPtrList<wskType>::Size()
+{
+    Traces() << "\n" << "LOG: unsigned int SharedPtrList<wskType>::Size()";
+    std::lock_guard<std::mutex> ls(mutex);
+
+    return setList.size();
 }
 
 #endif 

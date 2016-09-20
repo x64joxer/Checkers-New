@@ -97,6 +97,7 @@ void Scheduler::StartScheduling()
         if (isNewBoardToAnalyse)
         {
             Traces() << "\n" << "LOG: New board to analyse";
+            DistributeWorkToWorkers();
         }
     }
 
@@ -391,6 +392,19 @@ void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker & worker
         Traces() << "\n" << "LOG: Free workers removed from free workers list";
 
         freeWorkers.Remove(socket);
+    }
+}
+
+void Scheduler::DistributeWorkToWorkers()
+{
+    Traces() << "\n" << "LOG: void Scheduler::DistributeWorkToWorkers()";
+
+    if (freeWorkers.Size() == 1)
+    {
+        Traces() << "\n" << "LOG: freeWorkers.Size() == 1";
+    } else
+    {
+        Traces() << "\n" << "LOG: freeWorkers.Size() >  1";
     }
 }
 
