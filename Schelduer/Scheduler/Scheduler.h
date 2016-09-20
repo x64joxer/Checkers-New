@@ -49,6 +49,8 @@ class Scheduler
         SharedMap<TCPConnection_ptr, Worker> workers;
 
         SharedPtrList<TCPConnection_ptr> freeWorkers;
+        SharedPtrList<Board> boardsToAnalyse;
+        bool jobStarted;
 
         ServerState state;
         QueueTimerList timerList;

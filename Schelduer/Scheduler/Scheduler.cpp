@@ -1,9 +1,11 @@
 #include "Scheduler.h"
 
-Scheduler::Scheduler() : wskConnectionManager(nullptr)
+Scheduler::Scheduler() : wskConnectionManager(nullptr),
+                         jobStarted(false)
 {
     Traces() << "\n" << "LOG: Scheduler::Scheduler()";
     condition_var = new std::condition_variable();
+    boardsToAnalyse.SetCondVar(condition_var);
 
 }
 
@@ -132,6 +134,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             MessageCoder::MapToBoard(data, &tmpBoard);
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
+            boardsToAnalyse.PushBack(tmpBoard);
             SendServerState(socket, state, data, dest);
             clients.At(socket).SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
             CreateTimeoutGuard(socket, 5000);            
