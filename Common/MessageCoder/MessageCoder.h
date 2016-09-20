@@ -35,6 +35,7 @@ class MessageCoder
         static void CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest);
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateTimeoutMessage(char *dest);
+        static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 
         static void ClearChar(char *dest, const unsigned int num);        
@@ -63,6 +64,7 @@ class MessageCoder
         static std::string MESSAGE_END;
         static std::string CLOSE_CNNECTION;
         static std::string CONNECTED;
+        static std::string START_ANALYSE;
         static std::string TIMEOUT;
 
         static std::string START_WORK;
@@ -88,6 +90,9 @@ class MessageCoder
         static std::string WHITE_PATCH_END;
         static std::string BLACK_WHITE;
 
+        static std::string RETURN_FAST;
+        static std::string NUM_OF_BOARD_TO_RETURN_FAST;
+
         static std::string ORIGIN_NUMBER_BLACK;
         static std::string ORIGIN_NUMBER_WHITE;
         static std::string ORIGIN_WHITE_X;
@@ -97,11 +102,11 @@ class MessageCoder
         static std::string ORIGIN_WHITE_PONS;
         static std::string ORIGIN_BLACK_PONS;
 
-        static std::string  NUMBER_BLACK;
-        static std::string  NUMBER_WHITE;
-        static std::string  WHITE_X;
+        static std::string NUMBER_BLACK;
+        static std::string NUMBER_WHITE;
+        static std::string WHITE_X;
         static std::string BLACK_X;
-        static std::string  WHITE_Y;
+        static std::string WHITE_Y;
         static std::string BLACK_Y;
         static std::string WHITE_PONS;
         static std::string BLACK_PONS;

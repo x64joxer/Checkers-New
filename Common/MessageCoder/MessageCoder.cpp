@@ -349,6 +349,20 @@ void MessageCoder::CreateTimeoutMessage(char *dest)
     InsertLenMessageHeader(dest);
 }
 
+void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest)
+{
+    InsertHeader(dest);
+    KeyValuePairToChar(ACTION, START_ANALYSE, dest);
+    KeyValuePairToChar(MAX_TIME, respTime, dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);
+    KeyValuePairToChar(JOB_ID, jobId, dest);
+    KeyValuePairToChar(RETURN_FAST, "1", dest);
+    KeyValuePairToChar(NUM_OF_BOARD_TO_RETURN_FAST, numOfResultToReturnFast, dest);
+    MessageCoder::BoardToChar(board, dest, 1);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
+}
+
 void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, const Board & board, char *dest)
 {
     InsertHeader(dest);
@@ -453,6 +467,7 @@ std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 std::string MessageCoder::CLOSE_CNNECTION = GetNextKey("CLOSE_CNNECTION");
 std::string MessageCoder::CONNECTED = GetNextKey("CONNECTED");
+std::string MessageCoder::START_ANALYSE = GetNextKey("START_ANALYSE");
 std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
@@ -477,6 +492,9 @@ std::string MessageCoder::NUM_OF_THREAD = GetNextKey("NUM_OF_THREAD");
 std::string MessageCoder::PREVIOUS_MURDER = GetNextKey("PREVIOUS_MURDER");
 std::string MessageCoder::WHITE_PATCH_END = GetNextKey("WHITE_PATCH_END");
 std::string MessageCoder::BLACK_WHITE = GetNextKey("BLACK_WHITE");
+
+std::string MessageCoder::RETURN_FAST = GetNextKey("RETURN_FAST");
+std::string MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST = GetNextKey("NUM_OF_BOARD_TO_RETURN_FAST");
 
 std::string MessageCoder::ORIGIN_NUMBER_BLACK = GetNextKey("ORIGIN_NUMBER_BLACK");
 std::string MessageCoder::ORIGIN_NUMBER_WHITE = GetNextKey("ORIGIN_NUMBER_WHITE");
