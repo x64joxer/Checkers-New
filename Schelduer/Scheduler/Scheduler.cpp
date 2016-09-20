@@ -53,6 +53,8 @@ void Scheduler::StartScheduling()
     Message tmpMessage;
     char *dest = new char[MessageCoder::MaxMessageSize()];
     bool wasMessage;
+    bool isNewBoardToAnalyse;
+    bool isNewMessage;
 
     while (true)
     {
@@ -60,33 +62,42 @@ void Scheduler::StartScheduling()
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);
 
-        condition_var->wait(guard,[this]
+        condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage]
         {
-            return wskConnectionManager->IsNewMessage(); }
+            isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty());
+            isNewMessage = wskConnectionManager->IsNewMessage();
+            return (isNewBoardToAnalyse | isNewMessage); }
         );
 
-        Traces() << "\n" << "LOG: Try reading message from message queue";
-
-        try
+        if (isNewMessage)
         {
-            wasMessage = true;
-            tmpMessage = wskConnectionManager->GetFirstMessage();            
-        }
-        catch (std::string)
+            Traces() << "\n" << "LOG: Try reading message from message queue";
+
+            try
+            {
+                wasMessage = true;
+                tmpMessage = wskConnectionManager->GetFirstMessage();
+            }
+            catch (std::string)
+            {
+                wasMessage = false;
+                Traces() << "\n" << "LOG: List empty. Not a bug.";
+            }
+
+            if (wasMessage)
+            {
+                std::map<std::string, std::string> messageContent;
+                MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
+
+                MessageInterpreting(tmpMessage.GetTCPConnection_ptr(), messageContent, dest);
+            }
+
+            tmpMessage.Clear();
+        } else
+        if (isNewBoardToAnalyse)
         {
-            wasMessage = false;
-            Traces() << "\n" << "LOG: List empty. Not a bug.";
+            Traces() << "\n" << "LOG: New board to analyse";
         }
-
-        if (wasMessage)
-        {
-            std::map<std::string, std::string> messageContent;
-            MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
-
-            MessageInterpreting(tmpMessage.GetTCPConnection_ptr(), messageContent, dest);
-        }
-
-        tmpMessage.Clear();
     }
 
     delete [] dest;
