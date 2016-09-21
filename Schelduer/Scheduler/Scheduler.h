@@ -38,7 +38,7 @@ class Scheduler
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
-        void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker & worker);
+        void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
         void DistributeWorkToWorkers();
 
         ConnectionManager *wskConnectionManager;
@@ -47,7 +47,7 @@ class Scheduler
         std::mutex mutex;
         std::condition_variable *condition_var;
         SharedMap<TCPConnection_ptr, Client> clients;
-        SharedMap<TCPConnection_ptr, Worker> workers;
+        SharedMap<TCPConnection_ptr, Worker_ptr> workers;
 
         SharedPtrList<TCPConnection_ptr> freeWorkers;
         SharedPtrList<Board> boardsToAnalyse;

@@ -157,7 +157,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
             try
             {
-                Client & tmpClinet = clients.At(socket);
+                Client tmpClinet = clients.At(socket);
 
                 Traces() << "\n" << "LOG: Client found on the tiemr list";
 
@@ -231,9 +231,9 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
     Traces() << "\n" << "LOG: void Scheduler::SetState(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
     try
     {
-       Worker & tmpWorker = workers.At(socket);
-       tmpWorker.SetMaxThread(std::stoi(data.at(MessageCoder::NUM_OF_THREAD)));
-       tmpWorker.SetState(static_cast<Peers::STATE>(std::stoi(data.at(MessageCoder::STATE))));
+       Worker_ptr tmpWorker = workers.At(socket);
+       tmpWorker->SetMaxThread(std::stoi(data.at(MessageCoder::NUM_OF_THREAD)));
+       tmpWorker->SetState(static_cast<Peers::STATE>(std::stoi(data.at(MessageCoder::STATE))));
 
        UpdateFreeWorkerList(socket, tmpWorker);
 
@@ -299,7 +299,10 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
 {
     Traces() << "\n" << "LOG: void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
-    if (workers.Insert(socket, Worker())  == true)
+    Worker_ptr tmpWorkerPtr;
+    tmpWorkerPtr.reset(new Worker());
+
+    if (workers.Insert(socket, tmpWorkerPtr)  == true)
     {
         Traces() << "\n" << "ERR: Element already existed!";
     } else
@@ -378,11 +381,11 @@ void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int 
     timerList.InsertIntoList(socket, tmpTimer);
 }
 
-void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker & worker)
+void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker)
 {
     Traces() << "\n" << "LOG: void Scheduler::UpdateFreeWorkerList(const Worker & worker)";
 
-    if (worker.GetState() == Peers::FREE)
+    if (worker->GetState() == Peers::FREE)
     {
         Traces() << "\n" << "LOG: Free workers added to free workers list";
 

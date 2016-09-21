@@ -15,7 +15,7 @@ class SharedMap
 	public:
         SharedMap();
 
-        data2 & At(data1 &val);
+        data2 At(data1 &val);
         bool Empty();
         void Erase(data1 key);
         std::condition_variable *GetCondVar();
@@ -31,7 +31,7 @@ class SharedMap
 };
 
 template<typename data1, typename data2>
-data2 & SharedMap<data1, data2>::At(data1 &val)
+data2 SharedMap<data1, data2>::At(data1 &val)
 {
     std::lock_guard<std::mutex> ls(mutex);
 
