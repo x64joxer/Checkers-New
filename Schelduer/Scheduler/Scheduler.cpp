@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 
 Scheduler::Scheduler() : wskConnectionManager(nullptr),
-                         jobStarted(false)
+                         firstJobStarted(false)
 {
     Traces() << "\n" << "LOG: Scheduler::Scheduler()";
     condition_var = new std::condition_variable();
@@ -96,8 +96,8 @@ void Scheduler::StartScheduling()
         } else
         if (isNewBoardToAnalyse)
         {
-            Traces() << "\n" << "LOG: New board to analyse";
-            DistributeWorkToWorkers();
+            Traces() << "\n" << "LOG: New board to analyse";            
+            DistributeWorkToWorkers(dest);
         }
     }
 
@@ -398,7 +398,7 @@ void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr work
     }
 }
 
-void Scheduler::DistributeWorkToWorkers()
+void Scheduler::DistributeWorkToWorkers(char * dest)
 {
     Traces() << "\n" << "LOG: void Scheduler::DistributeWorkToWorkers()";
 
@@ -411,7 +411,7 @@ void Scheduler::DistributeWorkToWorkers()
 
         bool listEmpty = false;
         TCPConnection_ptr tmpWorkerSocket;
-        Worker tmpWorker;
+        Worker_ptr tmpWorker;
 
         try
         {
@@ -422,18 +422,45 @@ void Scheduler::DistributeWorkToWorkers()
             listEmpty = true;
         }
 
-        try
-        {
-
-        }
-        catch (...)
-        {
-            listEmpty = true;
-        }
-
         if (!listEmpty)
         {
+            try
+            {
+                tmpWorker = workers.At(tmpWorkerSocket);
+                tmpWorker->SetState(Peers::STATE::BUSY);
+            }
+            catch (...)
+            {
+                listEmpty = true;
+            }
 
+            if (!listEmpty)
+            {
+                if (!firstJobStarted)
+                {
+                    Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
+
+                    std::string messageId = MessageCoder::CreateMessageId();
+                    std::string jobId = MessageCoder::CreateMessageId();
+                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+                    MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime(),
+                                                                             freeWorkers.Size(),
+                                                                             state.GetBoard(),
+                                                                             messageId,
+                                                                             jobId,
+                                                                             dest);
+
+                    tmpWorkerSocket->SendMessage(dest);
+                    firstJobStarted = true;
+                    CreateTimeoutGuard(tmpWorkerSocket, 5000);
+                } else
+                {
+                    Traces() << "\n" << "LOG: Send job to worker";
+                }
+            }
         }
     }
 }

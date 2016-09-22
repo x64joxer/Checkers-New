@@ -39,7 +39,7 @@ class Scheduler
         bool RemoveWorker(TCPConnection_ptr socket);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
-        void DistributeWorkToWorkers();
+        void DistributeWorkToWorkers(char * dest);
 
         ConnectionManager *wskConnectionManager;
 
@@ -51,7 +51,7 @@ class Scheduler
 
         SharedPtrList<TCPConnection_ptr> freeWorkers;
         SharedPtrList<Board> boardsToAnalyse;
-        bool jobStarted;
+        std::atomic<bool> firstJobStarted;
 
         ServerState state;
         QueueTimerList timerList;
