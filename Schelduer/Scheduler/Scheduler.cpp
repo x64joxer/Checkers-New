@@ -148,7 +148,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetThinking(true);
             boardsToAnalyse.PushBack(tmpBoard);
             SendServerState(socket, state, data, dest);
-            clients.At(socket).SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
+            clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
             CreateTimeoutGuard(socket, 5000);            
         } else
         if (action == MessageCoder::OK)
@@ -157,14 +157,14 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
             try
             {
-                Client tmpClinet = clients.At(socket);
+                Client_ptr tmpClinet = clients.At(socket);
 
                 Traces() << "\n" << "LOG: Client found on the tiemr list";
 
-                if (tmpClinet.GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
+                if (tmpClinet->GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
                 {
                     timerList.RemoveFromList(socket);
-                    tmpClinet.SetConnectionState(Client::ConnectionState::None);
+                    tmpClinet->SetConnectionState(Client::ConnectionState::None);
                 } else
                 {
                     Traces() << "\n" << "ERR: Unexpected OK message from client";
@@ -297,7 +297,7 @@ void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, 
     Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
 
-    if (clients.Insert(socket, Client())  == true)
+    if (clients.Insert(socket, Client_ptr(new Client()))  == true)
     {
         Traces() << "\n" << "ERR: Element already existed!";
     } else
