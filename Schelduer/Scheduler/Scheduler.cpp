@@ -191,6 +191,25 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             {
 
             }
+
+            try
+            {
+                Worker_ptr tmpWorker = workers.At(socket);
+                Traces() << "\n" << "LOG: Client found on the tiemr list";
+
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+                {
+                    socket->Close();
+                    //boardsToAnalyse.PushBack(state.GetBoard());
+
+                }
+
+
+            }
+            catch (const std::out_of_range& oor)
+            {
+
+            }
         }
         else
         {
@@ -448,12 +467,13 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
                     MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime(),
                                                                              freeWorkers.Size(),
-                                                                             state.GetBoard(),
+                                                                             boardsToAnalyse.PopFront(),
                                                                              messageId,
                                                                              jobId,
                                                                              dest);
 
-                    tmpWorkerSocket->SendMessage(dest);
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+                    tmpWorkerSocket->SendMessage(dest);                    
                     firstJobStarted = true;
                     CreateTimeoutGuard(tmpWorkerSocket, 5000);
                 } else
