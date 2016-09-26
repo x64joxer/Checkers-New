@@ -155,6 +155,8 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             Traces() << "\n" << "LOG: action == MessageCoder::OK";
 
+            bool okFlag = false;
+
             try
             {
                 Client_ptr tmpClinet = clients.At(socket);
@@ -170,10 +172,37 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                     Traces() << "\n" << "ERR: Unexpected OK message from client";
                 }
 
+                okFlag = true;
             }
             catch (const std::out_of_range& oor)
             {
 
+            }
+
+            if (!okFlag)
+            {
+                try
+                {
+                    Worker_ptr tmpWorker = workers.At(socket);
+
+                    Traces() << "\n" << "LOG: Worker found on the tiemr list";
+
+                    if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+                    {
+                        timerList.RemoveFromList(socket);
+                        tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                        tmpWorker->SetState(Peers::BUSY);
+                    } else
+                    {
+                        Traces() << "\n" << "ERR: Unexpected OK message from worker";
+                    }
+
+                    okFlag = true;
+                }
+                catch (const std::out_of_range& oor)
+                {
+
+                }
             }
 
         } else
