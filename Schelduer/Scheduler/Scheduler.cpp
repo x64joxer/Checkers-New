@@ -453,6 +453,63 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
     if (freeWorkers.Size() == 1)
     {
         Traces() << "\n" << "LOG: freeWorkers.Size() == 1";
+
+        Traces() << "\n" << "LOG: freeWorkers.Size() >  1";
+
+        bool listEmpty = false;
+        TCPConnection_ptr tmpWorkerSocket;
+        Worker_ptr tmpWorker;
+
+        try
+        {
+            tmpWorkerSocket = freeWorkers.PopFront();
+        }
+        catch (...)
+        {
+            listEmpty = true;
+        }
+
+        if (!listEmpty)
+        {
+            try
+            {
+                tmpWorker = workers.At(tmpWorkerSocket);
+                tmpWorker->SetState(Peers::STATE::BUSY);
+            }
+            catch (...)
+            {
+                listEmpty = true;
+            }
+
+            if (!listEmpty)
+            {
+                if (!firstJobStarted)
+                {
+                    Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
+
+                    std::string messageId = MessageCoder::CreateMessageId();
+                    std::string jobId = MessageCoder::CreateMessageId();
+                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime(),
+                                                         boardsToAnalyse.PopFront(),
+                                                         messageId,
+                                                         jobId,
+                                                         dest);
+
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+                    tmpWorkerSocket->SendMessage(dest);
+                    firstJobStarted = true;
+                    CreateTimeoutGuard(tmpWorkerSocket, 5000);
+                } else
+                {
+                    Traces() << "\n" << "LOG: Send job to worker";
+                }
+            }
+        }
+
     } else
     {
         Traces() << "\n" << "LOG: freeWorkers.Size() >  1";

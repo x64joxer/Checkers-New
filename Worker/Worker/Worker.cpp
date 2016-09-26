@@ -150,7 +150,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
             reconnectionTimer.Start();
 
         } else
-        if (action == MessageCoder::START_ANALYSE)
+        if (action == MessageCoder::START_ANALYSE_FAST)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE";
             ReceiveJob(socket, data, dest, reconnectionTimer, prevousMessageid);

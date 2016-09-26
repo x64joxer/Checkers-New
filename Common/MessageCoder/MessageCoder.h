@@ -35,6 +35,7 @@ class MessageCoder
         static void CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest);
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateTimeoutMessage(char *dest);
+        static void CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, char *dest);
         static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 
@@ -65,6 +66,7 @@ class MessageCoder
         static std::string CLOSE_CNNECTION;
         static std::string CONNECTED;
         static std::string START_ANALYSE;
+        static std::string START_ANALYSE_FAST;
         static std::string TIMEOUT;
 
         static std::string START_WORK;
@@ -90,7 +92,6 @@ class MessageCoder
         static std::string WHITE_PATCH_END;
         static std::string BLACK_WHITE;
 
-        static std::string RETURN_FAST;
         static std::string NUM_OF_BOARD_TO_RETURN_FAST;
 
         static std::string ORIGIN_NUMBER_BLACK;
