@@ -452,9 +452,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
     if (freeWorkers.Size() == 1)
     {
-        Traces() << "\n" << "LOG: freeWorkers.Size() == 1";
-
-        Traces() << "\n" << "LOG: freeWorkers.Size() >  1";
+        Traces() << "\n" << "LOG: freeWorkers.Size() == 1";        
 
         bool listEmpty = false;
         TCPConnection_ptr tmpWorkerSocket;
@@ -512,7 +510,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
     } else
     {
-        Traces() << "\n" << "LOG: freeWorkers.Size() >  1";
+        Traces() << "\n" << "LOG: freeWorkers.Size() > 1";
 
         bool listEmpty = false;
         TCPConnection_ptr tmpWorkerSocket;

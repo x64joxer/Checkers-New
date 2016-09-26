@@ -18,7 +18,7 @@ class Worker
 
     private:
         void StartWorking();
-        void ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
+        void ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid, bool fast = false);
         void SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
         void SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
 
