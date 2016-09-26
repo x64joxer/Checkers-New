@@ -18,7 +18,7 @@ class Worker
 
     private:
         void StartWorking();
-
+        void ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
         void SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
         void SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
 
@@ -31,6 +31,12 @@ class Worker
         std::condition_variable *condition_var;
         enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED } connection_state;
         Peers::STATE myState;
+
+        unsigned short maxIaTime;
+        unsigned int numOfResultToReturnFast;
+        Board boardToAnalyse;
+        std::string jobId;
+
 };
 
 #endif // WORKER_H

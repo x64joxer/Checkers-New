@@ -149,6 +149,12 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
             connection_state = DISCONNECTED;
             reconnectionTimer.Start();
 
+        } else
+        if (action == MessageCoder::START_ANALYSE)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE";
+            ReceiveJob(socket, data, dest, reconnectionTimer, prevousMessageid);
+
         } else            
         if (action == MessageCoder::TIMEOUT)
         {
@@ -189,6 +195,35 @@ void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & p
 
     MessageCoder::CreateStateMessage(myState, maxThread, prevousMessageid, dest);
     socket->WriteMessage(dest);
+}
+
+void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)
+{
+    Traces() << "\n" << "LOG: void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
+
+    if (myState == Peers::STATE::FREE)
+    {
+        Traces() << "\n" << "LOG: Receiving data from start analyse message";
+
+        maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());;
+        numOfResultToReturnFast = std::atoi(data.at(MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST).c_str());
+        MessageCoder::MapToBoard(data, &boardToAnalyse);
+        jobId = data.at(MessageCoder::JOB_ID);
+
+
+
+        Traces() << "\n" << "LOG: Sending OK message";
+
+        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+        MessageCoder::CreateOkMessage(messageId, dest);
+        socket->WriteMessage(dest);
+
+    } else
+    if (myState == Peers::STATE::BUSY)
+    {
+
+    }
 }
 
 Worker::~Worker()
