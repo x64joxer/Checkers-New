@@ -7,6 +7,8 @@
 #include "MessageCoder.h"
 #include "../QueueTimer/QueueTimer.h"
 #include "../Peers/Peers.h"
+#include "../IA/IAPossibleMoves.h"
+#include "../ThreadIA/ThreadIAMove.h"
 
 class Worker
 {
@@ -36,6 +38,10 @@ class Worker
         unsigned int numOfResultToReturnFast;
         Board boardToAnalyse;
         std::string jobId;
+        std::thread iaJob;
+        std::atomic_bool endIaJobFlag;
+        std::atomic<int> currentPercentOfSteps;
+        ThreadIAMove<3000000> jobExpander2;
 
 };
 

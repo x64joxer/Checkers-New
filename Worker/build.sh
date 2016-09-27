@@ -3,11 +3,11 @@ mkdir -p ../build-Worker
 echo Building...
 
 g++ main.cpp \
-    IA/IAPossibleMoves.h \
-    ThreadIA/ThreadIABoardQueue.h \
-    ThreadIA/ThreadIAMove.h \
-    ThreadIA/ThreadIATreeExpander.h \
     Worker/Worker.cpp \
+    ThreadIA/ThreadIABoardQueue.cpp \
+    ThreadIA/ThreadIAMove.cpp \
+    ThreadIA/ThreadIATreeExpander.cpp \
+    IA/IAPossibleMoves.cpp \
     Worker/Message.cpp \
     TCP/TCPSocket.cpp \
     TCP/TCPSocketBody.cpp \

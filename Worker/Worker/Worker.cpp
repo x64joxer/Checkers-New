@@ -216,6 +216,20 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         MessageCoder::MapToBoard(data, &boardToAnalyse);
         jobId = data.at(MessageCoder::JOB_ID);
 
+
+        std::thread tempJob(&ThreadIAMove<3000000>::operator (),
+                            &jobExpander2,
+                            &boardToAnalyse,
+                            &endIaJobFlag,
+                            &currentPercentOfSteps,
+                            4,
+                            3000,
+                            maxIaTime,
+                            KindOfSteps::Time);
+
+        tempJob.detach();
+        iaJob = std::move(tempJob);
+
         Traces() << "\n" << "LOG: Sending OK message";
 
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);

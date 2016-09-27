@@ -6,12 +6,13 @@
 #include "ThreadIABoardQueue.h"
 #include "ThreadIABoardQueue.cpp"
 #include "ThreadIATreeExpander.cpp"
+#include "../Traces/Traces.h"
 
 template <unsigned long long QMain>
 class ThreadIAMove
 {
     public:
-        ThreadIAMove();       
+        ThreadIAMove();               
 
         void operator ()(Board * boardWsk,
                          std::atomic_bool * flag,
@@ -215,6 +216,7 @@ void ThreadIAMove<QMain>::CreateFirstElements()
     ThreadIATreeExpander<QMain,100> expander;
     expander.Expand(1,100,queue,0, NULL, KindOfSteps::Step);
 }
+
 
 #include "ThreadIAMove_Impl.h"
 

@@ -1,6 +1,4 @@
 #ifndef THREADIAMOVE_IMPL
 #define THREADIAMOVE_IMPL
 
-
-
 #endif // THREADIAMOVE_IMPL
