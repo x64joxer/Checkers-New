@@ -29,6 +29,9 @@ void Worker::StartWorking()
     std::string prevousMessageid;
 
     condition_var = messageQueue->GetCondVar();
+    ThreadIABoardQueue<3000000> * boardThradWsk = jobExpander.GetThreadIABoardQueueWsk();
+    boardThradWsk->SetConditionVariable(condition_var);
+
     char *dest = new char[MessageCoder::MaxMessageSize()];
 
     Message tmpMessage;

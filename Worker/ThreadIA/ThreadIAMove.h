@@ -22,6 +22,7 @@ class ThreadIAMove
                          const unsigned int numberOfStepsToDo,
                          const KindOfSteps stepKind);
 
+        ThreadIABoardQueue<QMain> * GetThreadIABoardQueueWsk() { return &queue; }
    private:
         ThreadIABoardQueue<QMain> queue;
         void CreateFirstElements();        

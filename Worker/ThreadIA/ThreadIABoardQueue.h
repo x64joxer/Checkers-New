@@ -25,6 +25,7 @@ class ThreadIABoardQueue
         unsigned long long Size() const;
         unsigned long long SizeDoNotForget() const;
         Board & At(const unsigned long long number) const;
+        void SetConditionVariable(std::condition_variable *cond) { condition_var = cond;  }
 
     private:
         bool Empty() const { if (numberOfElements==0) { return true;}; return false;  }
