@@ -23,8 +23,7 @@ class ThreadIAMove
 
    private:
         ThreadIABoardQueue<QMain> queue;
-        void CreateFirstElements();
-        void SetOriginToAll();
+        void CreateFirstElements();        
 
 };
 

@@ -2,16 +2,9 @@
 #define THREADIAMOVE_IMPL
 
 template  <unsigned long long QMain>
-ThreadIAMove<QMain>::ThreadIAMove()
-                    : messageHandler(nullptr)
+ThreadIAMove<QMain>::ThreadIAMove()                    
 {
 
-}
-
-template  <unsigned long long QMain>
-void ThreadIAMove<QMain>::SetMessageHandler(MessageHandler *wsk)
-{
-    messageHandler = wsk;
 }
 
 template  <unsigned long long QMain>
@@ -22,9 +15,9 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
     ThreadIATreeExpander<QMain,5000> expander[maxThreads];
     unsigned int numberOfSteps = numberOfStepsToDo / numberOfThreads;
 
-    ProgramVariables::SetNumOfAnalyded(0);
+    //TO_DO ProgramVariables::SetNumOfAnalyded(0);
 
-    if (messageHandler) messageHandler->SetBoardQueue(&queue);
+    //TO_DO if (messageHandler) messageHandler->SetBoardQueue(&queue);
 
     if (stepKind == KindOfSteps::Time)
     {
@@ -52,7 +45,7 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
     } else
     {
         //Set origin to all
-        if (!ProgramVariables::IsWorker()) SetOriginToAll();
+        //TO DO Origin shoul be set by server!! if (!ProgramVariables::IsWorker()) SetOriginToAll();
 
         //Start threads
         for (unsigned short i=1;i<=numberOfThreads;i++)
@@ -69,8 +62,8 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
 
         };
 
-        //Start sharing jobs
-        if (messageHandler) messageHandler->StartSharing(ProgramVariables::GetSecondsSinceEpoch());
+        //TO_DEL Start sharing jobs
+        //TO_DEL if (messageHandler) messageHandler->StartSharing(ProgramVariables::GetSecondsSinceEpoch());
 
         for (unsigned short i=1;i<=numberOfThreads;i++)
         {
@@ -78,22 +71,22 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
         };
 
         TRACE01 Traces() << "\n" << "LOG: Waiting for all workers...";
-        {
-            unsigned long long start = ProgramVariables::GetSecondsSinceEpoch();
-            while (ProgramVariables::GetSecondsSinceEpoch() - start < ProgramVariables::GetMaxTimeWaitToWorkers())
-            {
-                if (WorkerAgent::GetBusyStateNumber() == 0) break;
-            }
-        }
+        //TO_DEL {
+        //TO_DEL    unsigned long long start = ProgramVariables::GetSecondsSinceEpoch();
+        //TO_DEL    while (ProgramVariables::GetSecondsSinceEpoch() - start < ProgramVariables::GetMaxTimeWaitToWorkers())
+        //TO_DEL    {
+        //TO_DEL        if (WorkerAgent::GetBusyStateNumber() == 0) break;
+        //TO_DEL    }
+        //TO_DEL }
 
-        if (messageHandler) messageHandler->StopSharing();
-        ProgramVariables::NotifyOne();
+        //TO_DEL if (messageHandler) messageHandler->StopSharing();
+        //TO_DO ProgramVariables::NotifyOne();
 
-        ProgramVariables::IncreaseNumOfAnalyded(queue.Size() + queue.SizeDoNotForget());
+        //TO_DEL ProgramVariables::IncreaseNumOfAnalyded(queue.Size() + queue.SizeDoNotForget());
 
-        Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
-        Traces()<< "\n" << "LOG: Total num of analysed elements: " << ProgramVariables::GetNumOfAnalyded();
-        Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
+        //TO_DO Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
+        //TO_DO Traces()<< "\n" << "LOG: Total num of analysed elements: " << ProgramVariables::GetNumOfAnalyded();
+        //TO_DO Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
 
         if (numberOfThreads <2)
         {            
@@ -197,25 +190,5 @@ void ThreadIAMove<QMain>::CreateFirstElements()
     expander.Expand(1,100,queue,0, NULL, KindOfSteps::Step);
 }
 
-template  <unsigned long long QMain>
-void ThreadIAMove<QMain>::SetOriginToAll()
-{
-    TRACE01 Traces() << "\n" << "LOG: void ThreadIAMove<QMain>::SetOriginToAll()";
-    unsigned long long size = queue.Size();
-    Board temp;
-
-    if (size>0)
-    {
-        for (unsigned int i=0;i<size;i++)
-        {
-            temp = queue.PopFront(0);
-            temp.SetOrigin(temp);
-
-            TRACE01 Traces() << "\n" << "LOG: Origin set";
-            TRACE01 temp.PrintDebug();
-            queue.PushBack(temp);
-        }
-    };
-}
 
 #endif // THREADIAMOVE_IMPL
