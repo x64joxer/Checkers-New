@@ -50,6 +50,8 @@ void Worker::StartWorking()
     reconnectionTimer.Start();
 
     bool popFrontException = false;
+    bool newMessageFlag;
+    bool boardOperationFlag;
 
     while(true)
     {
@@ -59,7 +61,7 @@ void Worker::StartWorking()
 
         condition_var->wait(guard,[this]
         {
-            return !messageQueue->Empty();
+            return (!messageQueue->Empty()) | (endIaJobFlag);
         }
         );
 
@@ -82,7 +84,7 @@ void Worker::StartWorking()
             MessageInterpreting(tmpMessage.GetTCPSocket_ptr(), messageContent, dest, reconnectionTimer, prevousMessageid);
         }
 
-        popFrontException = false;
+        popFrontException = false;                
 
     }
 
@@ -214,6 +216,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
     {
         Traces() << "\n" << "LOG: Receiving data from start analyse message";
 
+        endIaJobFlag = false;
         maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());;
         if (fast) numOfResultToReturnFast = std::atoi(data.at(MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST).c_str());
         MessageCoder::MapToBoard(data, &boardToAnalyse);

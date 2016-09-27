@@ -25,7 +25,8 @@ class ThreadIAMove
         ThreadIABoardQueue<QMain> * GetThreadIABoardQueueWsk() { return &queue; }
    private:
         ThreadIABoardQueue<QMain> queue;
-        void CreateFirstElements();        
+        void CreateFirstElements();                
+        void SetOriginToAll();
 
 };
 
@@ -72,8 +73,9 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
         *flag = true;
     } else
     {
-        //Set origin to all
-        //TO DO Origin shoul be set by server!! if (!ProgramVariables::IsWorker()) SetOriginToAll();
+        //Set origin to all        
+        //TO DO Only when we are not second worker
+        SetOriginToAll();
 
         //Start threads
         for (unsigned short i=1;i<=numberOfThreads;i++)
@@ -109,6 +111,7 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
 
         //TO_DEL if (messageHandler) messageHandler->StopSharing();
         //TO_DO ProgramVariables::NotifyOne();
+
 
         //TO_DEL ProgramVariables::IncreaseNumOfAnalyded(queue.Size() + queue.SizeDoNotForget());
 
@@ -204,6 +207,7 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
         temp.PrintDebug();
         boardWsk->PrintDebug();
 
+        queue.GetConditionVariable()->notify_one();
         *flag = true;
     };
 
@@ -218,6 +222,27 @@ void ThreadIAMove<QMain>::CreateFirstElements()
     expander.Expand(1,100,queue,0, NULL, KindOfSteps::Step);
 }
 
+
+template  <unsigned long long QMain>
+void ThreadIAMove<QMain>::SetOriginToAll()
+{
+    TRACE01 Traces() << "\n" << "LOG: void ThreadIAMove<QMain>::SetOriginToAll()";
+    unsigned long long size = queue.Size();
+    Board temp;
+
+    if (size>0)
+    {
+        for (unsigned int i=0;i<size;i++)
+        {
+            temp = queue.PopFront(0);
+            temp.SetOrigin(temp);
+
+            TRACE01 Traces() << "\n" << "LOG: Origin set";
+            TRACE01 temp.PrintDebug();
+            queue.PushBack(temp);
+        }
+    };
+}
 
 #endif // THREADIAMOVE_H
 
