@@ -218,7 +218,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
 
 
         std::thread tempJob(&ThreadIAMove<3000000>::operator (),
-                            &jobExpander2,
+                            &jobExpander,
                             &boardToAnalyse,
                             &endIaJobFlag,
                             &currentPercentOfSteps,
