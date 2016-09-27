@@ -146,6 +146,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             MessageCoder::MapToBoard(data, &tmpBoard);
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
+            state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()));
             boardsToAnalyse.PushBack(tmpBoard);
             SendServerState(socket, state, data, dest);
             clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
