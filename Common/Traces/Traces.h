@@ -12,6 +12,8 @@
 #include <set>
 #include <map>
 
+#define TRACE01 if (true)
+
 class Traces
 {
     public:

@@ -20,7 +20,11 @@ SOURCES += main.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
     Worker/Worker.cpp \
-    TCP/TCPSocketBody.cpp
+    TCP/TCPSocketBody.cpp \
+    IA/IAPossibleMoves.cpp \
+    ThreadIA/ThreadIABoardQueue.cpp \
+    ThreadIA/ThreadIAMove.cpp \
+    ThreadIA/ThreadIATreeExpander.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -42,5 +46,10 @@ HEADERS += \
     SafeQueue/SharedPtrSet/SharedPtrList.h \
     SafeQueue/SharedPtrSet/SharedPtrSet.h \
     Worker/Worker.h \
-    TCP/TCPSocketBody.h
+    TCP/TCPSocketBody.h \
+    IA/IAPossibleMoves.h \
+    ThreadIA/ThreadIABoardQueue.h \
+    ThreadIA/ThreadIAMove.h \
+    ThreadIA/ThreadIAMove_Impl.h \
+    ThreadIA/ThreadIATreeExpander.h
 
