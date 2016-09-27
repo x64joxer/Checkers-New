@@ -50,6 +50,5 @@ HEADERS += \
     IA/IAPossibleMoves.h \
     ThreadIA/ThreadIABoardQueue.h \
     ThreadIA/ThreadIAMove.h \
-    ThreadIA/ThreadIAMove_Impl.h \
     ThreadIA/ThreadIATreeExpander.h
 

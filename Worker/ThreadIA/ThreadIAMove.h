@@ -218,8 +218,6 @@ void ThreadIAMove<QMain>::CreateFirstElements()
 }
 
 
-#include "ThreadIAMove_Impl.h"
-
 #endif // THREADIAMOVE_H
 
 
