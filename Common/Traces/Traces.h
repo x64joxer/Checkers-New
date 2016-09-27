@@ -25,6 +25,7 @@ class Traces
         Traces& operator <<(const unsigned long long);
 
         static unsigned long long GetCurrentTime();
+        unsigned long long GetSecondsSinceEpoch();
         static std::string GetCurrentDate();
         static unsigned long long GetCurrentDateLL();
 

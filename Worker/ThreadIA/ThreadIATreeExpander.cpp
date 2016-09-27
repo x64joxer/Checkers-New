@@ -46,7 +46,7 @@ void ThreadIATreeExpander<MQueue, sQueue>::Expand(const unsigned long long howMa
     } else
     if (stepKind == KindOfSteps::Time)
     {
-        step = ProgramVariables::GetSecondsSinceEpoch();
+        step = Traces::GetSecondsSinceEpoch();
         howManyStepsLocal = step + howManyStepsLocal;
     }
 
@@ -81,7 +81,7 @@ void ThreadIATreeExpander<MQueue, sQueue>::Expand(const unsigned long long howMa
             } else
             if (stepKind == KindOfSteps::Time)
             {
-                step = ProgramVariables::GetSecondsSinceEpoch();
+                step = Traces::GetSecondsSinceEpoch();
             }
 
             //Finish job

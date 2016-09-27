@@ -138,6 +138,13 @@ unsigned long long Traces::GetCurrentTime()
     return 0;
 }
 
+unsigned long long Traces::GetSecondsSinceEpoch()
+{
+    std::time_t result = std::time(nullptr);
+
+    return result;
+}
+
 std::string Traces::GetCurrentDate()
 {
     std::string result;
