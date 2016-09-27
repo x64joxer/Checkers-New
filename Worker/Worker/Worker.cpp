@@ -2,7 +2,7 @@
 
 Worker::Worker() : connection_state(DISCONNECTED),
                    myState(Peers::STATE::FREE),
-                   maxThread(1)
+                   maxThread(4)
 {
     Traces() << "\n" << "LOG: Worker::Worker()";
 
@@ -222,7 +222,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
                             &boardToAnalyse,
                             &endIaJobFlag,
                             &currentPercentOfSteps,
-                            4,
+                            maxThread,
                             3000,
                             maxIaTime,
                             KindOfSteps::Time);
