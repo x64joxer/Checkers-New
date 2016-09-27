@@ -8,7 +8,7 @@ ThreadIABoardQueue<size>::ThreadIABoardQueue():
                           workersFlags(0),
                           doNotForgetnumberOfElements(0)
 {
-    condition_var = ProgramVariables::GetGlobalConditionVariable();
+    condition_var = new std::condition_variable;
     queue = new Board[size];
     doNotForgetqueue = new Board[size];
 }
@@ -170,7 +170,7 @@ inline void ThreadIABoardQueue<size>::PushBack(const Board & board)
         Traces() << "\n" << "ERROR: No more free cells!";
     };
 
-    ProgramVariables::NotifyOne();
+    condition_var->notify_one();
 }
 
 template <unsigned long long size>
@@ -184,7 +184,7 @@ inline void ThreadIABoardQueue<size>::PushBackDoNotForget(const Board & board)
         ++doNotForgetnumberOfElements;        
     }
     mutex_guard.unlock();
-    ProgramVariables::NotifyOne();
+    condition_var->notify_one();
 }
 
 template <unsigned long long size>
@@ -192,9 +192,6 @@ Board ThreadIABoardQueue<size>::GetBestResult() const
 {
     double result = 0;    
     Board temp;
-
-    qDebug() << "Number of eleents" << numberOfElements;
-    qDebug() << "Number of do not forget eleents" << doNotForgetnumberOfElements;
 
     if (numberOfElements>0)
     {
@@ -323,7 +320,7 @@ unsigned long long ThreadIABoardQueue<size>::SizeDoNotForget() const
 template <unsigned long long size>
 void ThreadIABoardQueue<size>::NotifyRest()
 {
-    ProgramVariables::NotifyOne();
+    condition_var->notify_one();
 }
 
 template <unsigned long long size>

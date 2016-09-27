@@ -1,8 +1,9 @@
 #ifndef THREADIABOARDQUEUE_H
 #define THREADIABOARDQUEUE_H
 
-#include <mutex>
+#include <cmath>
 #include <condition_variable>
+#include <mutex>
 #include "../Board/Board.h"
 #include "../Traces/Traces.h"
 
