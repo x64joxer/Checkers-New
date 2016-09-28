@@ -430,6 +430,24 @@ void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int 
     timerList.InsertIntoList(socket, tmpTimer);
 }
 
+void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
+{
+    Traces() << "\n" << "LOG: void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
+
+    QueueTimer_ptr tmpTimer;
+    tmpTimer = std::shared_ptr<QueueTimer> (new QueueTimer());
+    tmpTimer->SetTime(miliseconds);
+    tmpTimer->SetQueue(wskConnectionManager->GetMessageQueue());
+    char *tmpData = new char[MessageCoder::MaxMessageTimeToSendResultToClientsSize()];
+    MessageCoder::ClearChar(tmpData, MessageCoder::MaxMessageTimeToSendResultToClientsSize());
+    MessageCoder::CreateTimeToSendResultToClientsMessage(tmpData);
+    Message tmpMessage;
+    tmpMessage.CopyWsk(socket, tmpData);
+    tmpTimer->SetMessageToSend(tmpMessage);
+    tmpTimer->Start();
+    timerList.InsertIntoList(socket, tmpTimer);
+}
+
 void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker)
 {
     Traces() << "\n" << "LOG: void Scheduler::UpdateFreeWorkerList(const Worker & worker)";

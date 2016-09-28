@@ -39,6 +39,7 @@ class Scheduler
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
+        void CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
         void DistributeWorkToWorkers(char * dest);
 

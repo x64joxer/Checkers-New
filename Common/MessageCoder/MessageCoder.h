@@ -34,6 +34,7 @@ class MessageCoder
         static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
         static void CreateServerStateMessage(const ServerState & serverState, const std::string & id, char *dest);
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
+        static void CreateTimeToSendResultToClientsMessage(char *dest);
         static void CreateTimeoutMessage(char *dest);
         static void CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, char *dest);
         static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
@@ -52,6 +53,7 @@ class MessageCoder
         static unsigned int MaxMessageSize() { return 4048; }
         static unsigned int MaxMessageConnectionCloseSize() { return 48; }
         static unsigned int MaxMessageConnectedSize() { return 48; }
+        static unsigned int MaxMessageTimeToSendResultToClientsSize() { return 128; }
         static unsigned int MaxMessageTimeoutSize() { return 48; }
         static unsigned int BufferSize() { return 4; }
 
@@ -68,6 +70,7 @@ class MessageCoder
         static std::string START_ANALYSE;
         static std::string START_ANALYSE_FAST;
         static std::string TIMEOUT;
+        static std::string TIME_TO_SEND_RESULT_TO_CLIENTS;
 
         static std::string START_WORK;
         static std::string SET_STATE;        

@@ -341,6 +341,14 @@ void MessageCoder::CreateCloseConnectionMessage(char *dest)
     InsertLenMessageHeader(dest);
 }
 
+void MessageCoder::CreateTimeToSendResultToClientsMessage(char *dest)
+{
+    InsertHeader(dest);
+    KeyValuePairToChar(ACTION, TIME_TO_SEND_RESULT_TO_CLIENTS, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
+}
+
 void MessageCoder::CreateTimeoutMessage(char *dest)
 {
     InsertHeader(dest);
@@ -482,6 +490,7 @@ std::string MessageCoder::CONNECTED = GetNextKey("CONNECTED");
 std::string MessageCoder::START_ANALYSE = GetNextKey("START_ANALYSE");
 std::string MessageCoder::START_ANALYSE_FAST = GetNextKey("START_ANALYSE_FAST");
 std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
+std::string MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS = GetNextKey("TIME_TO_SEND_RESULT_TO_CLIENTS");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");
