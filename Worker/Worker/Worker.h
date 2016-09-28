@@ -28,6 +28,8 @@ class Worker
         void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
         void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
 
+        unsigned int CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime);
+
         std::thread workerThread;
         unsigned int maxThread;
         TCPSocket socketToServer;
@@ -36,7 +38,7 @@ class Worker
         enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED } connection_state;
         Peers::STATE myState;
 
-        unsigned short maxIaTime;
+        unsigned int maxIaTime;
         unsigned int numOfResultToReturnFast;
         Board boardToAnalyse;
         std::string jobId;

@@ -247,7 +247,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
                             &currentPercentOfSteps,
                             maxThread,
                             3000,
-                            maxIaTime,
+                            CalculateMaxTimeForIA(maxIaTime, ProgramVariables::GetTimeReserveToSendBestResultToScheduler()),
                             KindOfSteps::Time);
 
         tempJob.detach();
@@ -265,6 +265,14 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
     {
 
     }
+}
+
+unsigned int Worker::CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime)
+{
+    Traces() << "\n" << "LOG: unsigned int Worker::CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime)";
+
+    if (maxTime > reservedTime) return maxTime - reservedTime;
+    return maxTime;
 }
 
 Worker::~Worker()
