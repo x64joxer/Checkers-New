@@ -122,7 +122,7 @@ void TCPHandler::SendJob(const Board &board)
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
     std::string tempId = MessageCoder::CreateMessageId();
     std::string jobId = MessageCoder::CreateMessageId();
-    MessageCoder::CreateStartMessage(ProgramVariables::GetMaxTimeForIa(), 1, tempId, jobId, board, globalData);
+    MessageCoder::CreateStartMessage(ProgramVariables::GetMaxMilisecondsForIa(), 1, tempId, jobId, board, globalData);
 
     Traces() << "\n" << "LOG: Sending job to server " << globalData;
 

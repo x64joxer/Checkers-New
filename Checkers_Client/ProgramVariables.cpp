@@ -42,9 +42,9 @@ unsigned long long ProgramVariables::GetMaxSecondsToEnd()
     return 3;
 }
 
-unsigned long long ProgramVariables::GetMaxTimeForIa()
-{
-    return 5;
+unsigned long long ProgramVariables::GetMaxMilisecondsForIa()
+{    
+    return 5000;
 }
 
 unsigned long long ProgramVariables::numOfAnalysded = 0;

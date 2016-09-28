@@ -14,7 +14,7 @@ class ProgramVariables
 
         static unsigned long long GetSecondsSinceEpoch();
         static unsigned long long GetMaxSecondsToEnd();
-        static unsigned long long GetMaxTimeForIa();
+        static unsigned long long GetMaxMilisecondsForIa();
         static unsigned long long GetMaxTimeWaitToWorkers();
         static unsigned long long GetMaxTimeWaitToServer();
         static unsigned int GetRecconectingTime();
