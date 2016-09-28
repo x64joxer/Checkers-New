@@ -3,6 +3,8 @@ mkdir -p ../build-Scheduler
 echo Building...
 
 g++ -g main.cpp \
+    Scheduler/Message.cpp \
+    ProgramVariables/ProgramVariables.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
     ServerState/ServerState.cpp \
@@ -19,6 +21,8 @@ g++ -g main.cpp \
     SafeQueue/SharedMap/SharedMap.cpp \
     SafeQueue/SharedPtrSet/SharedPtrSet.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
+    QueueTimer/QueueTimer.cpp \
+    QueueTimer/QueueTimerList.cpp \
     Traces/Traces.cpp \
     -I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Scheduler/scheduler -pthread
 
