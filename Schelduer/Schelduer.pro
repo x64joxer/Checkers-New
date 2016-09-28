@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     ServerState/ServerState.cpp \
     Scheduler/Worker.cpp \
     QueueTimer/QueueTimer.cpp \
-    QueueTimer/QueueTimerList.cpp
+    QueueTimer/QueueTimerList.cpp \
+    ProgramVariables/ProgramVariables.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -53,5 +54,6 @@ HEADERS += \
     ServerState/ServerState.h \
     Scheduler/Worker.h \
     QueueTimer/QueueTimer.h \
-    QueueTimer/QueueTimerList.h
+    QueueTimer/QueueTimerList.h \
+    ProgramVariables/ProgramVariables.h
 

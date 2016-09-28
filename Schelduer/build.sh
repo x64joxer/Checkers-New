@@ -4,6 +4,7 @@ echo Building...
 
 g++ main.cpp \
     Scheduler/Message.cpp \
+    ProgramVariables/ProgramVariables.cpp \
     ConnectionManager/ConnectionManager.cpp \
     Scheduler/Scheduler.cpp \
     ServerState/ServerState.cpp \

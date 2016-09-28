@@ -150,7 +150,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             boardsToAnalyse.PushBack(tmpBoard);
             SendServerState(socket, state, data, dest);
             clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
-            CreateTimeoutGuard(socket, 5000);            
+            CreateTimeoutGuard(socket, ProgramVariables::GetMaxTimeoutForMessageResponse());
         } else
         if (action == MessageCoder::OK)
         {
@@ -501,7 +501,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                     tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
                     tmpWorkerSocket->SendMessage(dest);
                     firstJobStarted = true;
-                    CreateTimeoutGuard(tmpWorkerSocket, 5000);
+                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
                 } else
                 {
                     Traces() << "\n" << "LOG: Send job to worker";
@@ -560,7 +560,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                     tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
                     tmpWorkerSocket->SendMessage(dest);                    
                     firstJobStarted = true;
-                    CreateTimeoutGuard(tmpWorkerSocket, 5000);
+                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
                 } else
                 {
                     Traces() << "\n" << "LOG: Send job to worker";

@@ -10,6 +10,7 @@
 #include "MessageCoder.h"
 #include "Client.h"
 #include "Worker.h"
+#include "../ProgramVariables/ProgramVariables.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../ServerState/ServerState.h"
@@ -43,7 +44,7 @@ class Scheduler
 
         ConnectionManager *wskConnectionManager;
 
-        std::thread schedulerThread[8];
+        std::thread schedulerThread[16];
         std::mutex mutex;
         std::condition_variable *condition_var;
         SharedMap<TCPConnection_ptr, Client_ptr> clients;

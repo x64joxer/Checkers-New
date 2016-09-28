@@ -4,6 +4,7 @@
 #include "ConnectionManager/ConnectionManager.h"
 #include "TCP/TCPServer.h"
 #include "Traces/Traces.h"
+#include "ProgramVariables/ProgramVariables.h"
 #include "Scheduler/Scheduler.h"
 
 using namespace std;
@@ -17,11 +18,11 @@ int main()
     //Start scheduler
     Scheduler scheduler;
     scheduler.SetConnectionManager(&connectionMnager);
-    scheduler.Start(2);
+    scheduler.Start(ProgramVariables::GetMaxThredForMessageQueue());
 
     //Start TCP server
     TCPServer *server;
-    server = new TCPServer("0.0.0.0", "6000");
+    server = new TCPServer("0.0.0.0", ProgramVariables::GetPortForScheduler());
     server->SetConnectionManager(&connectionMnager);
     server->Run();
 
