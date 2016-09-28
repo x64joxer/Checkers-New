@@ -418,7 +418,7 @@ void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int 
 
     QueueTimer_ptr tmpTimer;
     tmpTimer = std::shared_ptr<QueueTimer> (new QueueTimer());
-    tmpTimer->SetTime(5000);
+    tmpTimer->SetTime(miliseconds);
     tmpTimer->SetQueue(wskConnectionManager->GetMessageQueue());
     char *tmpData = new char[MessageCoder::MaxMessageTimeoutSize()];
     MessageCoder::ClearChar(tmpData, MessageCoder::MaxMessageTimeoutSize());
