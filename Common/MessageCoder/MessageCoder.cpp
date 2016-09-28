@@ -387,13 +387,14 @@ void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsig
     InsertLenMessageHeader(dest);
 }
 
-void MessageCoder::CreateBestResultMessage(const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest)
+void MessageCoder::CreateBestResultMessage(const Board & board, const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest)
 {
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, BEST_RESULT, dest);
     KeyValuePairToChar(NUM_OF_ANALYSED, numOfAnalysed, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);    
+    MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
     InsertLenMessageHeader(dest);
 }

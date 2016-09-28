@@ -25,6 +25,7 @@ class Worker
         void SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
 
         void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
+        void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
 
         std::thread workerThread;
         unsigned int maxThread;

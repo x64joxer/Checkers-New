@@ -49,9 +49,7 @@ void Worker::StartWorking()
     reconnectionTimer.SetQueue(messageQueue);
     reconnectionTimer.Start();
 
-    bool popFrontException = false;
-    bool newMessageFlag;
-    bool boardOperationFlag;
+    bool popFrontException = false;    
 
     while(true)
     {
@@ -64,6 +62,11 @@ void Worker::StartWorking()
             return (!messageQueue->Empty()) | (endIaJobFlag);
         }
         );
+
+        if (endIaJobFlag)
+        {
+            SendBestResultWhenJobEnd(boardToAnalyse, dest, prevousMessageid, jobId, reconnectionTimer);
+        }
 
         try
         {
@@ -206,6 +209,20 @@ void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & p
 
     MessageCoder::CreateStateMessage(myState, maxThread, prevousMessageid, dest);
     socket->WriteMessage(dest);
+}
+
+void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)
+{
+    Traces() << "\n" << "LOG: void Worker::SendBestResultWhenJobEnd()";
+
+    endIaJobFlag = false;
+    myState = Peers::STATE::FREE;
+
+    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+    prevousMessageid = MessageCoder::CreateMessageId();
+    MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, /*TO DO*/1, dest);
+    socketToServer.WriteMessage(dest);
+    reconnectionTimer.Start();
 }
 
 void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid, bool fast)
