@@ -2,7 +2,7 @@
 
 Worker::Worker() : connection_state(DISCONNECTED),
                    myState(Peers::STATE::FREE),
-                   maxThread(4)
+                   maxThread(ProgramVariables::GetMaxThredForIa())
 {
     Traces() << "\n" << "LOG: Worker::Worker()";
 
@@ -14,7 +14,7 @@ void Worker::Start()
     Traces() << "\n" << "LOG: void Worker::Start()";
 
     socketToServer.SetMessageQueue(messageQueue);
-    socketToServer.Connect("192.168.0.7", "6000");
+    socketToServer.Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
 
     workerThread = std::move(std::thread(&Worker::StartWorking,
                                           this));
@@ -44,7 +44,7 @@ void Worker::StartWorking()
     MessageCoder::CreateTimeoutMessage(tmpChar);
     timeoutMessage.CopyWsk(socketToServer.GeetMyWsk(), tmpChar);
 
-    reconnectionTimer.SetTime(5000);
+    reconnectionTimer.SetTime(ProgramVariables::GetMaxTimeoutForMessageResponse());
     reconnectionTimer.SetMessageToSend(timeoutMessage);
     reconnectionTimer.SetQueue(messageQueue);
     reconnectionTimer.Start();
@@ -175,7 +175,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
             Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
 
             connection_state = DISCONNECTED;
-            socket.get()->Connect("192.168.0.7", "6000");
+            socket.get()->Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
             reconnectionTimer.Start();
 
         } else

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <boost/thread/thread.hpp>
+#include "ProgramVariables/ProgramVariables.h"
 #include "QueueTimer/QueueTimer.h"
 #include "Worker/Worker.h"
 

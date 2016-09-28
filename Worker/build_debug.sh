@@ -4,6 +4,12 @@ echo Building...
 
 g++ -g main.cpp \
     Worker/Worker.cpp \
+    ProgramVariables/ProgramVariables.cpp \
+    ThreadIA/ThreadIABoardQueue.cpp \
+    ThreadIA/ThreadIAMove.cpp \
+    ThreadIA/ThreadIATreeExpander.cpp \
+    IA/IAPossibleMoves.cpp \
+    Worker/Message.cpp \
     TCP/TCPSocket.cpp \
     TCP/TCPSocketBody.cpp \
     QueueTimer/QueueTimer.cpp \

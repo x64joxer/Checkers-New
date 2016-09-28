@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     IA/IAPossibleMoves.cpp \
     ThreadIA/ThreadIABoardQueue.cpp \
     ThreadIA/ThreadIAMove.cpp \
-    ThreadIA/ThreadIATreeExpander.cpp
+    ThreadIA/ThreadIATreeExpander.cpp \
+    ProgramVariables/ProgramVariables.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -50,5 +51,6 @@ HEADERS += \
     IA/IAPossibleMoves.h \
     ThreadIA/ThreadIABoardQueue.h \
     ThreadIA/ThreadIAMove.h \
-    ThreadIA/ThreadIATreeExpander.h
+    ThreadIA/ThreadIATreeExpander.h \
+    ProgramVariables/ProgramVariables.h
 

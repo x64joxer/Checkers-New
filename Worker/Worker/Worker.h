@@ -5,6 +5,7 @@
 #include <mutex>
 #include "../TCP/TCPSocket.h"
 #include "MessageCoder.h"
+#include "../ProgramVariables/ProgramVariables.h"
 #include "../QueueTimer/QueueTimer.h"
 #include "../Peers/Peers.h"
 #include "../IA/IAPossibleMoves.h"
