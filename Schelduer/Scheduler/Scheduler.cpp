@@ -149,6 +149,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetThinking(true);
             state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()));
             state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
+            CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTime());
             boardsToAnalyse.PushBack(tmpBoard);
             SendServerState(socket, state, data, dest);
             clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
@@ -159,6 +160,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             Traces() << "\n" << "LOG: action == MessageCoder::BEST_RESULT";
 
             RecevieBestResult(socket, data, dest);
+        } else
+        if (action == MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS";
+
+
         } else
         if (action == MessageCoder::OK)
         {
@@ -453,7 +460,7 @@ void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, c
     tmpMessage.CopyWsk(socket, tmpData);
     tmpTimer->SetMessageToSend(tmpMessage);
     tmpTimer->Start();
-    timerList.InsertIntoList(socket, tmpTimer);
+    timerList.InsertIntoList(nullptr, tmpTimer);
 }
 
 void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker)
