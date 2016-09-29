@@ -35,7 +35,7 @@ class Worker
         TCPSocket socketToServer;
         SharedPtrList<Message> *messageQueue;
         std::condition_variable *condition_var;
-        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED } connection_state;
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED, BEST_RESULT_SEND } connection_state;
         Peers::STATE myState;
 
         unsigned int maxIaTime;

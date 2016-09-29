@@ -139,7 +139,26 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
                     SendStateMessage(socket, dest, prevousMessageid);
                     reconnectionTimer.Start();
                  }
-            } else                
+            } else
+            if (connection_state == ConState::BEST_RESULT_SEND)
+            {
+                reconnectionTimer.Stop();
+
+                if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
+                {
+                    connection_state = ConState::REGISTERED;
+
+                    SendStateMessage(socket, dest, prevousMessageid);
+                    reconnectionTimer.Start();
+                } else
+                {
+                    Traces() << "\n" << "ERR: Wrong message ID!";
+
+                    connection_state = DISCONNECTED;
+                    socket.get()->Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
+                    reconnectionTimer.Start();
+            }
+            } else
             {
                 Traces() << "\n" << "ERR: Wrong connection state";
             }
@@ -218,6 +237,7 @@ void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & 
 
     endIaJobFlag = false;
     myState = Peers::STATE::FREE;
+    connection_state = ConState::BEST_RESULT_SEND;
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
