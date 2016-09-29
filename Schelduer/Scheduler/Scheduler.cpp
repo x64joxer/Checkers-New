@@ -151,9 +151,8 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
             CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTime());
             boardsToAnalyse.PushBack(tmpBoard);
-            SendServerState(socket, state, data, dest);
-            clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
-            CreateTimeoutGuard(socket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+
+            SendStateToAllClients(data, dest);
         } else
         if (action == MessageCoder::BEST_RESULT)
         {
@@ -617,6 +616,22 @@ void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::
 
     Traces() << "\n" << "LOG: Sending: " << dest;
     socket->SendMessage(dest);
+}
+
+void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
+
+    std::list<TCPConnection_ptr> clientsToUpdateState;
+    clients.GetAllKeys(clientsToUpdateState);
+
+    for (auto it: clientsToUpdateState)
+    {
+        SendServerState(it, state, data, dest)    ;
+        clients.At(it)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
+        CreateTimeoutGuard(it, ProgramVariables::GetMaxTimeoutForMessageResponse());
+    }
+
 }
 
 Scheduler::~Scheduler()

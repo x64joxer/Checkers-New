@@ -43,6 +43,7 @@ class Scheduler
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
         void DistributeWorkToWorkers(char * dest);
         void RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest);
 
         ConnectionManager *wskConnectionManager;
 
