@@ -65,6 +65,7 @@ void Scheduler::StartScheduling()
         condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage]
         {
             isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty());
+            if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTime()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
             isNewMessage = wskConnectionManager->IsNewMessage();
             return (isNewBoardToAnalyse | isNewMessage); }
         );
@@ -147,6 +148,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
             state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()));
+            state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
             boardsToAnalyse.PushBack(tmpBoard);
             SendServerState(socket, state, data, dest);
             clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);

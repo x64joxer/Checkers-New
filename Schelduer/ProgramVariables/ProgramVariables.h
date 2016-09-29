@@ -11,6 +11,7 @@ class ProgramVariables
         static unsigned int GetMaxThredForMessageQueue();
         static std::string GetPortForScheduler();
         static unsigned int GetTimeReserveToSendBestResultToClient();
+        static unsigned int GetTimeToSendJobsToFreeWorkers();
         static unsigned int GetMaxTimeoutForMessageResponse();
 
 };

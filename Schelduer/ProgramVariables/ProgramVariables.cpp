@@ -20,6 +20,11 @@ unsigned int ProgramVariables::GetTimeReserveToSendBestResultToClient()
     return 1000;
 }
 
+unsigned int ProgramVariables::GetTimeToSendJobsToFreeWorkers()
+{
+    return 1000;
+}
+
 unsigned int ProgramVariables::GetMaxTimeoutForMessageResponse()
 {
     return 1000;
