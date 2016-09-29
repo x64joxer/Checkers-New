@@ -42,6 +42,7 @@ class Scheduler
         void CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
         void DistributeWorkToWorkers(char * dest);
+        void RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
 
         ConnectionManager *wskConnectionManager;
 
@@ -52,7 +53,7 @@ class Scheduler
         SharedMap<TCPConnection_ptr, Worker_ptr> workers;
 
         SharedPtrList<TCPConnection_ptr> freeWorkers;
-        SharedPtrList<Board> boardsToAnalyse;
+        SharedPtrList<Board> boardsToAnalyse;        
         std::atomic<bool> firstJobStarted;
 
         ServerState state;

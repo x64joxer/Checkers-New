@@ -152,6 +152,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             clients.At(socket)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
             CreateTimeoutGuard(socket, ProgramVariables::GetMaxTimeoutForMessageResponse());
         } else
+        if (action == MessageCoder::BEST_RESULT)
+        {
+            Traces() << "\n" << "LOG: action == MessageCoder::BEST_RESULT";
+
+            RecevieBestResult(socket, data, dest);
+        } else
         if (action == MessageCoder::OK)
         {
             Traces() << "\n" << "LOG: action == MessageCoder::OK";
@@ -586,6 +592,22 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
             }
         }
     }
+}
+
+void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::RecevieBestResult(const std::map<std::string, std::string> & data)";
+
+    Board tmpBoard;
+    MessageCoder::MapToBoard(data, &tmpBoard);
+    boardsToAnalyse.PushBack(tmpBoard);
+
+    std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+    MessageCoder::CreateOkMessage(messageId, dest);
+
+    Traces() << "\n" << "LOG: Sending: " << dest;
+    socket->SendMessage(dest);
 }
 
 Scheduler::~Scheduler()
