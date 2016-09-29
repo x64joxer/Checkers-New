@@ -2,7 +2,8 @@
 
 Worker::Worker() : connection_state(DISCONNECTED),
                    myState(Peers::STATE::FREE),
-                   maxThread(ProgramVariables::GetMaxThredForIa())
+                   maxThread(ProgramVariables::GetMaxThredForIa()),
+                   endIaJobFlag(false)
 {
     Traces() << "\n" << "LOG: Worker::Worker()";
 
