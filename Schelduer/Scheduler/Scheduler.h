@@ -45,7 +45,9 @@ class Scheduler
         void DistributeWorkToWorkers(char * dest);
         void UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest);
         void RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void FinishWork(const std::map<std::string, std::string> & data, char * dest);
         void SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest);
+        Board CalculateBestResult();
 
         ConnectionManager *wskConnectionManager;
 

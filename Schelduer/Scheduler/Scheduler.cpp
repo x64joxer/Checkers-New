@@ -174,7 +174,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             Traces() << "\n" << "LOG: action == MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS";
 
-
+            FinishWork(data, dest);
         } else
         if (action == MessageCoder::OK)
         {
@@ -670,11 +670,35 @@ void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::
     socket->SendMessage(dest);
 }
 
+void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)";
+
+    state.SetBoard(CalculateBestResult());
+    state.SetThinking(false);
+    SendStateToAllClients(data, dest);
+}
+
 void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)
 {
     Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 
     clients.GetAllKeys(clientsToStateUpdate);
+}
+
+Board Scheduler::CalculateBestResult()
+{
+    Traces() << "\n" << "LOG: Board Scheduler::CalculateBestResult()";
+
+    unsigned int listSize = boardsToAnalyse.Size();
+
+    if (listSize == 1)
+    {
+        return boardsToAnalyse.PopFront().GetOrigin();
+    } else
+    {
+
+    }
 }
 
 Scheduler::~Scheduler()
