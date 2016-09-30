@@ -51,10 +51,12 @@ void Scheduler::StartScheduling()
     Traces() << "\n" << "LOG: void Scheduler::StartScheduling()";
 
     Message tmpMessage;
+    TCPConnection_ptr tmpTCP_Connection_ptr;
     char *dest = new char[MessageCoder::MaxMessageSize()];
     bool wasMessage;
     bool isNewBoardToAnalyse;
     bool isNewMessage;
+    bool isClientToUpate;
 
     while (true)
     {
@@ -62,12 +64,14 @@ void Scheduler::StartScheduling()
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);
 
-        condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage]
+        condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate]
         {
             isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty());
             if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTime()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
             isNewMessage = wskConnectionManager->IsNewMessage();
-            return (isNewBoardToAnalyse | isNewMessage); }
+            isClientToUpate = !clientsToStateUpdate.Empty();
+
+            return (isNewBoardToAnalyse | isNewMessage | isClientToUpate); }
         );
 
         if (isNewMessage)
@@ -99,6 +103,12 @@ void Scheduler::StartScheduling()
         {
             Traces() << "\n" << "LOG: New board to analyse";            
             DistributeWorkToWorkers(dest);
+        }
+        if (isClientToUpate)
+        {
+            Traces() << "\n" << "LOG: Client to update";
+
+            UpdateNextClientStatus(tmpTCP_Connection_ptr, dest);
         }
     }
 
@@ -309,6 +319,24 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
        Traces() << "\n" << "LOG: Sending: " << dest;
 
        socket->SendMessage(dest);
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+    }
+}
+
+void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest)
+{
+    Traces() << "\n" << "TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest";
+    try
+    {
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+        MessageCoder::CreateServerStateMessage(serverState, messageId, dest);
+
+        Traces() << "\n" << "LOG: Sending: " << dest;
+
+        socket->SendMessage(dest);
     }
     catch (std::out_of_range)
     {
@@ -602,6 +630,30 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
     }
 }
 
+void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)
+{
+    Traces() << "\n" << "LOG: void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)";
+
+    bool wasClientToUpdate = true;
+
+    try
+    {
+        tmpTCP_Connection_ptr = clientsToStateUpdate.PopFront();
+    }
+    catch (std::string)
+    {
+        wasClientToUpdate = false;
+        Traces() << "\n" << "LOG: List empty. Not a bug.";
+    }
+
+    if (wasClientToUpdate)
+    {
+           SendServerState(tmpTCP_Connection_ptr, state, MessageCoder::CreateMessageId(), dest);
+           clients.At(tmpTCP_Connection_ptr)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
+           CreateTimeoutGuard(tmpTCP_Connection_ptr, ProgramVariables::GetMaxTimeoutForMessageResponse());
+    }
+}
+
 void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
     Traces() << "\n" << "LOG: void Scheduler::RecevieBestResult(const std::map<std::string, std::string> & data)";
@@ -622,16 +674,7 @@ void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> &
 {
     Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 
-    std::list<TCPConnection_ptr> clientsToUpdateState;
-    clients.GetAllKeys(clientsToUpdateState);
-
-    for (auto it: clientsToUpdateState)
-    {
-        SendServerState(it, state, data, dest)    ;
-        clients.At(it)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
-        CreateTimeoutGuard(it, ProgramVariables::GetMaxTimeoutForMessageResponse());
-    }
-
+    clients.GetAllKeys(clientsToStateUpdate);
 }
 
 Scheduler::~Scheduler()

@@ -35,6 +35,7 @@ class Scheduler
         void AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SetState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest);
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
@@ -42,6 +43,7 @@ class Scheduler
         void CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
         void DistributeWorkToWorkers(char * dest);
+        void UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest);
         void RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest);
 
@@ -54,6 +56,7 @@ class Scheduler
         SharedMap<TCPConnection_ptr, Worker_ptr> workers;
 
         SharedPtrList<TCPConnection_ptr> freeWorkers;
+        SharedPtrList<TCPConnection_ptr> clientsToStateUpdate;
         SharedPtrList<Board> boardsToAnalyse;        
         std::atomic<bool> firstJobStarted;        
 

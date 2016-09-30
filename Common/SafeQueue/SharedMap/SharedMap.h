@@ -5,10 +5,10 @@
 #include <mutex>
 #include <boost/shared_ptr.hpp>
 #include <map>
-#include <list>
 #include <stdexcept>
 #include <condition_variable>
 #include "../../Traces/Traces.h"
+#include "../SharedPtrSet/SharedPtrList.h"
 
 template<typename data1, typename data2>
 class SharedMap
@@ -22,7 +22,7 @@ class SharedMap
         std::condition_variable *GetCondVar();
         int Insert(data1 key, data2 val);
         void SetCondVar(std::condition_variable * wsk);
-        void GetAllKeys(std::list<data1> &return_list);
+        void GetAllKeys(SharedPtrList<data1> &return_list);
 
         ~SharedMap();
 	private:       
@@ -111,7 +111,7 @@ void SharedMap<data1, data2>::SetCondVar(std::condition_variable * wsk)
 }
 
 template<typename data1, typename data2>
-void SharedMap<data1, data2>::GetAllKeys(std::list<data1> &return_list)
+void SharedMap<data1, data2>::GetAllKeys(SharedPtrList<data1> &return_list)
 {
     Traces() << "\n" << "LOG: void SharedMap<data1, data2>::GetAllKeys(std::list &return_list)";
 
@@ -119,7 +119,7 @@ void SharedMap<data1, data2>::GetAllKeys(std::list<data1> &return_list)
 
     for(auto it = mapList.cbegin(); it != mapList.cend(); ++it)
     {
-        return_list.push_back(it->first);
+        return_list.PushBack(it->first);
     }
 
 }
