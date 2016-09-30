@@ -201,7 +201,7 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
         //END
 
         queue.Clear();
-        *boardWsk = temp.GetOrigin();
+        *boardWsk = temp;
 
         TRACE01 Traces() << "\n" << "LOG: Best board set:";
         temp.PrintDebug();
