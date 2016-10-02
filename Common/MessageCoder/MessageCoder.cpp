@@ -362,21 +362,23 @@ void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned sho
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_ANALYSE_FAST, dest);
     KeyValuePairToChar(MAX_TIME, respTime, dest);
-    KeyValuePairToChar(MESSAGE_ID, id, dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);    
     KeyValuePairToChar(JOB_ID, jobId, dest);    
+    KeyValuePairToChar(IS_FIRST_WORKER, true, dest);
     KeyValuePairToChar(NUM_OF_BOARD_TO_RETURN_FAST, numOfResultToReturnFast, dest);
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
     InsertLenMessageHeader(dest);
 }
 
-void MessageCoder::CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, char *dest)
+void MessageCoder::CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest)
 {
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_ANALYSE, dest);
     KeyValuePairToChar(MAX_TIME, respTime, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);
+    KeyValuePairToChar(IS_FIRST_WORKER, isFirstWorker, dest);
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
     InsertLenMessageHeader(dest);
@@ -502,6 +504,7 @@ std::string MessageCoder::IS_THINKING = GetNextKey("IS_THINKING");
 std::string MessageCoder::MAX_IA_TIME = GetNextKey("MAX_IA_TIME");
 std::string MessageCoder::START_TIME = GetNextKey("START_TIME");
 std::string MessageCoder::TIME_TO_END = GetNextKey("TIME_TO_END");
+std::string MessageCoder::IS_FIRST_WORKER = GetNextKey("IS_FIRST_WORKER");
 
 std::string MessageCoder::MAX_TIME = GetNextKey("MAX_TIME");
 std::string MessageCoder::NUM_OF_ANALYSED = GetNextKey("NUM_OF_ANALYSED");

@@ -556,6 +556,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                                                          boardsToAnalyse.PopFront(),
                                                          messageId,
                                                          jobId,
+                                                         true,
                                                          dest);
 
                     tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
@@ -565,6 +566,23 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 } else
                 {
                     Traces() << "\n" << "LOG: Send job to worker";
+
+                    std::string messageId = MessageCoder::CreateMessageId();
+                    std::string jobId = MessageCoder::CreateMessageId();
+                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime(),
+                                                         boardsToAnalyse.PopFront(),
+                                                         messageId,
+                                                         jobId,
+                                                         false,
+                                                         dest);
+
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+                    tmpWorkerSocket->SendMessage(dest);
+                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
                 }
             }
         }
@@ -624,6 +642,24 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 } else
                 {
                     Traces() << "\n" << "LOG: Send job to worker";
+
+                    std::string messageId = MessageCoder::CreateMessageId();
+                    std::string jobId = MessageCoder::CreateMessageId();
+                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime(),
+                                                         boardsToAnalyse.PopFront(),
+                                                         messageId,
+                                                         jobId,
+                                                         false,
+                                                         dest);
+
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+                    tmpWorkerSocket->SendMessage(dest);
+                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+
                 }
             }
         }

@@ -36,7 +36,7 @@ class MessageCoder
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateTimeToSendResultToClientsMessage(char *dest);
         static void CreateTimeoutMessage(char *dest);
-        static void CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, char *dest);
+        static void CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest);
         static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
 
@@ -82,6 +82,7 @@ class MessageCoder
         static std::string MAX_IA_TIME;
         static std::string START_TIME;
         static std::string TIME_TO_END;
+        static std::string IS_FIRST_WORKER;
 
         static std::string MAX_TIME;
         static std::string NUM_OF_ANALYSED;
