@@ -7,7 +7,7 @@ ProgramVariables::ProgramVariables()
 
 unsigned int ProgramVariables::GetMaxThredForMessageQueue()
 {
-    return 2;
+    return 10;
 }
 
 std::string ProgramVariables::GetPortForScheduler()

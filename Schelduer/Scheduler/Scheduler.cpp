@@ -734,23 +734,33 @@ Board Scheduler::CalculateBestResult()
     } else
     if (listSize > 1)
     {
-        Board bestResult = boardsToAnalyse.PopFront();
-        Board tmpBoard;
+        Board bestResult;
 
-        while(!boardsToAnalyse.Empty())
+        try
         {
-            try
+            bestResult = boardsToAnalyse.PopFront();
+
+            Board tmpBoard;
+
+            while(!boardsToAnalyse.Empty())
             {
-                tmpBoard = boardsToAnalyse.PopFront();
-                if (bestResult.GetResult() < tmpBoard.GetResult())
+                try
                 {
-                    bestResult = tmpBoard;
+                    tmpBoard = boardsToAnalyse.PopFront();
+                    if (bestResult.GetResult() < tmpBoard.GetResult())
+                    {
+                        bestResult = tmpBoard;
+                    }
+                }
+                catch(std::string)
+                {
+
                 }
             }
-            catch(std::string)
-            {
+        }
+        catch(std::string)
+        {
 
-            }
         }
 
         return bestResult;
