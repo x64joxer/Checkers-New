@@ -8,6 +8,7 @@ Worker::Worker() : connection_state(DISCONNECTED),
     Traces() << "\n" << "LOG: Worker::Worker()";
 
     messageQueue = new SharedPtrList<Message>;
+    jobExpander.GetThreadIABoardQueueWsk()->SetConditionVariable(condition_var);
 }
 
 void Worker::Start()
@@ -51,6 +52,8 @@ void Worker::StartWorking()
     reconnectionTimer.Start();
 
     bool popFrontException = false;    
+    bool jobToSendFast = false;
+    Board tmpBoard;
 
     while(true)
     {
@@ -58,15 +61,28 @@ void Worker::StartWorking()
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);
 
-        condition_var->wait(guard,[this]
+        condition_var->wait(guard,[this, &jobToSendFast, &tmpBoard]
         {
-            return (!messageQueue->Empty()) | (endIaJobFlag);
+            if ((numOfResultToReturnFast > 0)&&(canITakeBoardToReturnFast))
+            {
+                tmpBoard = jobExpander.GetThreadIABoardQueueWsk()->PopFront(0);
+                jobToSendFast = !tmpBoard.GetNullBoard();
+            }
+
+            return (!messageQueue->Empty()) | (endIaJobFlag) | jobToSendFast;
         }
         );
 
-        if (endIaJobFlag)
+        if (endIaJobFlag & (!jobToSendFast))
         {
             SendBestResultWhenJobEnd(boardToAnalyse, dest, prevousMessageid, jobId, reconnectionTimer);
+        }
+
+        if (jobToSendFast)
+        {
+            jobToSendFast = false;
+            numOfResultToReturnFast--;
+            SendResult(tmpBoard, dest, prevousMessageid, jobId, reconnectionTimer);
         }
 
         try
@@ -233,10 +249,23 @@ void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & p
 
 void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)
 {
-    Traces() << "\n" << "LOG: void Worker::SendBestResultWhenJobEnd()";
+    Traces() << "\n" << "LOG: void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
 
     endIaJobFlag = false;
     myState = Peers::STATE::FREE;
+    connection_state = ConState::BEST_RESULT_SEND;
+
+    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+    prevousMessageid = MessageCoder::CreateMessageId();
+    MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, /*TO DO*/1, dest);
+    socketToServer.WriteMessage(dest);
+    reconnectionTimer.Start();
+}
+
+void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)
+{
+    Traces() << "\n" << "LOG: void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
+
     connection_state = ConState::BEST_RESULT_SEND;
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
@@ -255,8 +284,15 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         Traces() << "\n" << "LOG: Receiving data from start analyse message";
 
         endIaJobFlag = false;
+        canITakeBoardToReturnFast = false;
         maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());;
-        if (fast) numOfResultToReturnFast = std::atoi(data.at(MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST).c_str());
+        if (fast)
+        {
+            numOfResultToReturnFast = std::atoi(data.at(MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST).c_str());
+        } else
+        {
+            numOfResultToReturnFast = 0;
+        }
         MessageCoder::MapToBoard(data, &boardToAnalyse);
         jobId = data.at(MessageCoder::JOB_ID);
         firstWorker = std::atoi(data.at(MessageCoder::IS_FIRST_WORKER).c_str());
@@ -270,7 +306,9 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
                             3000,
                             CalculateMaxTimeForIA(maxIaTime, ProgramVariables::GetTimeReserveToSendBestResultToScheduler()),
                             KindOfSteps::Time,
-                            firstWorker);
+                            firstWorker,
+                            &canITakeBoardToReturnFast,
+                            numOfResultToReturnFast);
 
         tempJob.detach();
         iaJob = std::move(tempJob);
@@ -280,7 +318,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateOkMessage(messageId, dest);
-        socket->WriteMessage(dest);
+        socket->WriteMessage(dest);                
 
     } else
     if (myState == Peers::STATE::BUSY)

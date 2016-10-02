@@ -27,6 +27,7 @@ class Worker
 
         void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
         void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
+        void SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
 
         unsigned int CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime);
 
@@ -44,6 +45,7 @@ class Worker
         std::string jobId;
         std::thread iaJob;
         std::atomic_bool endIaJobFlag;
+        std::atomic<bool> canITakeBoardToReturnFast;
         bool firstWorker;
         std::atomic<int> currentPercentOfSteps;
         ThreadIAMove<3000000> jobExpander;

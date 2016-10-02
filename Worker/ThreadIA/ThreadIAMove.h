@@ -21,7 +21,9 @@ class ThreadIAMove
                          const unsigned int refreshMainQueue,
                          const unsigned int numberOfStepsToDo,
                          const KindOfSteps stepKind,
-                         const bool isFirstWorker);
+                         const bool isFirstWorker,
+                         std::atomic<bool> * canYouTakeBoardToReturnFast,
+                         const unsigned int numberOfReturnFast);
 
         ThreadIABoardQueue<QMain> * GetThreadIABoardQueueWsk() { return &queue; }
    private:
@@ -38,7 +40,7 @@ ThreadIAMove<QMain>::ThreadIAMove()
 }
 
 template  <unsigned long long QMain>
-void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag, std::atomic<int> *percentSteps, const unsigned short numberOfThreads, const unsigned int refreshMainQueue, const unsigned int numberOfStepsToDo, const KindOfSteps stepKind, const bool isFirstWorker)
+void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag, std::atomic<int> *percentSteps, const unsigned short numberOfThreads, const unsigned int refreshMainQueue, const unsigned int numberOfStepsToDo, const KindOfSteps stepKind, const bool isFirstWorker, std::atomic<bool> * canYouTakeBoardToReturnFast, const unsigned int numberOfReturnFast)
 {
     const unsigned short maxThreads = numberOfThreads + 1;
     std::thread iaThread[maxThreads];
@@ -61,6 +63,8 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
 
     queue.PushBack(temp);
     CreateFirstElements();
+
+    if (queue.Size() >= numberOfReturnFast) *canYouTakeBoardToReturnFast = true;
 
     //When all black killed
     if (queue.First(0).GetNumberOfBlack() == 0)
