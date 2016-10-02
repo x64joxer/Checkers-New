@@ -259,7 +259,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         if (fast) numOfResultToReturnFast = std::atoi(data.at(MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST).c_str());
         MessageCoder::MapToBoard(data, &boardToAnalyse);
         jobId = data.at(MessageCoder::JOB_ID);
-
+        firstWorker = std::atoi(data.at(MessageCoder::IS_FIRST_WORKER).c_str());
 
         std::thread tempJob(&ThreadIAMove<3000000>::operator (),
                             &jobExpander,
@@ -269,7 +269,8 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
                             maxThread,
                             3000,
                             CalculateMaxTimeForIA(maxIaTime, ProgramVariables::GetTimeReserveToSendBestResultToScheduler()),
-                            KindOfSteps::Time);
+                            KindOfSteps::Time,
+                            firstWorker);
 
         tempJob.detach();
         iaJob = std::move(tempJob);

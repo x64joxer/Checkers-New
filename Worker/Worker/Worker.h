@@ -44,6 +44,7 @@ class Worker
         std::string jobId;
         std::thread iaJob;
         std::atomic_bool endIaJobFlag;
+        bool firstWorker;
         std::atomic<int> currentPercentOfSteps;
         ThreadIAMove<3000000> jobExpander;
 

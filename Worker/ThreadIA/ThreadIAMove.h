@@ -20,7 +20,8 @@ class ThreadIAMove
                          const unsigned short numberOfThreads,
                          const unsigned int refreshMainQueue,
                          const unsigned int numberOfStepsToDo,
-                         const KindOfSteps stepKind);
+                         const KindOfSteps stepKind,
+                         const bool isFirstWorker);
 
         ThreadIABoardQueue<QMain> * GetThreadIABoardQueueWsk() { return &queue; }
    private:
@@ -37,7 +38,7 @@ ThreadIAMove<QMain>::ThreadIAMove()
 }
 
 template  <unsigned long long QMain>
-void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag, std::atomic<int> *percentSteps, const unsigned short numberOfThreads, const unsigned int refreshMainQueue, const unsigned int numberOfStepsToDo, const KindOfSteps stepKind)
+void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag, std::atomic<int> *percentSteps, const unsigned short numberOfThreads, const unsigned int refreshMainQueue, const unsigned int numberOfStepsToDo, const KindOfSteps stepKind, const bool isFirstWorker)
 {
     const unsigned short maxThreads = numberOfThreads + 1;
     std::thread iaThread[maxThreads];
@@ -75,7 +76,7 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
     {
         //Set origin to all        
         //TO DO Only when we are not second worker
-        SetOriginToAll();
+         if (isFirstWorker) SetOriginToAll();
 
         //Start threads
         for (unsigned short i=1;i<=numberOfThreads;i++)
