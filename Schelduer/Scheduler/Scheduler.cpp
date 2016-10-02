@@ -552,7 +552,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime(),
+                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                          boardsToAnalyse.PopFront(),
                                                          messageId,
                                                          jobId,
@@ -573,7 +573,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime(),
+                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                          boardsToAnalyse.PopFront(),
                                                          messageId,
                                                          jobId,
@@ -628,7 +628,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-                    MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime(),
+                    MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                                              freeWorkers.Size(),
                                                                              boardsToAnalyse.PopFront(),
                                                                              messageId,
@@ -649,7 +649,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime(),
+                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                          boardsToAnalyse.PopFront(),
                                                          messageId,
                                                          jobId,
