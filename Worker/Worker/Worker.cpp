@@ -73,7 +73,7 @@ void Worker::StartWorking()
         }
         );
 
-        if (endIaJobFlag & (!jobToSendFast))
+        if (endIaJobFlag)
         {
             SendBestResultWhenJobEnd(boardToAnalyse, dest, prevousMessageid, jobId, reconnectionTimer);
         }
