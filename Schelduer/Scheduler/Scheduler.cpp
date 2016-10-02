@@ -732,8 +732,31 @@ Board Scheduler::CalculateBestResult()
     {
         return boardsToAnalyse.PopFront().GetOrigin();
     } else
+    if (listSize > 1)
     {
+        Board bestResult = boardsToAnalyse.PopFront();
+        Board tmpBoard;
 
+        while(!boardsToAnalyse.Empty())
+        {
+            try
+            {
+                tmpBoard = boardsToAnalyse.PopFront();
+                if (bestResult.GetResult() < tmpBoard.GetResult())
+                {
+                    bestResult = tmpBoard;
+                }
+            }
+            catch(std::string)
+            {
+
+            }
+        }
+
+        return bestResult;
+    } else
+    {
+        Traces() << "\n" << "ERR: Number of boards 0";
     }
 }
 
