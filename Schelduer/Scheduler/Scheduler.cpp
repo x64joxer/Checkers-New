@@ -157,7 +157,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             MessageCoder::MapToBoard(data, &tmpBoard);
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
-            state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()));
+            state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()) - ProgramVariables::GetTimeReserveToSendBestResultToClient());
             state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
             CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTime());
             boardsToAnalyse.PushBack(tmpBoard);
@@ -484,7 +484,7 @@ void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, c
     MessageCoder::ClearChar(tmpData, MessageCoder::MaxMessageTimeToSendResultToClientsSize());
     MessageCoder::CreateTimeToSendResultToClientsMessage(tmpData);
     Message tmpMessage;
-    tmpMessage.CopyWsk(socket, tmpData);
+    tmpMessage.CopyWsk(nullptr, tmpData);
     tmpTimer->SetMessageToSend(tmpMessage);
     tmpTimer->Start();
     timerList.InsertIntoList(nullptr, tmpTimer);
