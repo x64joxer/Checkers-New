@@ -58,6 +58,8 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
 {
   Traces() << "\n" << "LOG: void TCPConnection::HandleWrite(const boost::system::error_code& e)";
 
+  sendMutex.unlock();
+
   if (!e)
   {
     // Initiate graceful connection closure.
@@ -74,6 +76,8 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
 void TCPConnection::SendMessage(const std::string message)
 {
      Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
+
+    sendMutex.lock();
 
     boost::asio::async_write(socket_, boost::asio::buffer(message),
               boost::bind(&TCPConnection::HandleWrite, shared_from_this(),

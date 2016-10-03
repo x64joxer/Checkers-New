@@ -7,6 +7,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <mutex>
 #include "../Traces/Traces.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrSet.h"
@@ -39,10 +40,11 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      void Stop();
      SharedPtrList<Message> *messageQueue;
      boost::array<char, 8192> buffer_;
-     TCPConnection_ptr meWsk;
+     TCPConnection_ptr meWsk;     
      boost::asio::ip::tcp::socket socket_;
      boost::asio::io_service& io_service_;
      bool socketActive;
+     std::mutex sendMutex;
 };
 
 #endif // TCPCONNECTION_H
