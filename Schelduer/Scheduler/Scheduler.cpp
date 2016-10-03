@@ -83,7 +83,7 @@ void Scheduler::StartScheduling()
                 wasMessage = true;
                 tmpMessage = wskConnectionManager->GetFirstMessage();
             }
-            catch (std::string)
+            catch (...)
             {
                 wasMessage = false;
                 Traces() << "\n" << "LOG: List empty. Not a bug.";

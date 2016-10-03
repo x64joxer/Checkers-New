@@ -22,7 +22,7 @@ Message ConnectionManager::GetFirstMessage()
     {
        return messageQueue->PopFront();
     }
-    catch (std::string)
+    catch (...)
     {
         throw;
     }
