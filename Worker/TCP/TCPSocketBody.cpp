@@ -73,7 +73,7 @@ void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
 
     if (expectedMessage > MessageCoder::MaxMessageSize())
     {
-       Traces() << "\n" << "ERR: Protocol error. Message too long.";
+       Traces() << "\n" << "ERR: Protocol error. Message too long:" << std::string(data_to_read);
 
        expectedMessage = 0;
        Close();

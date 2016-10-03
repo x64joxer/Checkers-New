@@ -22,7 +22,7 @@ std::string ProgramVariables::GetIpForScheduler()
 
 unsigned int ProgramVariables::GetTimeReserveToSendBestResultToScheduler()
 {
-    return 1000;
+    return 3000;
 }
 
 unsigned int ProgramVariables::GetMaxTimeoutForMessageResponse()
