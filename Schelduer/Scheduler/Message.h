@@ -9,6 +9,7 @@
 class  TCPConnection;
 
 typedef boost::shared_ptr<TCPConnection> TCPConnection_ptr;
+typedef boost::shared_ptr<char> DataShared_ptr;
 
 class Message
 {
@@ -18,8 +19,8 @@ class Message
 
         void CopyData(TCPConnection_ptr connection, const char *wskM);
         void CopyWsk(TCPConnection_ptr connection, char *wskM);
-        void Clear() { connectionWsk.reset(); }
-        char *GetWskMessage() { return wskMessage; }
+        void Clear() { connectionWsk.reset(); wskMessage.reset(); }
+        char *GetWskMessage() { return wskMessage.get(); }
         TCPConnection_ptr GetTCPConnection_ptr() { return connectionWsk; }
 
         Message & operator=(const Message  & data);
@@ -27,7 +28,7 @@ class Message
 
     private:
         TCPConnection_ptr connectionWsk;
-        char *wskMessage = nullptr;
+        DataShared_ptr wskMessage;
 };
 
 #endif // MESSAGE_H
