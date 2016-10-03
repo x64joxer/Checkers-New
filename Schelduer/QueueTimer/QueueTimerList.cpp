@@ -16,8 +16,15 @@ void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)
 {
     Traces() << "\n" << "LOG: void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)";
 
-    list.At(socket)->Stop();
-    list.Erase(socket);
+    try
+    {
+        list.At(socket)->Stop();
+        list.Erase(socket);
+    }
+    catch(...)
+    {
+        Traces() << "\n" << "LOG: No such timer!";
+    }
 }
 
 QueueTimerList::~QueueTimerList()
