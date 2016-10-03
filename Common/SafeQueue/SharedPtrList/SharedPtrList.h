@@ -71,7 +71,6 @@ wskType SharedPtrList<wskType>::PopFront()
         throw std::string("Empty");
     }
 
-    if (setList.empty()) throw std::string("List empty");
     wskType tmp = setList.front();
     setList.pop_front();
     return tmp;
