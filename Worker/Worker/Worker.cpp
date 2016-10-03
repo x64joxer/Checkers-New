@@ -3,7 +3,8 @@
 Worker::Worker() : connection_state(DISCONNECTED),
                    myState(Peers::STATE::FREE),
                    maxThread(ProgramVariables::GetMaxThredForIa()),
-                   endIaJobFlag(false)
+                   endIaJobFlag(false),
+                   conversationIsOngoing(false)
 {
     Traces() << "\n" << "LOG: Worker::Worker()";
 
@@ -63,27 +64,15 @@ void Worker::StartWorking()
 
         condition_var->wait(guard,[this, &jobToSendFast, &tmpBoard]
         {
-            if ((numOfResultToReturnFast > 0)&&(canITakeBoardToReturnFast))
+            if ((numOfResultToReturnFast > 0)&&(canITakeBoardToReturnFast)&&(!conversationIsOngoing))
             {
                 tmpBoard = jobExpander.GetThreadIABoardQueueWsk()->PopFront(0);
                 jobToSendFast = !tmpBoard.GetNullBoard();
             }
 
-            return (!messageQueue->Empty()) | (endIaJobFlag) | jobToSendFast;
+            return (!messageQueue->Empty()) | (endIaJobFlag&&(!conversationIsOngoing)) | jobToSendFast;
         }
         );
-
-        if (endIaJobFlag)
-        {
-            SendBestResultWhenJobEnd(boardToAnalyse, dest, prevousMessageid, jobId, reconnectionTimer);
-        }
-
-        if (jobToSendFast)
-        {
-            jobToSendFast = false;
-            numOfResultToReturnFast--;
-            SendResult(tmpBoard, dest, prevousMessageid, jobId, reconnectionTimer);
-        }
 
         try
         {
@@ -102,10 +91,19 @@ void Worker::StartWorking()
             MessageCoder::MessageToMap(tmpMessage.GetWskMessage(), messageContent);
 
             MessageInterpreting(tmpMessage.GetTCPSocket_ptr(), messageContent, dest, reconnectionTimer, prevousMessageid);
+        } else
+        if (endIaJobFlag)
+        {
+            SendBestResultWhenJobEnd(boardToAnalyse, dest, prevousMessageid, jobId, reconnectionTimer);
+        } else
+        if (jobToSendFast)
+        {
+            jobToSendFast = false;
+            numOfResultToReturnFast--;
+            SendResult(tmpBoard, dest, prevousMessageid, jobId, reconnectionTimer);
         }
 
-        popFrontException = false;                
-
+        popFrontException = false;
     }
 
     delete [] dest;
@@ -122,6 +120,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         if (action == MessageCoder::OK)
         {
             Traces() << "\n" << "LOG: Message OK received";
+            conversationIsOngoing = false;
 
             if (connection_state == CONNECTED)
             {                
@@ -233,6 +232,7 @@ void Worker::SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
     MessageCoder::CreateRoleMessage(MessageCoder::ROLE_ENUM::WORKER, prevousMessageid, dest);
+    conversationIsOngoing = true;
     socket->WriteMessage(dest);
 }
 
@@ -240,6 +240,7 @@ void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & p
 {
     Traces() << "\n" << "LOG: void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)";
 
+    conversationIsOngoing = true;
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
 
@@ -254,6 +255,7 @@ void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & 
     endIaJobFlag = false;
     myState = Peers::STATE::FREE;
     connection_state = ConState::BEST_RESULT_SEND;
+    conversationIsOngoing = true;
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
@@ -267,6 +269,7 @@ void Worker::SendResult(Board & board, char * dest, std::string & prevousMessage
     Traces() << "\n" << "LOG: void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
 
     connection_state = ConState::BEST_RESULT_SEND;
+    conversationIsOngoing = true;
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();

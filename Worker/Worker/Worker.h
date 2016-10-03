@@ -24,11 +24,10 @@ class Worker
         void ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid, bool fast = false);
         void SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
         void SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
-
-        void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
         void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
         void SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
 
+        void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
         unsigned int CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime);
 
         std::thread workerThread;
@@ -38,6 +37,7 @@ class Worker
         std::condition_variable *condition_var;
         enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED, BEST_RESULT_SEND } connection_state;
         Peers::STATE myState;
+        bool conversationIsOngoing;
 
         unsigned int maxIaTime;
         unsigned int numOfResultToReturnFast;
