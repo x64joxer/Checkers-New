@@ -18,7 +18,8 @@ void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)
 
     try
     {
-        list.At(socket)->Stop();
+        QueueTimer_ptr tmpTimer = list.At(socket);
+        tmpTimer->Stop();
         list.Erase(socket);
     }
     catch(...)
