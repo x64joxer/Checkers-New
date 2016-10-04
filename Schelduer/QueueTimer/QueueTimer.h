@@ -17,6 +17,7 @@ class QueueTimer
         void SetMessageToSend(const Message &message);
         void Start();
         void Stop();
+        ~QueueTimer();
 
     private:
         void DoSleep();

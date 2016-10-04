@@ -43,7 +43,7 @@ data2 SharedMap<data1, data2>::At(data1 &val)
     {
         return mapList.at(val);
     }
-    catch (const std::out_of_range& oor)
+    catch (...)
     {
         throw;
     }

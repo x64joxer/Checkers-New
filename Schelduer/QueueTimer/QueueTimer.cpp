@@ -61,3 +61,8 @@ void QueueTimer::Stop()
         stop_flag = false;
     };
 }
+
+QueueTimer::~QueueTimer()
+{
+    Stop();
+}
