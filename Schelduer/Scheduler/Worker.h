@@ -6,6 +6,7 @@
 #include "../Peers/Peers.h"
 #include "../Traces/Traces.h"
 #include "MessageCoder.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class Worker
 {

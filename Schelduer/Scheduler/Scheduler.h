@@ -15,6 +15,7 @@
 #include "../ServerState/ServerState.h"
 #include "../QueueTimer/QueueTimer.h"
 #include "../QueueTimer/QueueTimerList.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class Scheduler
 {

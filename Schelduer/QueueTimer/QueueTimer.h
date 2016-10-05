@@ -7,6 +7,7 @@
 #include <mutex>
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../Scheduler/Message.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class QueueTimer
 {

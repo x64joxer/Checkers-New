@@ -5,6 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <cstring>
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class  TCPConnection;
 

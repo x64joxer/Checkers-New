@@ -2,6 +2,7 @@
 #define PAWNPOS_H
 
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class PawnPos
 {

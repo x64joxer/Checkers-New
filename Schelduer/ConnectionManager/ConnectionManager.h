@@ -8,6 +8,7 @@
 #include "../Traces/Traces.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrSet.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class ConnectionManager
 {

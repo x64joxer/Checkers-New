@@ -3,6 +3,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class Client
 {

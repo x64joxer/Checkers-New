@@ -3,6 +3,7 @@
 
 #include "../Board/Board.h"
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class ServerState
 {

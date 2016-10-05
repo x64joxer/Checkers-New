@@ -8,7 +8,7 @@
 #include "TCPConnection.h"
 #include "../Traces/Traces.h"
 #include "../ConnectionManager/ConnectionManager.h"
-
+#include "../ProgramVariables/ProgramVariables.h"
 
 class TCPServer
 {

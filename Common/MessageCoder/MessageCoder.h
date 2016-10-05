@@ -7,6 +7,7 @@
 #include "../Board/PawnPos.h"
 #include "../Peers/Peers.h"
 #include "../ServerState/ServerState.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class MessageCoder
 {

@@ -6,6 +6,7 @@
 #include <set>
 #include <condition_variable>
 #include "../../Traces/Traces.h"
+#include "../../ProgramVariables/ProgramVariables.h"
 
 template<typename wskType>
 class SharedPtrSet

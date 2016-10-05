@@ -11,7 +11,6 @@
 #include <sstream>
 #include <set>
 #include <map>
-#include "../ProgramVariables/ProgramVariables.h"
 
 #define TRACE01 if (true)
 

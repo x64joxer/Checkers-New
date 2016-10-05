@@ -6,6 +6,7 @@
 #include "../TCP/TCPConnection.h"
 #include "../Traces/Traces.h"
 #include "QueueTimer.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 typedef std::shared_ptr<QueueTimer> QueueTimer_ptr;
 

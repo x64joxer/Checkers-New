@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include "../../Traces/Traces.h"
 #include "../SharedPtrSet/SharedPtrList.h"
+#include "../../ProgramVariables/ProgramVariables.h"
 
 template<typename data1, typename data2>
 class SharedMap
