@@ -32,7 +32,7 @@ ServerState::ServerState(const Board & tmpCurrent,
 const ServerState & ServerState::operator=(const ServerState  & data)
 {
     std::lock_guard<std::mutex> ls(*mutex);
-    Traces() << "\n" << "LOG: const ServerState & ServerState::operator=(const ServerState  & data)";
+    TRACE_FLAG_FOR_CLASS_ServerState Traces() << "\n" << "LOG: const ServerState & ServerState::operator=(const ServerState  & data)";
 
     current = data.current;
     thinking = data.thinking;

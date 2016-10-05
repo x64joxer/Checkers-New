@@ -33,7 +33,7 @@ class SharedPtrList
 template<typename wskType>
 bool SharedPtrList<wskType>::Empty()
 {
-    Traces() << "\n" << "LOG: bool SharedPtrList<wskType>::Empty()";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: bool SharedPtrList<wskType>::Empty()";
 
     std::lock_guard<std::mutex> ls(mutex);
     return setList.empty();
@@ -42,7 +42,7 @@ bool SharedPtrList<wskType>::Empty()
 template<typename wskType>
 SharedPtrList<wskType>::SharedPtrList()
 {
-    Traces() << "\n" << "LOG: SharedPtrList<wskType>::SharedPtrList()";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: SharedPtrList<wskType>::SharedPtrList()";
 
     std::lock_guard<std::mutex> ls(mutex);
     condition_var = new std::condition_variable();
@@ -52,7 +52,7 @@ SharedPtrList<wskType>::SharedPtrList()
 template<typename wskType>
 std::condition_variable * SharedPtrList<wskType>::GetCondVar()
 {
-    Traces() << "\n" << "LOG: std::condition_variable * SharedPtrList<wskType>::GetCondVar()";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: std::condition_variable * SharedPtrList<wskType>::GetCondVar()";
 
     std::lock_guard<std::mutex> ls(mutex);
     return condition_var;
@@ -61,13 +61,13 @@ std::condition_variable * SharedPtrList<wskType>::GetCondVar()
 template<typename wskType>
 wskType SharedPtrList<wskType>::PopFront()
 {
-    Traces() << "\n" << "LOG: std::shared_ptr<wskType> SharedPtrList<wskType>::PopFront()";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: std::shared_ptr<wskType> SharedPtrList<wskType>::PopFront()";
 
     std::lock_guard<std::mutex> ls(mutex);
 
     if (setList.empty())
     {        
-        Traces() << "\n" << "LOG: Message list is empty . Throwing exception";
+        TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: Message list is empty . Throwing exception";
         throw std::string("Empty");
     }
 
@@ -79,26 +79,26 @@ wskType SharedPtrList<wskType>::PopFront()
 template<typename wskType>
 void SharedPtrList<wskType>::PushBack(wskType wsk)
 {
-    Traces() << "\n" << "LOG: void SharedPtrList<wskType>::PushBack(std::shared_ptr<wskType> wsk)";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: void SharedPtrList<wskType>::PushBack(std::shared_ptr<wskType> wsk)";
 
     std::lock_guard<std::mutex> ls(mutex);
     setList.push_back(wsk);
     condition_var->notify_one();
 
-    Traces() << "\n" << "LOG: Number of element in list " << setList.size();
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: Number of element in list " << setList.size();
 }
 
 template<typename wskType>
 SharedPtrList<wskType>::~SharedPtrList()
 {
-    Traces() << "\n" << "LOG: SharedPtrList<wskType>::~SharedPtrList()";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: SharedPtrList<wskType>::~SharedPtrList()";
     delete org_condition_var;
 }
 
 template<typename wskType>
 void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)
 {
-    Traces() << "\n" << "LOG: void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)";
 
     std::lock_guard<std::mutex> ls(mutex);
     condition_var = wsk;
@@ -107,7 +107,7 @@ void SharedPtrList<wskType>::SetCondVar(std::condition_variable * wsk)
 template<typename wskType>
 void SharedPtrList<wskType>::Remove(wskType & data)
 {
-    Traces() << "\n" << "LOG: void SharedPtrList<wskType>::Remove(wskType data)";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: void SharedPtrList<wskType>::Remove(wskType data)";
     std::lock_guard<std::mutex> ls(mutex);
 
     setList.remove(data);
@@ -117,7 +117,7 @@ void SharedPtrList<wskType>::Remove(wskType & data)
 template<typename wskType>
 unsigned int SharedPtrList<wskType>::Size()
 {
-    Traces() << "\n" << "LOG: unsigned int SharedPtrList<wskType>::Size()";
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: unsigned int SharedPtrList<wskType>::Size()";
     std::lock_guard<std::mutex> ls(mutex);
 
     return setList.size();

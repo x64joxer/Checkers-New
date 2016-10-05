@@ -2,7 +2,7 @@
 
 TCPSocket::TCPSocket() : messageQueue(nullptr)
 {
-    Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
+    TRACE_FLAG_FOR_CLASS_TCPSocket Traces() << "\n" << "LOG: TCPSocket::TCPSocket(const std::string &adress, const std::string &port)";
     meWsk = TCPSocket_ptr(this);
 
     bodySocket.SetMessageQueue(messageQueue);
@@ -16,7 +16,7 @@ void TCPSocket::Close()
 
 void TCPSocket::Connect(const std::string &adress, const std::string &port)
 {
-    Traces() << "\n" << "LOG: void TCPSocket::Connect(const std::string &adress, const std::string &port)";    
+    TRACE_FLAG_FOR_CLASS_TCPSocket Traces() << "\n" << "LOG: void TCPSocket::Connect(const std::string &adress, const std::string &port)";
 
     Close();
     bodySocket.Connect(adress,port);
@@ -24,7 +24,7 @@ void TCPSocket::Connect(const std::string &adress, const std::string &port)
 
 void TCPSocket::HandleConnect(const boost::system::error_code& error)
 {
-  Traces() << "\n" << "LOG: void TCPSocket::HandleConnect(const boost::system::error_code& error)";
+  TRACE_FLAG_FOR_CLASS_TCPSocket Traces() << "\n" << "LOG: void TCPSocket::HandleConnect(const boost::system::error_code& error)";
 
 }
 
@@ -37,6 +37,6 @@ void TCPSocket::WriteMessage(char *dataToSend)
 
 TCPSocket::~TCPSocket()
 {    
-  Traces() << "\n" << "LOG:  TCPSocket::~TCPSocket()";
+  TRACE_FLAG_FOR_CLASS_TCPSocket Traces() << "\n" << "LOG:  TCPSocket::~TCPSocket()";
 
 }

@@ -5,21 +5,21 @@ TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
                                  connected(false),
                                  expectedMessage(0)
 {
-    Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";    
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";
 
     data_to_read = new char[MessageCoder::MaxMessageSize()];
 }
 
 void TCPSocketBody::Close()
 {
-  Traces() << "\n" << "LOG: void TCPSocketBody::Close()";
+  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Close()";
 
   io_service_global.post(boost::bind(&TCPSocketBody::DoClose, this));
 }
 
 void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
 {
-    Traces() << "\n" << "LOG: void TCPSocketBody::Connect(const std::string &adress, const std::string &port)";
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Connect(const std::string &adress, const std::string &port)";
 
     io_service_global.reset();
 
@@ -36,7 +36,7 @@ void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
 
 void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
 {
-  Traces() << "\n" << "LOG: void TCPSocketBody::HandleConnect(const boost::system::error_code& error)";
+  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleConnect(const boost::system::error_code& error)";
 
   if (!error)
   {           
@@ -49,7 +49,7 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
       tempMessage.CopyWsk(meWsk, buffer);
       messageQueue->PushBack(tempMessage);
 
-      Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;            
+      TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;
 
       boost::asio::async_read(socket_,
          boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
@@ -65,11 +65,11 @@ void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
 
 void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
 {
-    Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)";
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)";
 
     expectedMessage = MessageCoder::HeaderToVal(data_to_read);    
 
-    Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
 
     if (expectedMessage > MessageCoder::MaxMessageSize())
     {
@@ -88,9 +88,9 @@ void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
 
 void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)
 {
-    Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)";
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)";
 
-    Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
 
     Message tempMessage;
     tempMessage.CopyData(meWsk, data_to_read);
@@ -110,7 +110,7 @@ void TCPSocketBody::WriteMessage(char *dataToSend)
 
 void TCPSocketBody::Write(char *dataToSend)
 {
-    Traces() << "\n" << "LOG: void TCPSocketBody::Write(char *dataToSend)";
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Write(char *dataToSend)";
 
     data = dataToSend;
 
@@ -123,7 +123,7 @@ void TCPSocketBody::Write(char *dataToSend)
 
 void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
 {
-  Traces() << "\n" << "LOG: void TCPSocketBody::HandleWrite(const boost::system::error_code& error)";
+  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleWrite(const boost::system::error_code& error)";
 
   if (!error)
   {
@@ -143,7 +143,7 @@ void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
 
 void TCPSocketBody::DoClose()
 {
-  Traces() << "\n" << "LOG: void TCPSocketBody::DoClose()";
+  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::DoClose()";
 
   socket_.close();  
   connected = false;

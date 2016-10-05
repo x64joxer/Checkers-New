@@ -39,7 +39,7 @@ Board ThreadIABoardQueue<size>::First(const bool remove)
 
     if (remove)
     {       
-        TRACE01 Traces() << "\n" << "LOG: (numberOfElements>0)";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: (numberOfElements>0)";
 
         if (numberOfElements>1)
         {
@@ -57,9 +57,9 @@ Board ThreadIABoardQueue<size>::First(const bool remove)
             numberOfElements = 0;
         };
 
-        TRACE01 Traces() << "\n" << "LOG: first " << first;
-        TRACE01 Traces() << "\n" << "LOG: last " << last;
-        TRACE01 Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: first " << first;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: last " << last;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
     }
 
     return temp;
@@ -68,7 +68,7 @@ Board ThreadIABoardQueue<size>::First(const bool remove)
 template <unsigned long long size>
 Board ThreadIABoardQueue<size>::PopFront(const unsigned short num)
 {    
-    TRACE01 Traces() << "\n" << "LOG: Board ThreadIABoardQueue<size>::PopFront()";    
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Board ThreadIABoardQueue<size>::PopFront()";
     {
         std::lock_guard<std::mutex> guard(mutex_guard);
         SetWorkerFlag(false, num);
@@ -88,7 +88,7 @@ Board ThreadIABoardQueue<size>::PopFront(const unsigned short num)
             } else
             if (!workersFlags)
             {
-                TRACE01 Traces() << "\n" << "LOG: No active workers! Finishing!";                
+                TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: No active workers! Finishing!";
                 Board temp_null;
                 temp_null.SetNullBoard(true);
                 return temp_null;
@@ -99,7 +99,7 @@ Board ThreadIABoardQueue<size>::PopFront(const unsigned short num)
 
     if (numberOfElements>0)
     {
-        TRACE01 Traces() << "\n" << "LOG: (numberOfElements>0)";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: (numberOfElements>0)";
 
         if (numberOfElements>1)
         {
@@ -117,16 +117,16 @@ Board ThreadIABoardQueue<size>::PopFront(const unsigned short num)
             numberOfElements = 0;
         };
 
-        TRACE01 Traces() << "\n" << "LOG: first " << first;
-        TRACE01 Traces() << "\n" << "LOG: last " << last;
-        TRACE01 Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: first " << first;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: last " << last;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
 
         TRACE01 queue[temp].PrintDebug();
         guard.unlock();
         return queue[temp];
     };
 
-    TRACE01 Traces() << "\n" << "LOG: No elements to get!";
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: No elements to get!";
     Board temp_null;
     temp_null.SetNullBoard(true);    
     return temp_null;
@@ -136,20 +136,20 @@ template <unsigned long long size>
 inline void ThreadIABoardQueue<size>::PushBack(const Board & board)
 {
     std::lock_guard<std::mutex> guard(mutex_guard);
-    TRACE01 Traces() << "\n" << "LOG: void ThreadIABoardQueue<size>::PushBack(Board board) Number of cells";
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: void ThreadIABoardQueue<size>::PushBack(Board board) Number of cells";
 
     if (numberOfElements == 0)
     {
        numberOfElements++;
        queue[last] = board;
 
-       TRACE01 Traces() << "\n" << "LOG: first " << first;
-       TRACE01 Traces() << "\n" << "LOG: last " << last;
-       TRACE01 Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
+       TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: first " << first;
+       TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: last " << last;
+       TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
     } else
     if (numberOfElements<size)
     {
-        TRACE01 Traces() << "\n" << "LOG: if (numberOfElements<=size)";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: if (numberOfElements<=size)";
         if (last==size-1)
         {
             last = 0;
@@ -162,9 +162,9 @@ inline void ThreadIABoardQueue<size>::PushBack(const Board & board)
             numberOfElements++;
         };
 
-        TRACE01 Traces() << "\n" << "LOG: first " << first;
-        TRACE01 Traces() << "\n" << "LOG: last " << last;
-        TRACE01 Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: first " << first;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: last " << last;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
     } else
     {
         Traces() << "\n" << "ERROR: No more free cells!";
@@ -176,7 +176,7 @@ inline void ThreadIABoardQueue<size>::PushBack(const Board & board)
 template <unsigned long long size>
 inline void ThreadIABoardQueue<size>::PushBackDoNotForget(const Board & board)
 {
-    TRACE01 Traces() << "\n" << "LOG: inline void ThreadIABoardQueue<size>::PushBackDoNotForget(Board &board)";
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: inline void ThreadIABoardQueue<size>::PushBackDoNotForget(Board &board)";
     mutex_guard.lock();
     if (doNotForgetnumberOfElements < size)
     {
@@ -216,7 +216,7 @@ Board ThreadIABoardQueue<size>::GetBestResult() const
             temp = doNotForgetqueue[0];
         };
 
-        TRACE01 Traces() << "\n" << "LOG: Origin of doNotForgetqueue[0]";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Origin of doNotForgetqueue[0]";
         TRACE01 doNotForgetqueue[0].GetOrigin().PrintDebug();
 
 
@@ -239,24 +239,24 @@ Board ThreadIABoardQueue<size>::GetBestResult() const
 template <unsigned long long size>
 void ThreadIABoardQueue<size>::GetBestResultMultiThread(bool make, const unsigned long long start, const unsigned long long stop, bool make2, const unsigned long long start2, const unsigned long long stop2, Board *best) const
 {
-    TRACE01 Traces() << "\n" << "LOG: void ThreadIABoardQueue<size>::GetBestResult2";
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: void ThreadIABoardQueue<size>::GetBestResult2";
     double result = 0;
     Board temp;
 
-    TRACE01 Traces() << "\n" << "LOG: Number of eleents =" << numberOfElements;
-    TRACE01 Traces() << "\n" << "LOG: Number of do not forget eleents =" << doNotForgetnumberOfElements;
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of eleents =" << numberOfElements;
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of do not forget eleents =" << doNotForgetnumberOfElements;
 
 
     if (make)
     {
-        TRACE01 Traces() << "\n" << "LOG: make = true";
-        TRACE01 Traces() << "\n" << "LOG: start =" << start;
-        TRACE01 Traces() << "\n" << "LOG: stop =" << stop;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: make = true";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: start =" << start;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: stop =" << stop;
 
         result = At(0).GetPercentageResult();
         temp = At(0);
 
-        TRACE01 Traces() << "\n" << "LOG: Current best result";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Current best result";
         TRACE01 temp.PrintDebug();
 
         for (unsigned long long i = 0; i<numberOfElements; i++)
@@ -271,19 +271,19 @@ void ThreadIABoardQueue<size>::GetBestResultMultiThread(bool make, const unsigne
 
     if (make2)
     {
-        TRACE01 Traces() << "\n" << "LOG: make2 == true";
-        TRACE01 Traces() << "\n" << "LOG: start2 =" << start2;
-        TRACE01 Traces() << "\n" << "LOG: stop2 =" << stop2;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: make2 == true";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: start2 =" << start2;
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: stop2 =" << stop2;
 
         if (!make)
         {
-            TRACE01 Traces() << "\n" << "LOG: !make = false";
+            TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: !make = false";
             result = doNotForgetqueue[start2].GetPercentageResult();
             temp = doNotForgetqueue[start2];            
             TRACE01 temp.PrintDebug();
         };
 
-        TRACE01 Traces() << "\n" << "LOG: Searching best";
+        TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Searching best";
 
         for (unsigned long long i = start2; i<stop2; i++)
         {
@@ -296,14 +296,14 @@ void ThreadIABoardQueue<size>::GetBestResultMultiThread(bool make, const unsigne
         };
     };
 
-    TRACE01 Traces() << "\n" << "LOG: End of searching";
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: End of searching";
     *best = temp;
 }
 
 template <unsigned long long size>
 unsigned long long ThreadIABoardQueue<size>::Size() const
 {
-    TRACE01 Traces() << "\n" << "LOG: ThreadIABoardQueue<size>::Size()";
+    TRACE01 TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: ThreadIABoardQueue<size>::Size()";
 
     std::lock_guard<std::mutex> guard(mutex_guard);
     return numberOfElements;
@@ -354,7 +354,7 @@ Board & ThreadIABoardQueue<size>::At(const unsigned long long number) const
 {
     if (number > numberOfElements)
     {
-        Traces() << "\n" << "LOG: Element not exist!";
+        TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Element not exist!";
     } else
     if (first + number < size - 1)
     {

@@ -127,9 +127,9 @@ bool ProgramVariables::GetTraceFlagForClass_Message()
     return traceFlagForClass_Message;
 }
 
-bool ProgramVariables::GetTraceFlagForClass_MessageCode()
+bool ProgramVariables::GetTraceFlagForClass_MessageCoder()
 {
-    return traceFlagForClass_MessageCode;
+    return traceFlagForClass_MessageCoder;
 }
 
 bool ProgramVariables::GetTraceFlagForClass_Worker()
@@ -156,5 +156,5 @@ bool ProgramVariables::traceFlagForClass_ThreadIABoardQueue = false;
 bool ProgramVariables::traceFlagForClass_ThreadIAMove = false;
 bool ProgramVariables::traceFlagForClass_ThreadIATreeExpander = false;
 bool ProgramVariables::traceFlagForClass_Message = false;
-bool ProgramVariables::traceFlagForClass_MessageCode = false;
+bool ProgramVariables::traceFlagForClass_MessageCoder = false;
 bool ProgramVariables::traceFlagForClass_Worker = false;

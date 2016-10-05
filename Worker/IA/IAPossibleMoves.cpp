@@ -11,10 +11,10 @@ bool IAPossibleMoves::CanIGrabBlack(const unsigned short number, const Board & b
     bool flag = CheckHitTopLeftBlack(pos.X(), pos.Y(), board) | CheckHitTopRightBlack(pos.X(), pos.Y(), board);
     bool flagPons = CheckHitBottomLeftBlack(pos.X(), pos.Y(), board) | CheckHitBottomRightBlack(pos.X(), pos.Y(), board);
 
-    TRACE01 Traces() << "\n" << "CheckHitBottomLeftBlack(pos.X(), pos.Y(), board) " << CheckHitBottomLeftBlack(pos.X(), pos.Y(), board);
-    TRACE01 Traces() << "\n" << "CheckHitBottomRightBlack(pos.X(), pos.Y(), board" << CheckHitBottomRightBlack(pos.X(), pos.Y(), board);
-    TRACE01 Traces() << "\n" << "CheckHitTopLeftBlack(pos.X(), pos.Y(), board) " << CheckHitTopLeftBlack(pos.X(), pos.Y(), board);
-    TRACE01 Traces() << "\n" << "CheckHitTopRightBlack(pos.X(), pos.Y(), board" << CheckHitTopRightBlack(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitBottomLeftBlack(pos.X(), pos.Y(), board) " << CheckHitBottomLeftBlack(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitBottomRightBlack(pos.X(), pos.Y(), board" << CheckHitBottomRightBlack(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitTopLeftBlack(pos.X(), pos.Y(), board) " << CheckHitTopLeftBlack(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitTopRightBlack(pos.X(), pos.Y(), board" << CheckHitTopRightBlack(pos.X(), pos.Y(), board);
 
     bool otherFlag = false;
     for (unsigned short i=0; i < board.GetNumberOfBlack();i++)
@@ -31,7 +31,7 @@ bool IAPossibleMoves::CanIGrabBlack(const unsigned short number, const Board & b
         };
     };
 
-    TRACE01 Traces() << "\n" << "otherFlag " << otherFlag;
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "otherFlag " << otherFlag;
 
     if (!board.GetBlackPawnPons(number))
     {
@@ -281,10 +281,10 @@ bool IAPossibleMoves::CanIGrabWhite(const unsigned short number, const Board & b
     bool flag = CheckHitTopLeftWhite(pos.X(), pos.Y(), board) | CheckHitTopRightWhite(pos.X(), pos.Y(), board);
     bool flagPons = CheckHitBottomLeftWhite(pos.X(), pos.Y(), board) | CheckHitBottomRightWhite(pos.X(), pos.Y(), board);
 
-    TRACE01 Traces() << "\n" << "CheckHitBottomLeftWhite(pos.X(), pos.Y(), board) " << CheckHitBottomLeftWhite(pos.X(), pos.Y(), board);
-    TRACE01 Traces() << "\n" << "CheckHitBottomRightWhite(pos.X(), pos.Y(), board" << CheckHitBottomRightWhite(pos.X(), pos.Y(), board);
-    TRACE01 Traces() << "\n" << "CheckHitTopLeftWhite(pos.X(), pos.Y(), board) " << CheckHitTopLeftWhite(pos.X(), pos.Y(), board);
-    TRACE01 Traces() << "\n" << "CheckHitTopRightWhite(pos.X(), pos.Y(), board" << CheckHitTopRightWhite(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitBottomLeftWhite(pos.X(), pos.Y(), board) " << CheckHitBottomLeftWhite(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitBottomRightWhite(pos.X(), pos.Y(), board" << CheckHitBottomRightWhite(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitTopLeftWhite(pos.X(), pos.Y(), board) " << CheckHitTopLeftWhite(pos.X(), pos.Y(), board);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "CheckHitTopRightWhite(pos.X(), pos.Y(), board" << CheckHitTopRightWhite(pos.X(), pos.Y(), board);
 
     bool otherFlag = false;
     for (unsigned short i=0; i < board.GetNumberOfWhite();i++)
@@ -467,9 +467,9 @@ bool IAPossibleMoves::CheckPutBottomRightWhite(const unsigned short number, cons
 
 void IAPossibleMoves::KillHitTopLeftWhite(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopLeftWhite(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopLeftWhite(" << number << ", board)";
     PawnPos pos = board.GetWhitePawnPos(number);
-    TRACE01 Traces() << "\n" << "LOG: " << board.GetBlackPawnNumber(pos.X()-1,pos.Y()-1);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: " << board.GetBlackPawnNumber(pos.X()-1,pos.Y()-1);
     board.RemoveBlackPawn(board.GetBlackPawnNumber(pos.X()-1,pos.Y()-1));
 
     board.SetWhitePawnPos(number,pos.X()-2,pos.Y()-2);
@@ -478,7 +478,7 @@ void IAPossibleMoves::KillHitTopLeftWhite(const unsigned short number, Board &bo
 
 void IAPossibleMoves::KillHitTopRightWhite(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopRightWhite(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopRightWhite(" << number << ", board)";
     PawnPos pos = board.GetWhitePawnPos(number);
     board.RemoveBlackPawn(board.GetBlackPawnNumber(pos.X()+1,pos.Y()-1));
     board.SetWhitePawnPos(number,pos.X()+2,pos.Y()-2);
@@ -486,7 +486,7 @@ void IAPossibleMoves::KillHitTopRightWhite(const unsigned short number, Board &b
 
 void IAPossibleMoves::KillHitBottomLeftWhite(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomLeftWhite(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomLeftWhite(" << number << ", board)";
     PawnPos pos = board.GetWhitePawnPos(number);
     board.RemoveBlackPawn(board.GetBlackPawnNumber(pos.X()-1,pos.Y()+1));
     board.SetWhitePawnPos(number,pos.X()-2,pos.Y()+2);
@@ -494,7 +494,7 @@ void IAPossibleMoves::KillHitBottomLeftWhite(const unsigned short number, Board 
 
 void IAPossibleMoves::KillHitBottomRightWhite(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomRightWhite(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomRightWhite(" << number << ", board)";
     PawnPos pos = board.GetWhitePawnPos(number);
     board.RemoveBlackPawn(board.GetBlackPawnNumber(pos.X()+1,pos.Y()+1));
     board.SetWhitePawnPos(number,pos.X()+2,pos.Y()+2);
@@ -552,9 +552,9 @@ bool IAPossibleMoves::CheckPutBottomRightBlack(const unsigned short number, cons
 
 void IAPossibleMoves::KillHitTopLeftBlack(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopLeftBlack(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopLeftBlack(" << number << ", board)";
     PawnPos pos = board.GetBlackPawnPos(number);
-    TRACE01 Traces() << "\n" << "LOG: " << board.GetWhitePawnNumber(pos.X()-1,pos.Y()-1);
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: " << board.GetWhitePawnNumber(pos.X()-1,pos.Y()-1);
     board.RemoveWhitePawn(board.GetWhitePawnNumber(pos.X()-1,pos.Y()-1));
 
     board.SetBlackPawnPos(number,pos.X()-2,pos.Y()-2);
@@ -563,7 +563,7 @@ void IAPossibleMoves::KillHitTopLeftBlack(const unsigned short number, Board &bo
 
 void IAPossibleMoves::KillHitTopRightBlack(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopRightBlack(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitTopRightBlack(" << number << ", board)";
     PawnPos pos = board.GetBlackPawnPos(number);
     board.RemoveWhitePawn(board.GetWhitePawnNumber(pos.X()+1,pos.Y()-1));
     board.SetBlackPawnPos(number,pos.X()+2,pos.Y()-2);
@@ -571,7 +571,7 @@ void IAPossibleMoves::KillHitTopRightBlack(const unsigned short number, Board &b
 
 void IAPossibleMoves::KillHitBottomLeftBlack(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomLeftBlack(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomLeftBlack(" << number << ", board)";
     PawnPos pos = board.GetBlackPawnPos(number);
     board.RemoveWhitePawn(board.GetWhitePawnNumber(pos.X()-1,pos.Y()+1));
     board.SetBlackPawnPos(number,pos.X()-2,pos.Y()+2);
@@ -579,7 +579,7 @@ void IAPossibleMoves::KillHitBottomLeftBlack(const unsigned short number, Board 
 
 void IAPossibleMoves::KillHitBottomRightBlack(const unsigned short number, Board &board)
 {
-    TRACE01 Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomRightBlack(" << number << ", board)";
+    TRACE_FLAG_FOR_CLASS_PossibleMoves Traces() << "\n" << "LOG: IAPossibleMoves::KillHitBottomRightBlack(" << number << ", board)";
     PawnPos pos = board.GetBlackPawnPos(number);
     board.RemoveWhitePawn(board.GetWhitePawnNumber(pos.X()+1,pos.Y()+1));
     board.SetBlackPawnPos(number,pos.X()+2,pos.Y()+2);

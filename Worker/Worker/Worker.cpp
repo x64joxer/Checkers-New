@@ -6,7 +6,7 @@ Worker::Worker() : connection_state(DISCONNECTED),
                    endIaJobFlag(false),
                    conversationIsOngoing(false)
 {
-    Traces() << "\n" << "LOG: Worker::Worker()";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Worker::Worker()";
 
     messageQueue = new SharedPtrList<Message>;
     jobExpander.GetThreadIABoardQueueWsk()->SetConditionVariable(condition_var);
@@ -14,7 +14,7 @@ Worker::Worker() : connection_state(DISCONNECTED),
 
 void Worker::Start()
 {
-    Traces() << "\n" << "LOG: void Worker::Start()";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::Start()";
 
     socketToServer.SetMessageQueue(messageQueue);
     socketToServer.Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
@@ -27,7 +27,7 @@ void Worker::Start()
 
 void Worker::StartWorking()
 {
-    Traces() << "\n" << "LOG: void Worker::StartWorking()";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::StartWorking()";
 
     std::string prevousMessageid;
 
@@ -58,7 +58,7 @@ void Worker::StartWorking()
 
     while(true)
     {
-        Traces() << "\n" << "LOG: Waiting for a job..";
+        TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Waiting for a job..";
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);
 
@@ -80,7 +80,7 @@ void Worker::StartWorking()
         }
         catch (...)
         {
-            Traces() << "\n" << "LOG: Pop front exception";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Pop front exception";
 
             popFrontException = true;
         }
@@ -111,7 +111,7 @@ void Worker::StartWorking()
 
 void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)
 {
-    Traces() << "\n" << "LOG: void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
 
     try
     {
@@ -119,7 +119,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
 
         if (action == MessageCoder::OK)
         {
-            Traces() << "\n" << "LOG: Message OK received";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Message OK received";
             conversationIsOngoing = false;
 
             if (connection_state == CONNECTED)
@@ -180,7 +180,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         } else
         if (action == MessageCoder::CONNECTED)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::CONNECTED";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::CONNECTED";
             connection_state = CONNECTED;
             reconnectionTimer.Start();
             SendRegisterMessage(socket, dest, prevousMessageid);
@@ -188,26 +188,26 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         } else
         if (action == MessageCoder::CLOSE_CNNECTION)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
             connection_state = DISCONNECTED;
             reconnectionTimer.Start();
 
         } else
         if (action == MessageCoder::START_ANALYSE)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE";
             ReceiveJob(socket, data, dest, reconnectionTimer, prevousMessageid);
 
         } else
         if (action == MessageCoder::START_ANALYSE_FAST)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE_FAST";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE_FAST";
             ReceiveJob(socket, data, dest, reconnectionTimer, prevousMessageid, true);
 
         } else            
         if (action == MessageCoder::TIMEOUT)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
 
             connection_state = DISCONNECTED;
             socket.get()->Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
@@ -227,7 +227,7 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
 
 void Worker::SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)
 {
-    Traces() << "\n" << "LOG: void Worker::SendRegisterMessage()";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::SendRegisterMessage()";
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
@@ -238,7 +238,7 @@ void Worker::SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string 
 
 void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)
 {
-    Traces() << "\n" << "LOG: void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid)";
 
     conversationIsOngoing = true;
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
@@ -250,7 +250,7 @@ void Worker::SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & p
 
 void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)
 {
-    Traces() << "\n" << "LOG: void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
 
     endIaJobFlag = false;
     myState = Peers::STATE::FREE;
@@ -266,7 +266,7 @@ void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & 
 
 void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)
 {
-    Traces() << "\n" << "LOG: void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
 
     connection_state = ConState::BEST_RESULT_SEND;
     conversationIsOngoing = true;
@@ -280,11 +280,11 @@ void Worker::SendResult(Board & board, char * dest, std::string & prevousMessage
 
 void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid, bool fast)
 {
-    Traces() << "\n" << "LOG: void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
 
     if (myState == Peers::STATE::FREE)
     {
-        Traces() << "\n" << "LOG: Receiving data from start analyse message";
+        TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Receiving data from start analyse message";
 
         endIaJobFlag = false;
         canITakeBoardToReturnFast = false;
@@ -316,7 +316,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         tempJob.detach();
         iaJob = std::move(tempJob);
 
-        Traces() << "\n" << "LOG: Sending OK message";
+        TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Sending OK message";
 
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
@@ -332,7 +332,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
 
 unsigned int Worker::CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime)
 {
-    Traces() << "\n" << "LOG: unsigned int Worker::CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime)";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: unsigned int Worker::CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime)";
 
     if (maxTime > reservedTime) return maxTime - reservedTime;
     return maxTime;
@@ -340,6 +340,6 @@ unsigned int Worker::CalculateMaxTimeForIA(const unsigned int maxTime, const uns
 
 Worker::~Worker()
 {
-    Traces() << "\n" << "LOG: Worker::~Worker()";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Worker::~Worker()";
     delete messageQueue;
 }
