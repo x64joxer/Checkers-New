@@ -7,14 +7,14 @@ QueueTimerList::QueueTimerList()
 
 void QueueTimerList::InsertIntoList(TCPConnection_ptr socket, QueueTimer_ptr timer)
 {
-    Traces() << "\n" << "LOG: void QueueTimerList::InsertIntoList(TCPConnection_ptr socket, QueueTimer_ptr timer)";
+    TRACE_FLAG_FOR_CLASS_QueueTimerList Traces() << "\n" << "LOG: void QueueTimerList::InsertIntoList(TCPConnection_ptr socket, QueueTimer_ptr timer)";
 
     list.Insert(socket, timer);
 }
 
 void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)
 {
-    Traces() << "\n" << "LOG: void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)";
+    TRACE_FLAG_FOR_CLASS_QueueTimerList Traces() << "\n" << "LOG: void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)";
 
     try
     {
@@ -24,7 +24,7 @@ void QueueTimerList::RemoveFromList(TCPConnection_ptr socket)
     }
     catch(...)
     {
-        Traces() << "\n" << "LOG: No such timer!";
+        TRACE_FLAG_FOR_CLASS_QueueTimerList Traces() << "\n" << "LOG: No such timer!";
     }
 }
 

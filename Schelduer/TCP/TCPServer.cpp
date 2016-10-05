@@ -10,7 +10,7 @@ TCPServer::TCPServer(const std::string& address, const std::string& port)
                                                     connectionManagerWSk(nullptr)
 
 {
-    Traces() << "\n" << "LOG: TCPServer::TCPServer(const std::string& address, const std::string& port)";
+    TRACE_FLAG_FOR_CLASS_TCPServer Traces() << "\n" << "LOG: TCPServer::TCPServer(const std::string& address, const std::string& port)";
 
     boost::asio::ip::tcp::resolver resolver(io_service_);
     boost::asio::ip::tcp::resolver::query query(address, port);
@@ -25,13 +25,13 @@ TCPServer::TCPServer(const std::string& address, const std::string& port)
 
 void TCPServer::Run()
 {
-  Traces() << "\n" << "LOG: void TCPServer::Run()";
+  TRACE_FLAG_FOR_CLASS_TCPServer Traces() << "\n" << "LOG: void TCPServer::Run()";
   io_service_.run();
 }
 
 void TCPServer::StartAccept()
 {
-  Traces() << "\n" << "LOG: void TCPServer::StartAccept()";
+  TRACE_FLAG_FOR_CLASS_TCPServer Traces() << "\n" << "LOG: void TCPServer::StartAccept()";
 
   new_connection_.reset(new TCPConnection(io_service_));
   acceptor_.async_accept(new_connection_->Socket(),
@@ -41,7 +41,7 @@ void TCPServer::StartAccept()
 
 void TCPServer::HandleAccept(const boost::system::error_code& e)
 {
-  Traces() << "\n" << "LOG: void TCPServer::HandleAccept(const boost::system::error_code& e)";
+  TRACE_FLAG_FOR_CLASS_TCPServer Traces() << "\n" << "LOG: void TCPServer::HandleAccept(const boost::system::error_code& e)";
 
   if (!acceptor_.is_open())
   {
@@ -50,7 +50,7 @@ void TCPServer::HandleAccept(const boost::system::error_code& e)
 
   if (!e)
   {
-    Traces() << "\n" << "LOG: Adding new connection to ConnectionManager";
+    TRACE_FLAG_FOR_CLASS_TCPServer Traces() << "\n" << "LOG: Adding new connection to ConnectionManager";
     connectionManagerWSk->NewConnection(new_connection_);
     new_connection_->SetMeWsk(new_connection_);
     new_connection_.reset();

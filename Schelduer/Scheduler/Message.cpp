@@ -7,7 +7,7 @@ Message::Message()
 
 Message::Message(const Message & data)
 {
-    Traces() << "\n" << "LOG: Message(const Message & data)";
+    TRACE_FLAG_FOR_CLASS_Message Traces() << "\n" << "LOG: Message(const Message & data)";
 
     connectionWsk = data.connectionWsk;
     wskMessage = data.wskMessage;
@@ -16,7 +16,7 @@ Message::Message(const Message & data)
 
 void Message::CopyData(TCPConnection_ptr connection, const char *wskM)
 {
-    Traces() << "\n" << "LOG: void CopyData(TCPConnection_ptr connection, const char *wskM)";
+    TRACE_FLAG_FOR_CLASS_Message Traces() << "\n" << "LOG: void CopyData(TCPConnection_ptr connection, const char *wskM)";
 
     char *tmpChar = new char[std::strlen(wskM)];
     std::strcpy(tmpChar, wskM);
@@ -27,7 +27,7 @@ void Message::CopyData(TCPConnection_ptr connection, const char *wskM)
 
 void Message::CopyWsk(TCPConnection_ptr connection, char *wskM)
 {
-    Traces() << "\n" << "LOG: void CopyWsk(TCPSocket_ptr connection, const char *wskM)";
+    TRACE_FLAG_FOR_CLASS_Message Traces() << "\n" << "LOG: void CopyWsk(TCPSocket_ptr connection, const char *wskM)";
 
     wskMessage.reset(wskM);
     connectionWsk = connection;
@@ -35,7 +35,7 @@ void Message::CopyWsk(TCPConnection_ptr connection, char *wskM)
 
 Message & Message::operator=(const Message  & data)
 {
-    Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
+    TRACE_FLAG_FOR_CLASS_Message Traces() << "\n" << "LOG: Message & operator=(const Message & data)";
 
     if (this != &data)
     {
@@ -48,5 +48,5 @@ Message & Message::operator=(const Message  & data)
 
 Message::~Message()
 {
-    Traces() << "\n" << "LOG: ~Message()";    
+    TRACE_FLAG_FOR_CLASS_Message Traces() << "\n" << "LOG: ~Message()";
 }

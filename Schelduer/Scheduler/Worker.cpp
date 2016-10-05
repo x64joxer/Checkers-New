@@ -13,5 +13,5 @@ Worker::Worker(const std::map<std::string, std::string> & data)
 
 Worker::~Worker()
 {
-    Traces() << "\n" << "LOG: Worker::~Worker()";
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Worker::~Worker()";
 }

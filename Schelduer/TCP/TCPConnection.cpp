@@ -6,12 +6,12 @@ TCPConnection::TCPConnection(boost::asio::io_service& io_service)
                               socketActive(true),
                               io_service_(io_service)
 {
-    Traces() << "\n" << "LOG: TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)";
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)";
 }
 
 void TCPConnection::Start()
 {
-  Traces() << "\n" << "LOG: void TCPConnection::Start()";
+  TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::Start()";
 
   socket_.async_read_some(boost::asio::buffer(buffer_),
       boost::bind(&TCPConnection::HandleRead, shared_from_this(),
@@ -21,7 +21,7 @@ void TCPConnection::Start()
 
 void TCPConnection::Close()
 {
-  Traces() << "\n" << "LOG: void TCPConnection::Close()";
+  TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::Close()";
 
   io_service_.post(boost::bind(&TCPConnection::Stop, this));
 }
@@ -29,15 +29,15 @@ void TCPConnection::Close()
 void TCPConnection::HandleRead(const boost::system::error_code& e,
     std::size_t bytes_transferred)
 {
-  Traces() << "\n" << "LOG: void TCPConnection::HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred)";
+  TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred)";
 
   if (!e)
   {
-    Traces() << "\n" << "LOG: New message from " << socket_.remote_endpoint().address().to_string() << ":" << socket_.remote_endpoint().port();
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: New message from " << socket_.remote_endpoint().address().to_string() << ":" << socket_.remote_endpoint().port();
 
     Message tempMessage;
     tempMessage.CopyData(meWsk, buffer_.data());
-    Traces() << "\n" << "LOG: Push back new message";
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Push back new message";
     messageQueue->PushBack(tempMessage);
 
     socket_.async_read_some(boost::asio::buffer(buffer_),
@@ -47,7 +47,7 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
   }
   else if (e != boost::asio::error::operation_aborted)
   {
-    Traces() << "\n" << "LOG: Close connection";
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Close connection";
 
     socketActive = false;
     this->Close();
@@ -56,7 +56,7 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
 
 void TCPConnection::HandleWrite(const boost::system::error_code& e)
 {
-  Traces() << "\n" << "LOG: void TCPConnection::HandleWrite(const boost::system::error_code& e)";
+  TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::HandleWrite(const boost::system::error_code& e)";
 
   sendMutex.unlock();
 
@@ -75,7 +75,7 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
 
 void TCPConnection::SendMessage(const std::string message)
 {
-     Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
+     TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
 
     sendMutex.lock();
 
@@ -86,7 +86,7 @@ void TCPConnection::SendMessage(const std::string message)
 
 void TCPConnection::Stop()
 {
-  Traces() << "\n" << "LOG: void TCPConnection::Stop()";
+  TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::Stop()";
 
   if (socketActive)
   {
@@ -107,7 +107,7 @@ void TCPConnection::Stop()
 
 boost::asio::ip::tcp::socket& TCPConnection::Socket()
 {
-  Traces() << "\n" << "LOG: boost::asio::ip::tcp::socket& TCPConnection::Socket()";
+  TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: boost::asio::ip::tcp::socket& TCPConnection::Socket()";
 
   return socket_;
 }
@@ -115,5 +115,5 @@ boost::asio::ip::tcp::socket& TCPConnection::Socket()
 
 TCPConnection::~TCPConnection()
 {
-    Traces() << "\n" << "LOG: TCPConnection::~TCPConnection()";
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: TCPConnection::~TCPConnection()";
 }

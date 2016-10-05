@@ -10,7 +10,6 @@
 #include "MessageCoder.h"
 #include "Client.h"
 #include "Worker.h"
-#include "../ProgramVariables/ProgramVariables.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../ServerState/ServerState.h"

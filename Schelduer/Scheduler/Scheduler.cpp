@@ -3,7 +3,7 @@
 Scheduler::Scheduler() : wskConnectionManager(nullptr),
                          firstJobStarted(false)
 {
-    Traces() << "\n" << "LOG: Scheduler::Scheduler()";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Scheduler::Scheduler()";
     condition_var = new std::condition_variable();
     boardsToAnalyse.SetCondVar(condition_var);
 
@@ -11,7 +11,7 @@ Scheduler::Scheduler() : wskConnectionManager(nullptr),
 
 ConnectionManager * Scheduler::GetConnectionManager()
 {
-    Traces() << "\n" << "LOG: ConnectionManager * Scheduler::GetConnectionManager()";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: ConnectionManager * Scheduler::GetConnectionManager()";
 
     std::lock_guard<std::mutex> ls(mutex);
     return wskConnectionManager;
@@ -19,7 +19,7 @@ ConnectionManager * Scheduler::GetConnectionManager()
 
 void Scheduler::SetConnectionManager(ConnectionManager *wsk)
 {
-    Traces() << "\n" << "LOG: void Scheduler::SetConnectionManager(ConnectionManager *wsk)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SetConnectionManager(ConnectionManager *wsk)";
 
     std::lock_guard<std::mutex> ls(mutex);
     wskConnectionManager = wsk;
@@ -28,7 +28,7 @@ void Scheduler::SetConnectionManager(ConnectionManager *wsk)
 
 void Scheduler::Start(const unsigned short numofthread)
 {
-    Traces() << "\n" << "LOG: void Scheduler::Start(const unsigned short numofthread)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::Start(const unsigned short numofthread)";
 
     if (numofthread == 0)
     {
@@ -38,7 +38,7 @@ void Scheduler::Start(const unsigned short numofthread)
 
     for (unsigned short i=0;i<numofthread;i++)
     {
-        Traces() << "\n" << "LOG: Start thread: " << i + 1;
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Start thread: " << i + 1;
         schedulerThread[i] = std::move(std::thread(&Scheduler::StartScheduling,
                                             this));
 
@@ -48,7 +48,7 @@ void Scheduler::Start(const unsigned short numofthread)
 
 void Scheduler::StartScheduling()
 {
-    Traces() << "\n" << "LOG: void Scheduler::StartScheduling()";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::StartScheduling()";
 
     Message tmpMessage;
     TCPConnection_ptr tmpTCP_Connection_ptr;
@@ -60,7 +60,7 @@ void Scheduler::StartScheduling()
 
     while (true)
     {
-        Traces() << "\n" << "LOG: Waiting for a job..";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Waiting for a job..";
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);
 
@@ -76,7 +76,7 @@ void Scheduler::StartScheduling()
 
         if (isNewMessage)
         {
-            Traces() << "\n" << "LOG: Try reading message from message queue";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Try reading message from message queue";
 
             try
             {
@@ -86,7 +86,7 @@ void Scheduler::StartScheduling()
             catch (...)
             {
                 wasMessage = false;
-                Traces() << "\n" << "LOG: List empty. Not a bug.";
+                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: List empty. Not a bug.";
             }
 
             if (wasMessage)
@@ -101,12 +101,12 @@ void Scheduler::StartScheduling()
         } else
         if (isNewBoardToAnalyse)
         {
-            Traces() << "\n" << "LOG: New board to analyse";            
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: New board to analyse";
             DistributeWorkToWorkers(dest);
         }
         if (isClientToUpate)
         {
-            Traces() << "\n" << "LOG: Client to update";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client to update";
 
             UpdateNextClientStatus(tmpTCP_Connection_ptr, dest);
         }
@@ -117,7 +117,7 @@ void Scheduler::StartScheduling()
 
 void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest, char * data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & dest, char * data, char * dest)";
 
     try
     {
@@ -125,7 +125,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
         if (action == MessageCoder::CLOSE_CNNECTION)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
 
             bool removeResult;
 
@@ -135,23 +135,23 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         } else
         if (action == MessageCoder::SET_STATE)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::SET_STATE";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::SET_STATE";
 
             SetState(socket, data, dest);
         } else            
         if (action == MessageCoder::SET_ROLE)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";            
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::SET_ROLE";
             SetRole(socket, data, dest);            
         } else
         if (action == MessageCoder::GET_SERVER_STATE)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::GET_SERVER_STATE";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::GET_SERVER_STATE";
             SendServerState(socket, state, data, dest);
         } else
         if (action == MessageCoder::START_WORK)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
 
             Board tmpBoard;
             MessageCoder::MapToBoard(data, &tmpBoard);
@@ -166,19 +166,19 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         } else
         if (action == MessageCoder::BEST_RESULT)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::BEST_RESULT";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::BEST_RESULT";
 
             RecevieBestResult(socket, data, dest);
         } else
         if (action == MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS";
 
             FinishWork(data, dest);
         } else
         if (action == MessageCoder::OK)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::OK";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::OK";
 
             bool okFlag = false;
 
@@ -186,7 +186,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             {
                 Client_ptr tmpClinet = clients.At(socket);
 
-                Traces() << "\n" << "LOG: Client found on the tiemr list";
+                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
 
                 if (tmpClinet->GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
                 {
@@ -210,7 +210,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                 {
                     Worker_ptr tmpWorker = workers.At(socket);
 
-                    Traces() << "\n" << "LOG: Worker found on the tiemr list";
+                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
 
                     if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
                     {
@@ -233,12 +233,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         } else
         if (action == MessageCoder::TIMEOUT)
         {
-            Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
 
             try
             {
                 clients.At(socket);
-                Traces() << "\n" << "LOG: Client found on the tiemr list";
+                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
                 socket->Close();
             }
             catch (const std::out_of_range& oor)
@@ -249,7 +249,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             try
             {
                 Worker_ptr tmpWorker = workers.At(socket);
-                Traces() << "\n" << "LOG: Client found on the tiemr list";
+                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
 
                 if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
                 {
@@ -279,7 +279,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
 void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SetRole(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
     try
     {
         std::string role = data.at(MessageCoder::ROLE);
@@ -301,7 +301,7 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
 
 void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::SetState(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SetState(TCPConnection_ptr socket, std::map<std::string, std::string> & dest)";
     try
     {
        Worker_ptr tmpWorker = workers.At(socket);
@@ -316,7 +316,7 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
 
        MessageCoder::CreateOkMessage(messageId, dest);
 
-       Traces() << "\n" << "LOG: Sending: " << dest;
+       TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
        socket->SendMessage(dest);
     }
@@ -334,7 +334,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateServerStateMessage(serverState, messageId, dest);
 
-        Traces() << "\n" << "LOG: Sending: " << dest;
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
         socket->SendMessage(dest);
     }
@@ -354,7 +354,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateServerStateMessage(serverState, messageId, dest);
 
-        Traces() << "\n" << "LOG: Sending: " << dest;
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
         socket->SendMessage(dest);
     }
@@ -366,7 +366,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
 
 void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
 
     if (clients.Insert(socket, Client_ptr(new Client()))  == true)
@@ -380,7 +380,7 @@ void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, 
 
         MessageCoder::CreateOkMessage(messageId, dest);
 
-        Traces() << "\n" << "LOG: Sending: " << dest;
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
         socket->SendMessage(dest);
     }
@@ -388,7 +388,7 @@ void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, 
 
 void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
 
     Worker_ptr tmpWorkerPtr;
     tmpWorkerPtr.reset(new Worker());
@@ -402,14 +402,14 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateOkMessage(messageId, dest);
 
-        Traces() << "\n" << "LOG: Sending: " << dest;                
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
         socket->SendMessage(dest);
     }    
 }
 
 bool Scheduler::RemoveClient(TCPConnection_ptr socket)
 {
-    Traces() << "\n" << "LOG: void Scheduler::RemoveClient(TCPConnection_ptr socket)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::RemoveClient(TCPConnection_ptr socket)";
 
     bool flag =  false;
 
@@ -424,14 +424,14 @@ bool Scheduler::RemoveClient(TCPConnection_ptr socket)
         flag = true;
     }
 
-    if (!flag) Traces() << "\n" << "LOG: Client removed";
+    if (!flag) TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client removed";
 
     return !flag;
 }
 
 bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
 {
-    Traces() << "\n" << "LOG: void Scheduler::RemoveSocket(TCPConnection_ptr socket)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::RemoveSocket(TCPConnection_ptr socket)";
 
     bool flag =  false;    
 
@@ -448,7 +448,7 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
 
     if (!flag)
     {
-        Traces() << "\n" << "LOG: Worker removed";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker removed";
     }
 
     return !flag;
@@ -456,7 +456,7 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
 
 void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
 {
-    Traces() << "\n" << "LOG: void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
 
     QueueTimer_ptr tmpTimer;
     tmpTimer = std::shared_ptr<QueueTimer> (new QueueTimer());
@@ -474,7 +474,7 @@ void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int 
 
 void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
 {
-    Traces() << "\n" << "LOG: void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
 
     QueueTimer_ptr tmpTimer;
     tmpTimer = std::shared_ptr<QueueTimer> (new QueueTimer());
@@ -492,16 +492,16 @@ void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, c
 
 void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker)
 {
-    Traces() << "\n" << "LOG: void Scheduler::UpdateFreeWorkerList(const Worker & worker)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::UpdateFreeWorkerList(const Worker & worker)";
 
     if (worker->GetState() == Peers::FREE)
     {
-        Traces() << "\n" << "LOG: Free workers added to free workers list";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Free workers added to free workers list";
 
         freeWorkers.PushBack(socket);
     } else
     {
-        Traces() << "\n" << "LOG: Free workers removed from free workers list";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Free workers removed from free workers list";
 
         freeWorkers.Remove(socket);
     }
@@ -509,11 +509,11 @@ void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr work
 
 void Scheduler::DistributeWorkToWorkers(char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::DistributeWorkToWorkers()";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::DistributeWorkToWorkers()";
 
     if (freeWorkers.Size() == 1)
     {
-        Traces() << "\n" << "LOG: freeWorkers.Size() == 1";        
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: freeWorkers.Size() == 1";
 
         bool listEmpty = false;
         TCPConnection_ptr tmpWorkerSocket;
@@ -544,7 +544,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
             {
                 if (!firstJobStarted)
                 {
-                    Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
+                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
 
                     std::string messageId = MessageCoder::CreateMessageId();
                     std::string jobId = MessageCoder::CreateMessageId();
@@ -565,7 +565,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                     CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
                 } else
                 {
-                    Traces() << "\n" << "LOG: Send job to worker";
+                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to worker";
 
                     std::string messageId = MessageCoder::CreateMessageId();
                     std::string jobId = MessageCoder::CreateMessageId();
@@ -589,7 +589,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
     } else
     {
-        Traces() << "\n" << "LOG: freeWorkers.Size() > 1";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: freeWorkers.Size() > 1";
 
         bool listEmpty = false;
         TCPConnection_ptr tmpWorkerSocket;
@@ -620,7 +620,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
             {
                 if (!firstJobStarted)
                 {
-                    Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
+                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
 
                     std::string messageId = MessageCoder::CreateMessageId();
                     std::string jobId = MessageCoder::CreateMessageId();
@@ -641,7 +641,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                     CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
                 } else
                 {
-                    Traces() << "\n" << "LOG: Send job to worker";
+                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to worker";
 
                     std::string messageId = MessageCoder::CreateMessageId();
                     std::string jobId = MessageCoder::CreateMessageId();
@@ -668,7 +668,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)";
 
     bool wasClientToUpdate = true;
 
@@ -679,7 +679,7 @@ void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, 
     catch (std::string)
     {
         wasClientToUpdate = false;
-        Traces() << "\n" << "LOG: List empty. Not a bug.";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: List empty. Not a bug.";
     }
 
     if (wasClientToUpdate)
@@ -692,7 +692,7 @@ void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, 
 
 void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::RecevieBestResult(const std::map<std::string, std::string> & data)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::RecevieBestResult(const std::map<std::string, std::string> & data)";
 
     Board tmpBoard;
     MessageCoder::MapToBoard(data, &tmpBoard);
@@ -702,13 +702,13 @@ void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     MessageCoder::CreateOkMessage(messageId, dest);
 
-    Traces() << "\n" << "LOG: Sending: " << dest;
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
     socket->SendMessage(dest);
 }
 
 void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)";
 
     state.SetBoard(CalculateBestResult());
     state.SetThinking(false);
@@ -717,14 +717,14 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
 
 void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 
     clients.GetAllKeys(clientsToStateUpdate);
 }
 
 Board Scheduler::CalculateBestResult()
 {
-    Traces() << "\n" << "LOG: Board Scheduler::CalculateBestResult()";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Board Scheduler::CalculateBestResult()";
 
     unsigned int listSize = boardsToAnalyse.Size();
 

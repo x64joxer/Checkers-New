@@ -4,7 +4,6 @@
 #include "ConnectionManager/ConnectionManager.h"
 #include "TCP/TCPServer.h"
 #include "Traces/Traces.h"
-#include "ProgramVariables/ProgramVariables.h"
 #include "Scheduler/Scheduler.h"
 
 using namespace std;
