@@ -11,7 +11,7 @@
 #include "Board/Board.h"
 #include "Board/PossibleMoves.h"
 #include "TCP/TCPHandler.h"
-#include "ProgramVariables.h"
+#include "../ProgramVariables/ProgramVariables.h"
 #include "ServerState/ServerState.h"
 
 

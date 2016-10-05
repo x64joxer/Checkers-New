@@ -3,6 +3,7 @@
 
 #include <list>
 #include "Board.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class PossibleMoves
 {

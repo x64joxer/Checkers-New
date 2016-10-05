@@ -6,7 +6,7 @@
 #include <QTimer>
 #include "Board/Board.h"
 #include "MessageCoder/MessageCoder.h"
-#include "ProgramVariables.h"
+#include "../ProgramVariables/ProgramVariables.h"
 #include "ServerState/ServerState.h"
 
 class TCPHandler : public QObject

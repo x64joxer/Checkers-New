@@ -430,7 +430,7 @@ void CheckerArea::CheckStatus()
 
 void CheckerArea::DisconnectFromServer()
 {
-    Traces() << "\n" << "LOG: void CheckerArea::DisconnectFromServer()";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::DisconnectFromServer()";
 
     disconnectTimer->stop();
     cursorState = Free;
@@ -440,7 +440,7 @@ void CheckerArea::DisconnectFromServer()
 
 void CheckerArea::GetServerState(const ServerState &state)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::GetServerState(const ServerState &state)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::GetServerState(const ServerState &state)";
 
     serverState = state;
     *board = serverState.GetBoard();
@@ -459,7 +459,7 @@ void CheckerArea::GetServerState(const ServerState &state)
 
 void CheckerArea::ClearStateMessage()
 {
-    Traces() << "\n" << "LOG: void CheckerArea::ClearStateMessage()";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::ClearStateMessage()";
     messageWindow = "";
     clearMessageTimer->stop();
     repaint();
@@ -467,7 +467,7 @@ void CheckerArea::ClearStateMessage()
 
 void CheckerArea::StateConnecting(const QString data)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::StateConnecting(const QString data)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::StateConnecting(const QString data)";
 
     clearMessageTimer->stop();
     messageWindow = "Connecting to: " + data;
@@ -476,7 +476,7 @@ void CheckerArea::StateConnecting(const QString data)
 
 void CheckerArea::StateRegister(const QString server)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::StateRegister(const QString server)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::StateRegister(const QString server)";
 
     clearMessageTimer->stop();
     messageWindow = "Registering...";
@@ -485,7 +485,7 @@ void CheckerArea::StateRegister(const QString server)
 
 void CheckerArea::StateUpdating(const QString server)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::StateUpdating(const QString server)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::StateUpdating(const QString server)";
 
     clearMessageTimer->stop();
     messageWindow = "Updating status...";
@@ -494,14 +494,14 @@ void CheckerArea::StateUpdating(const QString server)
 
 void CheckerArea::StateUpdated(const QString server)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::StateUpdated(const QString server)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::StateUpdated(const QString server)";
     messageWindow = "";
     repaint();
 }
 
 void CheckerArea::SendingJob(const QString server)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::SendingJob(const QString server)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::SendingJob(const QString server)";
 
     clearMessageTimer->stop();
     messageWindow = "Sending job...";
@@ -510,7 +510,7 @@ void CheckerArea::SendingJob(const QString server)
 
 void CheckerArea::ProblemWithSendingJob(const QString server)
 {
-    Traces() << "\n" << "LOG: void CheckerArea::ProblemWithSendingJob(const QString server)";
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::ProblemWithSendingJob(const QString server)";
 
     clearMessageTimer->stop();
     messageWindow = "Problem with sending job to server";

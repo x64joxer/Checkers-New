@@ -24,7 +24,7 @@ void TCPHandler::ConnectToServer(const QString ho,  int po)
     host = ho;
     port = po;
 
-    Traces() << "\n" << "LOG: Connecting to host:" << host.toStdString() << " port:" << port;
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Connecting to host:" << host.toStdString() << " port:" << port;
 
     emit StateConnecting(host + ":" + QString::number(port));
     tcpSocket->connectToHost(host,port);
@@ -77,7 +77,7 @@ void TCPHandler::Init()
 
 void TCPHandler::SendRegisterMessage()
 {
-    Traces() << "\n" << "LOG: void TCPHandler::SendRegisterMessage()";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::SendRegisterMessage()";
 
     emit StateRegister(host + ":" + QString::number(port));
     while(tcpSocket->waitForBytesWritten()) {}
@@ -90,7 +90,7 @@ void TCPHandler::SendRegisterMessage()
 
 void TCPHandler::SendGetServerStateMessage()
 {
-    Traces() << "\n" << "LOG: void TCPHandler::SendGetServerStateMessage()";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::SendGetServerStateMessage()";
 
     emit StateUpdating(host + ":" + QString::number(port));
     while(tcpSocket->waitForBytesWritten()) {}
@@ -103,7 +103,7 @@ void TCPHandler::SendGetServerStateMessage()
 
 void TCPHandler::SendOkMessage(const std::string messageId)
 {
-    Traces() << "\n" << "LOG: void TCPHandler::SendOkMessage(const std::string messageId)";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::SendOkMessage(const std::string messageId)";
 
     while(tcpSocket->waitForBytesWritten()) {}
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
@@ -115,7 +115,7 @@ void TCPHandler::SendOkMessage(const std::string messageId)
 
 void TCPHandler::SendJob(const Board &board)
 {
-    Traces() << "\n" << "LOG: void TCPHandler::SendJob(const Board &board)";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::SendJob(const Board &board)";
 
     while(tcpSocket->waitForBytesWritten()) {}
 
@@ -124,7 +124,7 @@ void TCPHandler::SendJob(const Board &board)
     std::string jobId = MessageCoder::CreateMessageId();
     MessageCoder::CreateStartMessage(ProgramVariables::GetMaxMilisecondsForIa(), 1, tempId, jobId, board, globalData);
 
-    Traces() << "\n" << "LOG: Sending job to server " << globalData;
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Sending job to server " << globalData;
 
     tcpSocket->write(globalData);
 
@@ -134,13 +134,13 @@ void TCPHandler::SendJob(const Board &board)
 
 void TCPHandler::Start()
 {
-    Traces() << "\n" << "LOG: void TCPHandler::Start()";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::Start()";
     ConnectToServer(ProgramVariables::GetServerIP(), ProgramVariables::GetServerPort());
 }
 
 void TCPHandler::DecodeMessage(const char * data)
 {
-    Traces() << "\n" << "LOG: void TCPHandler::DecodeMessage(const char * data)";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::DecodeMessage(const char * data)";
 
     std::map<std::string, std::string> messageContent;
 
@@ -152,7 +152,7 @@ void TCPHandler::DecodeMessage(const char * data)
 
         if (action == MessageCoder::OK)
         {
-            Traces() << "\n" << "LOG: Message OK received";
+            TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Message OK received";
 
             if (connection_state == CONNECTED)
             {
@@ -177,7 +177,7 @@ void TCPHandler::DecodeMessage(const char * data)
         } else
         if (action == MessageCoder::SERVER_STATE)
         {
-            Traces() << "\n" << "LOG: Message SERVER_STATE received";
+            TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Message SERVER_STATE received";
 
             if (connection_state == REGISTERED)
             {
@@ -224,7 +224,7 @@ void TCPHandler::DecodeMessage(const char * data)
             } else
             if (connection_state == WAIT_FOR_STATE_UPDATE)
             {
-                Traces() << "\n" << "LOG: connection_state == WAIT_FOR_STATE_UPDATE";
+                TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: connection_state == WAIT_FOR_STATE_UPDATE";
 
                 waitForOKMessageTimer->stop();
                 Board tmpBoard;
@@ -267,7 +267,7 @@ void TCPHandler::DecodeMessage(const char * data)
 
 void TCPHandler::Connected()
 {
-    Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: SUCCES! Connected to host:"  << host.toStdString() << " port:" << port;;
 
     time->start();
     connection_state = CONNECTED;
@@ -275,7 +275,7 @@ void TCPHandler::Connected()
 
 void TCPHandler::Disconnect()
 {
-    Traces() << "\n" << "LOG: void TCPHandler::Disconnect()";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::Disconnect()";
 
     connection_state = DISCONNECTED;
     tcpSocket->close();
@@ -284,7 +284,7 @@ void TCPHandler::Disconnect()
 
 void TCPHandler::NoResponseFromServer()
 {
-    Traces() << "\n" << "LOG: void TCPHandler::NoResponseFromServer()";
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::NoResponseFromServer()";
 
     waitForOKMessageTimer->stop();
 
@@ -318,13 +318,13 @@ void TCPHandler::Reconnect()
 
     if (connection_state == ConState::DISCONNECTED)
     {
-        Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
+        TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Reconnecting to host:"  << host.toStdString() << " port:" << port;;
         emit StateConnecting(host + ":" + QString::number(port));
         tcpSocket->connectToHost(host,port);
     } else
     if (connection_state == ConState::CONNECTED)
     {
-        Traces() << "\n" << "LOG: Registering as client";
+        TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Registering as client";
         SendRegisterMessage();
         waitForOKMessageTimer->start();
 
@@ -339,7 +339,7 @@ void TCPHandler::ReadDataFromServer()
     MessageCoder::ClearChar(globalData, ProgramVariables::K4);
     strcpy(globalData, tcpSocket->readAll().toStdString().c_str());
 
-    Traces() << "\n" << "LOG: Read data from server: " <<  std::string(globalData);
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Read data from server: " <<  std::string(globalData);
 
     DecodeMessage(globalData);
 

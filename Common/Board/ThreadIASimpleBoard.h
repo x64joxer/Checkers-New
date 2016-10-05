@@ -2,7 +2,6 @@
 #define THREADIASIMPLEBOARD_H
 
 #include "Pawn.h"
-#include "../ProgramVariables/ProgramVariables.h"
 
 class ThreadIASimpleBoard
 {

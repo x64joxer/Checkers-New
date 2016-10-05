@@ -23,11 +23,11 @@ SOURCES += main.cpp\
     Board/PossibleMoves.cpp \
     Board/ThreadIASimpleBoard.cpp \
     TCP/TCPHandler.cpp \
-    ProgramVariables.cpp \
     Traces/Traces.cpp \
     MessageCoder/MessageCoder.cpp \
     Peers/Peers.cpp \
-    ServerState/ServerState.cpp
+    ServerState/ServerState.cpp \
+    ProgramVariables/ProgramVariables.cpp
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
     Board/Board.h \
@@ -40,7 +40,8 @@ HEADERS  += mainwindow.h \
     Traces/Traces.h \
     MessageCoder/MessageCoder.h \
     Peers/Peers.h \
-    ServerState/ServerState.h
+    ServerState/ServerState.h \
+    ProgramVariables/ProgramVariables.h
 
 FORMS    += mainwindow.ui \
     GUI/CheckerArea.ui
