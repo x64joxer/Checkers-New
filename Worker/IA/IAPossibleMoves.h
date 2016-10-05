@@ -4,6 +4,7 @@
 #include "../Board/Board.h"
 #include "../Board/PawnPos.h"
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class IAPossibleMoves
 {

@@ -5,6 +5,7 @@
 #include "../Traces/Traces.h"
 #include "../IA/IAPossibleMoves.h"
 #include "ThreadIABoardQueue.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 enum KindOfSteps { Time, Step };
 

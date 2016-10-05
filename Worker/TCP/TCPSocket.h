@@ -13,6 +13,7 @@
 #include "../Worker/Message.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "TCPSocketBody.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 using namespace std;
 using boost::asio::ip::tcp;

@@ -12,6 +12,7 @@
 #include "../Worker/MessageCoder.h"
 #include "../Worker/Message.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class TCPSocket;
 

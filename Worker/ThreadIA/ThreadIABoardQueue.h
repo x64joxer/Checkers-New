@@ -6,6 +6,7 @@
 #include <mutex>
 #include "../Board/Board.h"
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 template <unsigned long long size>
 class ThreadIABoardQueue

@@ -7,6 +7,7 @@
 #include "ThreadIABoardQueue.cpp"
 #include "ThreadIATreeExpander.cpp"
 #include "../Traces/Traces.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 template <unsigned long long QMain>
 class ThreadIAMove

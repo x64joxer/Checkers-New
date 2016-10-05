@@ -9,6 +9,7 @@
 #include "../Board/Pawn.h"
 #include "../Board/PawnPos.h"
 #include "../Board/ThreadIASimpleBoard.h"
+#include "../ProgramVariables/ProgramVariables.h"
 
 class ThreadIASimpleBoard;
 
