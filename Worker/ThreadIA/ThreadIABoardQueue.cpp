@@ -121,7 +121,7 @@ Board ThreadIABoardQueue<size>::PopFront(const unsigned short num)
         TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: last " << last;
         TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Number of cells " << numberOfElements;
 
-        queue[temp].PrintDebug();
+        TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue queue[temp].PrintDebug();
         guard.unlock();
         return queue[temp];
     };
@@ -217,7 +217,7 @@ Board ThreadIABoardQueue<size>::GetBestResult() const
         };
 
         TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Origin of doNotForgetqueue[0]";
-        doNotForgetqueue[0].GetOrigin().PrintDebug();
+        TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue doNotForgetqueue[0].GetOrigin().PrintDebug();
 
 
         if (doNotForgetnumberOfElements>1)
@@ -257,7 +257,7 @@ void ThreadIABoardQueue<size>::GetBestResultMultiThread(bool make, const unsigne
         temp = At(0);
 
         TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Current best result";
-        temp.PrintDebug();
+        TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue temp.PrintDebug();
 
         for (unsigned long long i = 0; i<numberOfElements; i++)
         {
@@ -280,7 +280,7 @@ void ThreadIABoardQueue<size>::GetBestResultMultiThread(bool make, const unsigne
             TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: !make = false";
             result = doNotForgetqueue[start2].GetPercentageResult();
             temp = doNotForgetqueue[start2];            
-            temp.PrintDebug();
+            TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue temp.PrintDebug();
         };
 
         TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue Traces() << "\n" << "LOG: Searching best";
@@ -291,7 +291,7 @@ void ThreadIABoardQueue<size>::GetBestResultMultiThread(bool make, const unsigne
             {
                 result =  doNotForgetqueue[i].GetPercentageResult();
                 temp = doNotForgetqueue[i];
-                temp.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIABoardQueue temp.PrintDebug();
             };
         };
     };

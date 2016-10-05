@@ -267,7 +267,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
             AddToDoNotForgetQueue(boardLocal);
 
             TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: There was situation when all black was killed!";
-            boardLocal.PrintDebug();
+            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander boardLocal.PrintDebug();
             return 0;
         };
 
@@ -277,7 +277,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomLeftWhite(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitBottomLeftWhite(i, tempNew);
            killFlag = true;
 
@@ -288,14 +288,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //Right Bottom
        if (possible.CheckHitBottomRightWhite(i, boardLocal))
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomRightWhite(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitBottomRightWhite(i, tempNew);
            killFlag = true;
            tempNew.StartWhite();
@@ -305,7 +305,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //For pons
        if (boardLocal.GetWhitePawnPons(i))
@@ -315,7 +315,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomLeftWhite(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitTopLeftWhite(i, tempNew);
               killFlag = true;
               tempNew.StartWhite();
@@ -325,14 +325,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
           //Right Bottom
           if (possible.CheckHitTopRightWhite(i, boardLocal))
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomRightWhite(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitTopRightWhite(i, tempNew);
               killFlag = true;
               tempNew.StartWhite();
@@ -342,7 +342,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
        };
 
@@ -362,7 +362,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
         AddToDoNotForgetQueue(boardLocal);
 
         TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: There was situation when all white was killed!";
-        boardLocal.PrintDebug();
+        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander boardLocal.PrintDebug();
         return 0;
     };
 
@@ -374,7 +374,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomLeftWhite(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitBottomLeftWhite(i, tempNew);
            killFlag = true;
            tempNew.StartWhite();
@@ -383,14 +383,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //Right Bottom
        if (possible.CheckHitBottomRightWhite(i, boardLocal))
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomRightWhite(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitBottomRightWhite(i, tempNew);
            killFlag = true;
            tempNew.StartWhite();
@@ -399,7 +399,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //For pons
        if (boardLocal.GetWhitePawnPons(i))
@@ -409,7 +409,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomLeftWhite(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitTopLeftWhite(i, tempNew);
               killFlag = true;
               tempNew.StartWhite();
@@ -418,14 +418,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
           //Right Bottom
           if (possible.CheckHitTopRightWhite(i, boardLocal))
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitBottomRightWhite(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitTopRightWhite(i, tempNew);
               killFlag = true;
               tempNew.StartWhite();
@@ -434,7 +434,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
        };
     };
@@ -453,7 +453,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
             {
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutBottomLeftWhite(" << i << ", board) == true";
                 Board tempNew = boardLocal;
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 tempNew.PutWhiteBottomLeftPawn(i);
                 tempNew.StartBlack();
                 tempNew.SetPreviousMurder(12);
@@ -461,7 +461,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                 AddToMainQueue(tempNew);
 
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 canImove = true;
             };
             //Bottom Right
@@ -469,7 +469,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
             {
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutBottomRightWhite(" << i << ", board) == true";
                 Board tempNew = boardLocal;
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 tempNew.PutWhiteBottomRightPawn(i);
                 tempNew.StartBlack();
                 tempNew.SetPreviousMurder(12);
@@ -477,7 +477,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                 AddToMainQueue(tempNew);
 
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 canImove = true;
             };
             //For pons
@@ -488,7 +488,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                 {
                     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutTopLeftWhite(" << i << ", board) == true";
                     Board tempNew = boardLocal;
-                    tempNew.PrintDebug();
+                    TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                     tempNew.PutWhiteTopLeftPawn(i);
 
                     //TO DO if (board.IsSimilarWhiteInPatch(treePointer,tempNew) == false)
@@ -499,7 +499,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                         AddToMainQueue(tempNew);
 
                         TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                        tempNew.PrintDebug();
+                        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                         canImove = true;
                     //TO DO } else
                     //TO DO {
@@ -511,7 +511,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                 {
                     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutTopRightWhite(" << i << ", board) == true";
                     Board tempNew = boardLocal;
-                    tempNew.PrintDebug();
+                    TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                     tempNew.PutWhiteTopRightPawn(i);
 
                     //TO DO if (board.IsSimilarWhiteInPatch(treePointer,tempNew) == false)
@@ -522,7 +522,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                         AddToMainQueue(tempNew);
 
                         TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                        tempNew.PrintDebug();
+                        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                         canImove = true;
                     //TO DO } else
                     //TO DO {
@@ -538,7 +538,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandWhite(const Board & board, cons
                 AddToDoNotForgetQueue(boardLocal);
 
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: There was situation when white player can not move!";
-                boardLocal.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander boardLocal.PrintDebug();
             };
         };
     };
@@ -564,7 +564,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
             AddToDoNotForgetQueue(boardLocal);
 
             TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: There was situation when all White was killed!";
-            boardLocal.PrintDebug();
+            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander boardLocal.PrintDebug();
             return 0;
         };
 
@@ -574,7 +574,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopLeftBlack(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitTopLeftBlack(i, tempNew);
            killFlag = true;
 
@@ -584,14 +584,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //Right Top
        if (possible.CheckHitTopRightBlack(i, boardLocal))
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopRightBlack(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitTopRightBlack(i, tempNew);
            killFlag = true;
            tempNew.StartBlack();
@@ -600,7 +600,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //For pons
        if (boardLocal.GetBlackPawnPons(i))
@@ -610,7 +610,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopLeftBlack(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitBottomLeftBlack(i, tempNew);
               killFlag = true;
               tempNew.StartBlack();
@@ -619,14 +619,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
           //Right Top
           if (possible.CheckHitBottomRightBlack(i, boardLocal))
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopRightBlack(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitBottomRightBlack(i, tempNew);
               killFlag = true;
               tempNew.StartBlack();
@@ -635,7 +635,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
        };
 
@@ -654,7 +654,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
         AddToDoNotForgetQueue(boardLocal);
 
         TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: There was situation when all Black was killed!";
-        boardLocal.PrintDebug();
+        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander boardLocal.PrintDebug();
         return 0;
     };
 
@@ -666,7 +666,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopLeftBlack(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitTopLeftBlack(i, tempNew);
            killFlag = true;
            tempNew.StartBlack();
@@ -675,14 +675,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //Right Top
        if (possible.CheckHitTopRightBlack(i, boardLocal))
        {
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopRightBlack(" << i << ", board) == true";
            Board tempNew = boardLocal;
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
            possible.KillHitTopRightBlack(i, tempNew);
            killFlag = true;
            tempNew.StartBlack();
@@ -691,7 +691,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
            AddToMainQueue(tempNew);
 
            TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-           tempNew.PrintDebug();
+           TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
        };
        //For pons
        if (boardLocal.GetBlackPawnPons(i))
@@ -701,7 +701,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopLeftBlack(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitBottomLeftBlack(i, tempNew);
               killFlag = true;
               tempNew.StartBlack();
@@ -710,14 +710,14 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
           //Right Top
           if (possible.CheckHitBottomRightBlack(i, boardLocal))
           {
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckHitTopRightBlack(" << i << ", board) == true";
               Board tempNew = boardLocal;
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
               possible.KillHitBottomRightBlack(i, tempNew);
               killFlag = true;
               tempNew.StartBlack();
@@ -726,7 +726,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
               AddToMainQueue(tempNew);
 
               TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-              tempNew.PrintDebug();
+              TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
           };
        };
     };
@@ -745,7 +745,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
             {
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutTopLeftBlack(" << i << ", board) == true";
                 Board tempNew = boardLocal;
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 tempNew.PutBlackTopLeftPawn(i);
                 tempNew.StartWhite();
                 tempNew.SetPreviousMurder(12);
@@ -753,7 +753,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                 AddToMainQueue(tempNew);
 
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 canImove = true;
             }
             //Top Right
@@ -761,7 +761,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
             {
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutTopRightBlack(" << i << ", board) == true";
                 Board tempNew = boardLocal;
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 tempNew.PutBlackTopRightPawn(i);
                 tempNew.StartWhite();
                 tempNew.SetPreviousMurder(12);
@@ -769,7 +769,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                 AddToMainQueue(tempNew);
 
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                tempNew.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                 canImove = true;
             };
             //For pons
@@ -780,7 +780,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                 {
                     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutBottomLeftBlack(" << i << ", board) == true";
                     Board tempNew = boardLocal;
-                    tempNew.PrintDebug();
+                    TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                     tempNew.PutBlackBottomLeftPawn(i);
 
                     //TO DO if (board.IsSimilarBlackInPatch(treePointer,tempNew) == false)
@@ -791,7 +791,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                         AddToMainQueue(tempNew);
 
                         TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                        tempNew.PrintDebug();
+                        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                         canImove = true;
                     //TO DO } else
                     //TO DO {
@@ -803,7 +803,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                 {
                     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: possible.CheckPutBottomRightBlack(" << i << ", board) == true";
                     Board tempNew = boardLocal;
-                    tempNew.PrintDebug();
+                    TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                     tempNew.PutBlackBottomRightPawn(i);
 
                     //TO DO if (board.IsSimilarBlackInPatch(treePointer,tempNew) == false)
@@ -814,7 +814,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                         AddToMainQueue(tempNew);
 
                         TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Result";
-                        tempNew.PrintDebug();
+                        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander tempNew.PrintDebug();
                         canImove = true;
                     //TO DO } else
                     //TO DO {
@@ -830,7 +830,7 @@ bool ThreadIATreeExpander<MQueue, sQueue>::ExpandBlack(const Board & board, cons
                 AddToDoNotForgetQueue(boardLocal);
 
                 TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: There was situation when Black player can not move!";
-                boardLocal.PrintDebug();
+                TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander boardLocal.PrintDebug();
             };
         };
     };
