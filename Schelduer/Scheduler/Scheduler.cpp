@@ -166,6 +166,8 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()) - ProgramVariables::GetTimeReserveToSendBestResultToClient());
             state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
             CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTime());
+
+            boardsToAnalyse.Clear();
             boardsToAnalyse.PushBack(tmpBoard);
 
             SendStateToAllClients(data, dest);

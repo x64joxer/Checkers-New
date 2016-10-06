@@ -16,6 +16,7 @@ class SharedPtrList
 
         std::condition_variable *GetCondVar();
         bool Empty();
+        void Clear();
         void SetCondVar(std::condition_variable * wsk);
         void Remove(wskType & data);
         unsigned int Size();
@@ -38,6 +39,15 @@ bool SharedPtrList<wskType>::Empty()
 
     std::lock_guard<std::mutex> ls(mutex);
     return setList.empty();
+}
+
+template<typename wskType>
+void SharedPtrList<wskType>::Clear()
+{
+    TRACE_FLAG_FOR_CLASS_SharedPtrList Traces() << "\n" << "LOG: void SharedPtrList<wskType>::Clear()";
+
+    std::lock_guard<std::mutex> ls(mutex);
+    setList.clear();
 }
 
 template<typename wskType>
