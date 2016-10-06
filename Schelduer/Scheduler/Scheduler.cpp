@@ -154,6 +154,9 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
 
             Board tmpBoard;
+            tmpBoard = state.GetBoard();
+            state.SetPreviousBoard(tmpBoard);
+
             MessageCoder::MapToBoard(data, &tmpBoard);
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
@@ -761,6 +764,8 @@ Board Scheduler::CalculateBestResult()
     } else
     {
         Traces() << "\n" << "ERR: Number of boards 0";
+
+        return state.GetPrviousBoard();
     }
 }
 
