@@ -746,13 +746,13 @@ Board Scheduler::CalculateBestResult()
                         bestResult = tmpBoard;
                     }
                 }
-                catch(std::string)
+                catch(...)
                 {
 
                 }
             }
         }
-        catch(std::string)
+        catch(...)
         {
 
         }
