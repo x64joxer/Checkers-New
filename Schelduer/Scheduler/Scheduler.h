@@ -62,6 +62,7 @@ class Scheduler
         SharedPtrList<TCPConnection_ptr> clientsToStateUpdate;
         SharedPtrList<Board> boardsToAnalyse;        
         std::atomic<bool> firstJobStarted;        
+        std::atomic<bool> workOngoing;
 
         ServerState state;
         QueueTimerList timerList;

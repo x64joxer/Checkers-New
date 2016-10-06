@@ -1,7 +1,8 @@
 #include "Scheduler.h"
 
 Scheduler::Scheduler() : wskConnectionManager(nullptr),
-                         firstJobStarted(false)
+                         firstJobStarted(false),
+                         workOngoing(false)
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Scheduler::Scheduler()";
     condition_var = new std::condition_variable();
@@ -66,7 +67,7 @@ void Scheduler::StartScheduling()
 
         condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate]
         {
-            isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty());
+            isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty()) & (workOngoing);
             if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTime()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
             isNewMessage = wskConnectionManager->IsNewMessage();
             isClientToUpate = !clientsToStateUpdate.Empty();
@@ -152,6 +153,8 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         if (action == MessageCoder::START_WORK)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
+
+            workOngoing = true;
 
             Board tmpBoard;
             tmpBoard = state.GetBoard();
@@ -707,6 +710,8 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)";
 
+    workOngoing = false;
+    firstJobStarted = false;
     state.SetBoard(CalculateBestResult());
     state.SetThinking(false);
     SendStateToAllClients(data, dest);
