@@ -511,14 +511,18 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::DistributeWorkToWorkers()";
 
-    if (freeWorkers.Size() == 1)
+    bool listEmpty = false;
+    TCPConnection_ptr tmpWorkerSocket;
+    Worker_ptr tmpWorker;
+    bool tmpFirstJobStarted;
+    bool tmpSizeMoreThanOne;
+    Board tmpBoard;
+    unsigned int tmpFreeWorkerListSize;
+
     {
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: freeWorkers.Size() == 1";
+        std::lock_guard<std::mutex> ls(mutexWorkDistribute);
 
-        bool listEmpty = false;
-        TCPConnection_ptr tmpWorkerSocket;
-        Worker_ptr tmpWorker;
-
+        //Get free worker socket;
         try
         {
             tmpWorkerSocket = freeWorkers.PopFront();
@@ -528,142 +532,132 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
             listEmpty = true;
         }
 
+        //Get  free worker
         if (!listEmpty)
         {
             try
             {
                 tmpWorker = workers.At(tmpWorkerSocket);
                 tmpWorker->SetState(Peers::STATE::BUSY);
+                listEmpty = false;
             }
             catch (...)
             {
                 listEmpty = true;
             }
-
-            if (!listEmpty)
-            {
-                if (!firstJobStarted)
-                {
-                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
-
-                    std::string messageId = MessageCoder::CreateMessageId();
-                    std::string jobId = MessageCoder::CreateMessageId();
-                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
-
-
-                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
-                                                         boardsToAnalyse.PopFront(),
-                                                         messageId,
-                                                         jobId,
-                                                         true,
-                                                         dest);
-
-                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
-                    tmpWorkerSocket->SendMessage(dest);
-                    firstJobStarted = true;
-                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
-                } else
-                {
-                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to worker";
-
-                    std::string messageId = MessageCoder::CreateMessageId();
-                    std::string jobId = MessageCoder::CreateMessageId();
-                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
-
-
-                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
-                                                         boardsToAnalyse.PopFront(),
-                                                         messageId,
-                                                         jobId,
-                                                         false,
-                                                         dest);
-
-                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
-                    tmpWorkerSocket->SendMessage(dest);
-                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
-                }
-            }
-        }
-
-    } else
-    {
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: freeWorkers.Size() > 1";
-
-        bool listEmpty = false;
-        TCPConnection_ptr tmpWorkerSocket;
-        Worker_ptr tmpWorker;
-
-        try
+        } else
         {
-            tmpWorkerSocket = freeWorkers.PopFront();
-        }
-        catch (...)
-        {
-            listEmpty = true;
+            freeWorkers.PushBack(tmpWorkerSocket);
         }
 
+        //Get  board to analyse
         if (!listEmpty)
         {
             try
             {
-                tmpWorker = workers.At(tmpWorkerSocket);
-                tmpWorker->SetState(Peers::STATE::BUSY);
+                tmpBoard = boardsToAnalyse.PopFront();
+                listEmpty = false;
             }
             catch (...)
             {
                 listEmpty = true;
             }
+        } else
+        {
+            boardsToAnalyse.PushBack(tmpBoard);
+        }
 
-            if (!listEmpty)
-            {
-                if (!firstJobStarted)
-                {
-                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
+        if (!listEmpty)
+        {
+             tmpFirstJobStarted = firstJobStarted;
 
-                    std::string messageId = MessageCoder::CreateMessageId();
-                    std::string jobId = MessageCoder::CreateMessageId();
-                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+             if (!firstJobStarted)
+             {
+                 firstJobStarted = true;
+                 tmpFreeWorkerListSize = freeWorkers.Size() + 1;
 
-
-
-                    MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
-                                                                             freeWorkers.Size(),
-                                                                             boardsToAnalyse.PopFront(),
-                                                                             messageId,
-                                                                             jobId,
-                                                                             dest);
-
-                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
-                    tmpWorkerSocket->SendMessage(dest);                    
-                    firstJobStarted = true;
-                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
-                } else
-                {
-                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to worker";
-
-                    std::string messageId = MessageCoder::CreateMessageId();
-                    std::string jobId = MessageCoder::CreateMessageId();
-                    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
-
-
-                    MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
-                                                         boardsToAnalyse.PopFront(),
-                                                         messageId,
-                                                         jobId,
-                                                         false,
-                                                         dest);
-
-                    tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
-                    tmpWorkerSocket->SendMessage(dest);
-                    CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
-
-                }
-            }
+                 if (tmpFreeWorkerListSize == 1)
+                 {
+                    tmpSizeMoreThanOne = false;
+                 } else
+                 {
+                    tmpSizeMoreThanOne = true;
+                 }
+             }
         }
     }
+
+
+    if (!listEmpty)
+    {
+        if ((!tmpFirstJobStarted) && (!tmpSizeMoreThanOne))
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to only one worker";
+
+            std::string messageId = MessageCoder::CreateMessageId();
+            std::string jobId = MessageCoder::CreateMessageId();
+            MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+            MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+                                                 tmpBoard,
+                                                 messageId,
+                                                 jobId,
+                                                 true,
+                                                 dest);
+
+            tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+            tmpWorkerSocket->SendMessage(dest);
+            firstJobStarted = true;
+            CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+        } else
+        if ((!tmpFirstJobStarted) && (tmpSizeMoreThanOne))
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job and order worker to return N-result fast";
+
+            std::string messageId = MessageCoder::CreateMessageId();
+            std::string jobId = MessageCoder::CreateMessageId();
+            MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+            MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+                                                                     tmpFreeWorkerListSize,
+                                                                     tmpBoard,
+                                                                     messageId,
+                                                                     jobId,
+                                                                     dest);
+
+            tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+            tmpWorkerSocket->SendMessage(dest);
+            firstJobStarted = true;
+            CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+
+        } else
+        if (tmpFirstJobStarted)
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to worker";
+
+            std::string messageId = MessageCoder::CreateMessageId();
+            std::string jobId = MessageCoder::CreateMessageId();
+            MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+
+
+
+            MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+                                                 tmpBoard,
+                                                 messageId,
+                                                 jobId,
+                                                 false,
+                                                 dest);
+
+            tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+            tmpWorkerSocket->SendMessage(dest);
+            CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+        }
+    }
+
 }
 
 void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)

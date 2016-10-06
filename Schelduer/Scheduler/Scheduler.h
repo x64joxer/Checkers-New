@@ -53,6 +53,7 @@ class Scheduler
 
         std::thread schedulerThread[16];
         std::mutex mutex;
+        std::mutex mutexWorkDistribute;
         std::condition_variable *condition_var;
         SharedMap<TCPConnection_ptr, Client_ptr> clients;
         SharedMap<TCPConnection_ptr, Worker_ptr> workers;
