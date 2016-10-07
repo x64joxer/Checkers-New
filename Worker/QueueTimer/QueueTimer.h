@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <thread>
 #include <mutex>
+#include <chrono>
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
 #include "../Worker/Message.h"
 
@@ -20,15 +21,16 @@ class QueueTimer
         void Stop();
 
     private:
-        void DoSleep();
+        void DoSleep(std::timed_mutex *mutex_guard, std::atomic_bool * stop_flag, std::atomic_bool *threadExist);
 
         unsigned int time;
         SharedPtrList<Message> *messageQueue;
         Message messageToSend;
-        std::thread thread;
+        std::thread thread;        
+        std::timed_mutex mutex_guard;
+        std::mutex acces_mutex;
         std::atomic_bool stop_flag;
         std::atomic_bool threadExist;
-        std::mutex mutex_guard;
         std::condition_variable mycond;
 
 };
