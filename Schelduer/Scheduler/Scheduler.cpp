@@ -243,8 +243,10 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
 
+            timerList.RemoveFromList(socket);
+
             try
-            {
+            {                
                 clients.At(socket);
                 TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
                 socket->Close();
@@ -712,6 +714,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)";
 
+    timerList.RemoveFromList(nullptr);
     workOngoing = false;
     firstJobStarted = false;
     state.SetBoard(CalculateBestResult());
