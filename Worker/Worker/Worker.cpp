@@ -99,7 +99,7 @@ void Worker::StartWorking()
         if (jobToSendFast)
         {
             jobToSendFast = false;
-            numOfResultToReturnFast--;
+            if (numOfResultToReturnFast > 0) numOfResultToReturnFast--;
             SendResult(tmpBoard, dest, prevousMessageid, jobId, reconnectionTimer);
         }
 
@@ -172,7 +172,23 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
                     connection_state = DISCONNECTED;
                     socket.get()->Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
                     reconnectionTimer.Start();
-            }
+                }
+            } else
+            if (connection_state == ConState::BEST_RESULT_FAST_SEND)
+            {
+                reconnectionTimer.Stop();
+
+                if (prevousMessageid == data.at(MessageCoder::MESSAGE_ID))
+                {
+                    connection_state = ConState::STATEUPDATED;
+                } else
+                {
+                    Traces() << "\n" << "ERR: Wrong message ID!";
+
+                    connection_state = DISCONNECTED;
+                    socket.get()->Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
+                    reconnectionTimer.Start();
+                }
             } else
             {
                 Traces() << "\n" << "ERR: Wrong connection state";
@@ -253,7 +269,7 @@ void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & 
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
 
     endIaJobFlag = false;
-    myState = Peers::STATE::FREE;
+    myState = Peers::STATE::FREE;    
     connection_state = ConState::BEST_RESULT_SEND;
     conversationIsOngoing = true;
 
@@ -268,12 +284,12 @@ void Worker::SendResult(Board & board, char * dest, std::string & prevousMessage
 {
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer)";
 
-    connection_state = ConState::BEST_RESULT_SEND;
+    connection_state = ConState::BEST_RESULT_FAST_SEND;
     conversationIsOngoing = true;
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
-    MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, /*TO DO*/1, dest);
+    MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, 1, dest);
     socketToServer.WriteMessage(dest);
     reconnectionTimer.Start();
 }
@@ -289,7 +305,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         Counters::ClearCounterNumberOfAnalysedBoard();
         endIaJobFlag = false;
         canITakeBoardToReturnFast = false;
-        maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());;
+        maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
         if (fast)
         {
             numOfResultToReturnFast = std::atoi(data.at(MessageCoder::NUM_OF_BOARD_TO_RETURN_FAST).c_str());
