@@ -4,6 +4,7 @@ echo Building...
 
 g++ main.cpp \
     Worker/Worker.cpp \
+    Counters/Counters.cpp \
     ProgramVariables/ProgramVariables.cpp \
     ThreadIA/ThreadIABoardQueue.cpp \
     ThreadIA/ThreadIAMove.cpp \

@@ -16,6 +16,7 @@ class ProgramVariables
 
         //Traces flags
         static bool GetTraceFlagForClass_Board();
+        static bool GetTraceFlagForClass_Counters();
         static bool GetTraceFlagForClass_Pawn();
         static bool GetTraceFlagForClass_PawnPos();
         static bool GetTraceFlagForClass_PossibleMoves();
@@ -39,6 +40,7 @@ class ProgramVariables
 
     private:
         static bool traceFlagForClass_Board;
+        static bool traceFlagForClass_Counters;
         static bool traceFlagForClass_Pawn;
         static bool traceFlagForClass_PawnPos;
         static bool traceFlagForClass_PossibleMoves;
@@ -62,6 +64,7 @@ class ProgramVariables
 };
 
 #define TRACE_FLAG_FOR_CLASS_Board if (ProgramVariables::GetTraceFlagForClass_Board())
+#define TRACE_FLAG_FOR_CLASS_Counters if (ProgramVariables::GetTraceFlagForClass_Counters())
 #define TRACE_FLAG_FOR_CLASS_Pawn if (ProgramVariables::GetTraceFlagForClass_Pawn())
 #define TRACE_FLAG_FOR_CLASS_PawnPos if (ProgramVariables::GetTraceFlagForClass_PawnPos())
 #define TRACE_FLAG_FOR_CLASS_PossibleMoves if (ProgramVariables::GetTraceFlagForClass_PossibleMoves())

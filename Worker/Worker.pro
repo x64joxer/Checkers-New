@@ -25,7 +25,8 @@ SOURCES += main.cpp \
     ThreadIA/ThreadIABoardQueue.cpp \
     ThreadIA/ThreadIAMove.cpp \
     ThreadIA/ThreadIATreeExpander.cpp \
-    ProgramVariables/ProgramVariables.cpp
+    ProgramVariables/ProgramVariables.cpp \
+    Counters/Counters.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -52,5 +53,6 @@ HEADERS += \
     ThreadIA/ThreadIABoardQueue.h \
     ThreadIA/ThreadIAMove.h \
     ThreadIA/ThreadIATreeExpander.h \
-    ProgramVariables/ProgramVariables.h
+    ProgramVariables/ProgramVariables.h \
+    Counters/Counters.h
 
