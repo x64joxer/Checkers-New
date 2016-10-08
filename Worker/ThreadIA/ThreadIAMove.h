@@ -8,6 +8,7 @@
 #include "ThreadIATreeExpander.cpp"
 #include "../Traces/Traces.h"
 #include "../ProgramVariables/ProgramVariables.h"
+#include "../Counters/Counters.h"
 
 template <unsigned long long QMain>
 class ThreadIAMove
@@ -118,12 +119,11 @@ void ThreadIAMove<QMain>::operator ()(Board * boardWsk, std::atomic_bool * flag,
         //TO_DEL if (messageHandler) messageHandler->StopSharing();
         //TO_DO ProgramVariables::NotifyOne();
 
+        Counters::AddToCounterNumberOfAnalysedBoard(queue.Size() + queue.SizeDoNotForget());
 
-        //TO_DEL ProgramVariables::IncreaseNumOfAnalyded(queue.Size() + queue.SizeDoNotForget());
-
-        //TO_DO Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
-        //TO_DO Traces()<< "\n" << "LOG: Total num of analysed elements: " << ProgramVariables::GetNumOfAnalyded();
-        //TO_DO Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
+        TRACE_FLAG_FOR_CLASS_ThreadIAMove Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
+        TRACE_FLAG_FOR_CLASS_ThreadIAMove Traces()<< "\n" << "LOG: Total num of analysed elements: " << Counters::GetCounterNumberOfAnalysedBoard();
+        TRACE_FLAG_FOR_CLASS_ThreadIAMove Traces()<< "\n" << "LOG: -------------------------------------------------------------------";
 
         if (numberOfThreads <2)
         {

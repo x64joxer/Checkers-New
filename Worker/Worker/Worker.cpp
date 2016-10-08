@@ -259,7 +259,7 @@ void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & 
 
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
-    MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, /*TO DO*/1, dest);
+    MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, Counters::GetCounterNumberOfAnalysedBoard(), dest);
     socketToServer.WriteMessage(dest);
     reconnectionTimer.Start();
 }
@@ -286,6 +286,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
     {
         TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Receiving data from start analyse message";
 
+        Counters::ClearCounterNumberOfAnalysedBoard();
         endIaJobFlag = false;
         canITakeBoardToReturnFast = false;
         maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());;

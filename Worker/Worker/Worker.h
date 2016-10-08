@@ -10,6 +10,7 @@
 #include "../Peers/Peers.h"
 #include "../IA/IAPossibleMoves.h"
 #include "../ThreadIA/ThreadIAMove.h"
+#include "../Counters/Counters.h"
 
 class Worker
 {
