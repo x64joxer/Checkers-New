@@ -633,7 +633,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
             MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
-                                                                     tmpFreeWorkerListSize,
+                                                                     tmpFreeWorkerListSize - 1,
                                                                      tmpBoard,
                                                                      messageId,
                                                                      jobId,
