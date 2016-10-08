@@ -452,6 +452,10 @@ void CheckerArea::GetServerState(const ServerState &state)
         waitForIATimer->start();
         clearMessageTimer->stop();
         ClearStateMessage();
+    } else
+    {
+        cursorState = Free;
+        waitForIATimer->stop();
     }
 
     repaint();
