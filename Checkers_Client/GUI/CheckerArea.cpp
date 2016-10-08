@@ -186,7 +186,7 @@ void CheckerArea::PaintPercentageEllipse(QPainter *painter)
 
     if (cursorState == WaitForIA)
     {
-        currentPercentOfSteps = (Traces::GetCurrentDateLL() / 1000) - (startTime / 1000);
+        currentPercentOfSteps = Traces::GetCurrentDateLL() - startTime;
         currentPercentOfSteps = ((serverState.GetMaxTime() - currentPercentOfSteps) * 100) / serverState.GetMaxTime();
 
         currentPercentOfSteps = 100 - currentPercentOfSteps;
