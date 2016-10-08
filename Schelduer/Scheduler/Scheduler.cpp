@@ -356,7 +356,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
 
 void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)
 {
-    Traces() << "\n" << "void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)";
     try
     {
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
