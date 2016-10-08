@@ -770,7 +770,7 @@ Board Scheduler::CalculateBestResult()
 
         }
 
-        return bestResult;
+        return bestResult.GetOrigin();
     } else
     {
         Traces() << "\n" << "ERR: Number of boards 0";
