@@ -492,10 +492,10 @@ unsigned short Board::GetResult() const
 
 double Board::GetPercentageResult() const
 {
-     Traces() << "\n" << "LOG: Board::GetPercentageResult()";
+     TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: Board::GetPercentageResult()";
     if (numberOfWhite() == 0) return 12;
     if (numberOfBlack() == 0) return 0;
-     Traces() << "\n" << "LOG: Result = " << (double)numberOfBlack() / (double)numberOfWhite();
+     TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: Result = " << (double)numberOfBlack() / (double)numberOfWhite();
     return (double)numberOfBlack() / (double)numberOfWhite();
 }
 
@@ -503,8 +503,8 @@ void Board::PrintDebug() const
 {
     std::string line;
     bool flag = 0;
-    Traces() << "\n" << "LOG: White= " << GetNumberOfWhite();
-    Traces() << "\n" << "LOG: Black= " << GetNumberOfBlack();
+    TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: White= " << GetNumberOfWhite();
+    TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: Black= " << GetNumberOfBlack();
 
     for (int y=0; y<8; y++)
     {
@@ -692,7 +692,7 @@ Board & Board::operator =(const std::string & data)
 
 bool Board::operator ==(const Board & data) const
 {
-     Traces() << "\n" << "LOG: Board::operator ==(Board data)";
+     TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: Board::operator ==(Board data)";
 
     if (GetNumberOfBlack()!=data.GetNumberOfBlack())
     {
@@ -830,13 +830,13 @@ void Board::clearBlack()
 
 bool Board::GetWhitePatchEnd() const
 {
-     Traces() << "\n" << "LOG: bool Board::GetWhitePatchEnd() " << int (whitePatchEnd);
+     TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: bool Board::GetWhitePatchEnd() " << int (whitePatchEnd);
     return whitePatchEnd;
 }
 
 void Board::SetWhitePatchEnd(const bool flag)
 {
-     Traces() << "\n" << "LOG: void Board::SetWhitePatchEnd(const bool flag) " << int (flag);
+     TRACE_FLAG_FOR_CLASS_Board Traces() << "\n" << "LOG: void Board::SetWhitePatchEnd(const bool flag) " << int (flag);
     whitePatchEnd = flag;
 }
 
