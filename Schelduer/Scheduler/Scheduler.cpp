@@ -263,6 +263,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
                     if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
                     {
+                        timerList.RemoveFromList(socket);
                         tmpWorker->SetState(Peers::BUSY);
                         firstJobStarted = false;
                         boardsToAnalyse.PushBack(state.GetBoard());
@@ -278,6 +279,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
                     if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
                     {
+                        timerList.RemoveFromList(socket);
                         tmpWorker->SetState(Peers::BUSY);
                     } else
                     {
