@@ -220,6 +220,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
                     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
 
+                    if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+                    {
+                        timerList.RemoveFromList(socket);
+                        tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                        tmpWorker->SetState(Peers::BUSY);
+                    } else                        
                     if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
                     {
                         timerList.RemoveFromList(socket);
@@ -237,6 +243,58 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
                 }
             }
+
+        } else
+        if (action == MessageCoder::NOT_OK)
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::NOT_OK";
+
+            bool okFlag = false;
+
+            try
+            {
+                Worker_ptr tmpWorker = workers.At(socket);
+
+                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
+
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+                {
+                    MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
+
+                    if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+                    {
+                        tmpWorker->SetState(Peers::BUSY);
+                        firstJobStarted = false;
+                        boardsToAnalyse.PushBack(state.GetBoard());
+                    } else
+                    {
+                        Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+                    }
+
+                } else
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+                {
+                    MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
+
+                    if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+                    {
+                        tmpWorker->SetState(Peers::BUSY);
+                    } else
+                    {
+                        Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+                    }
+                } else
+                {
+                    Traces() << "\n" << "ERR: Unexpected NOT_OK message from worker";
+                }
+
+                okFlag = true;
+            }
+            catch (const std::out_of_range& oor)
+            {
+
+            }
+
 
         } else
         if (action == MessageCoder::TIMEOUT)
@@ -261,11 +319,15 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                 Worker_ptr tmpWorker = workers.At(socket);
                 TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
 
-                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
                 {
                     socket->Close();
                     firstJobStarted = false;
                     boardsToAnalyse.PushBack(state.GetBoard());
+                } else
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+                {
+                    socket->Close();
                 }
 
             }
@@ -638,7 +700,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                                                                      jobId,
                                                                      dest);
 
-            tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
+            tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob);
             tmpWorkerSocket->SendMessage(dest);
             firstJobStarted = true;
             CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
