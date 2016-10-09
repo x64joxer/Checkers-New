@@ -16,6 +16,7 @@ class MessageCoder
         static void KeyValuePairToChar(const std::string & key, const std::string & value, char *dest);
 
         enum ROLE_ENUM { CLIENT, WORKER };
+        enum class NOT_OK_REASON { BUSY };
 
         static void KeyValuePairToChar(const std::string & key, const int value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const unsigned int value, char *dest);
@@ -40,6 +41,7 @@ class MessageCoder
         static void CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest);
         static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
+        static void CreateNotOkMessage(const std::string & id, NOT_OK_REASON reason, char *dest);
 
         static void ClearChar(char *dest, const unsigned int num);        
 
@@ -63,6 +65,7 @@ class MessageCoder
         //Keys
         static std::string ACTION;
         static std::string OK;
+        static std::string NOT_OK;
         static std::string SERVER_STATE;
         static std::string MESSAGE_ID;
         static std::string MESSAGE_END;
@@ -85,6 +88,7 @@ class MessageCoder
         static std::string TIME_TO_END;
         static std::string IS_FIRST_WORKER;
 
+        static std::string REASON;
         static std::string MAX_TIME;
         static std::string NUM_OF_ANALYSED;
         static std::string NUM_OF_BOARD;

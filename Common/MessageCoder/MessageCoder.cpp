@@ -464,6 +464,16 @@ void MessageCoder::CreateOkMessage(const std::string  & id, char *dest)
     InsertLenMessageHeader(dest);
 }
 
+void MessageCoder::CreateNotOkMessage(const std::string & id, NOT_OK_REASON reason, char *dest)
+{
+    InsertHeader(dest);
+    KeyValuePairToChar(ACTION, NOT_OK, dest);
+    KeyValuePairToChar(REASON, int(reason), dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
+}
+
 std::string MessageCoder::GetNextKey(const std::string & debug_key)
 {
     if (debugMode)
@@ -484,6 +494,7 @@ std::string MessageCoder::CreateMessageId()
 
 std::string MessageCoder::ACTION = GetNextKey("ACTION");
 std::string MessageCoder::OK = GetNextKey("OK");
+std::string MessageCoder::NOT_OK = GetNextKey("NOT_OK");
 std::string MessageCoder::SERVER_STATE = GetNextKey("SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
 std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
@@ -506,6 +517,7 @@ std::string MessageCoder::START_TIME = GetNextKey("START_TIME");
 std::string MessageCoder::TIME_TO_END = GetNextKey("TIME_TO_END");
 std::string MessageCoder::IS_FIRST_WORKER = GetNextKey("IS_FIRST_WORKER");
 
+std::string MessageCoder::REASON = GetNextKey("REASON");
 std::string MessageCoder::MAX_TIME = GetNextKey("MAX_TIME");
 std::string MessageCoder::NUM_OF_ANALYSED = GetNextKey("NUM_OF_ANALYSED");
 std::string MessageCoder::NUM_OF_BOARD = GetNextKey("NUM_OF_BOARD");

@@ -343,7 +343,10 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
     } else
     if (myState == Peers::STATE::BUSY)
     {
-
+        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+        MessageCoder::CreateNotOkMessage(messageId, MessageCoder::NOT_OK_REASON::BUSY, dest);
+        socket->WriteMessage(dest);
     }
 }
 
