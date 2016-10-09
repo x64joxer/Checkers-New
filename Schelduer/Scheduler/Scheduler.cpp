@@ -401,7 +401,8 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
 
 void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest)
 {
-    Traces() << "\n" << "TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest";
+
     try
     {
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
