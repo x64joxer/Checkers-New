@@ -264,10 +264,9 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                 if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
                 {
                     socket->Close();
-                    //boardsToAnalyse.PushBack(state.GetBoard());
-
+                    firstJobStarted = false;
+                    boardsToAnalyse.PushBack(state.GetBoard());
                 }
-
 
             }
             catch (const std::out_of_range& oor)
