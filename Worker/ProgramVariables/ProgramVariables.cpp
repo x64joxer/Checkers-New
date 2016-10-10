@@ -30,6 +30,28 @@ unsigned int ProgramVariables::GetMaxTimeoutForMessageResponse()
     return 1000;
 }
 
+//Traffic
+
+bool ProgramVariables::GetTrafficFlag()
+{
+    return trafficMode;
+}
+
+void ProgramVariables::SetTrafficFlag(const bool flag)
+{
+    trafficMode = flag;
+}
+
+unsigned long long ProgramVariables::GetDelayBetweenBestResultResponses()
+{
+    return delayBetweenBestResultResponses;
+}
+
+void ProgramVariables::SetDelayBetweenBestResultResponses(const unsigned long long val)
+{
+    delayBetweenBestResultResponses = val;
+}
+
 //Traces
 
 bool ProgramVariables::GetTraceFlagForClass_Board()
@@ -164,3 +186,6 @@ bool ProgramVariables::traceFlagForClass_ThreadIATreeExpander = false;
 bool ProgramVariables::traceFlagForClass_Message = false;
 bool ProgramVariables::traceFlagForClass_MessageCoder = false;
 bool ProgramVariables::traceFlagForClass_Worker = false;
+
+bool ProgramVariables::trafficMode = false;
+unsigned long long ProgramVariables::delayBetweenBestResultResponses = 0;

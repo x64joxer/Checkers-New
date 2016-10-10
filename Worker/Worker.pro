@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     ThreadIA/ThreadIAMove.cpp \
     ThreadIA/ThreadIATreeExpander.cpp \
     ProgramVariables/ProgramVariables.cpp \
-    Counters/Counters.cpp
+    Counters/Counters.cpp \
+    ArgumentParser/ArgumentParser.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -54,5 +55,6 @@ HEADERS += \
     ThreadIA/ThreadIAMove.h \
     ThreadIA/ThreadIATreeExpander.h \
     ProgramVariables/ProgramVariables.h \
-    Counters/Counters.h
+    Counters/Counters.h \
+    ArgumentParser/ArgumentParser.h
 

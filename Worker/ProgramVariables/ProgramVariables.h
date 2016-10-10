@@ -14,6 +14,12 @@ class ProgramVariables
         static unsigned int GetTimeReserveToSendBestResultToScheduler();
         static unsigned int GetMaxTimeoutForMessageResponse();
 
+        //Traffic
+        static bool GetTrafficFlag();
+        static void SetTrafficFlag(const bool flag);
+        static unsigned long long GetDelayBetweenBestResultResponses();
+        static void SetDelayBetweenBestResultResponses(const unsigned long long val);
+
         //Traces flags
         static bool GetTraceFlagForClass_Board();
         static bool GetTraceFlagForClass_Counters();
@@ -39,6 +45,11 @@ class ProgramVariables
         static bool GetTraceFlagForClass_Worker();
 
     private:
+        //Traffic
+        static bool trafficMode;
+        static unsigned long long delayBetweenBestResultResponses;
+
+        //Trace
         static bool traceFlagForClass_Board;
         static bool traceFlagForClass_Counters;
         static bool traceFlagForClass_Pawn;

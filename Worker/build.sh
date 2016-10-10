@@ -3,6 +3,7 @@ mkdir -p ../build-Worker
 echo Building...
 
 g++ main.cpp \
+    ArgumentParser/ArgumentParser.cpp \
     Worker/Worker.cpp \
     Counters/Counters.cpp \
     ProgramVariables/ProgramVariables.cpp \
@@ -21,6 +22,6 @@ g++ main.cpp \
     Board/PawnPos.cpp \
     Board/ThreadIASimpleBoard.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
-    Traces/Traces.cpp	-I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Worker/worker -pthread -lboost_thread 
+    Traces/Traces.cpp	-I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Worker/worker -pthread -lboost_thread -lboost_program_options
 
 echo ...end of building
