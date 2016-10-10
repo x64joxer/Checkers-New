@@ -24,4 +24,13 @@ void ArgumentParser::Parse(int argc, char* argv[])
         cout << desc << "\n";
         exit(0);
     }
+
+
+    if (vm.count("traffic")) {
+        ProgramVariables::SetTrafficFlag(trafficMode);
+    }
+
+    if (vm.count("delay")) {
+        ProgramVariables::SetTrafficFlag(delayBetweenBestResultResponses);
+    }
 }

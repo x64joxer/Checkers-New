@@ -3,6 +3,7 @@
 
 #include <boost/program_options.hpp>
 #include <iostream>
+#include "../ProgramVariables/ProgramVariables.h"
 
 using namespace boost::program_options;
 using namespace std;
