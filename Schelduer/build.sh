@@ -3,6 +3,7 @@ mkdir -p ../build-Scheduler
 echo Building...
 
 g++ main.cpp \
+    ArgumentParser/ArgumentParser.cpp \
     Scheduler/Message.cpp \
     ProgramVariables/ProgramVariables.cpp \
     ConnectionManager/ConnectionManager.cpp \
@@ -24,7 +25,7 @@ g++ main.cpp \
     QueueTimer/QueueTimer.cpp \
     QueueTimer/QueueTimerList.cpp \
     Traces/Traces.cpp \
-    -I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Scheduler/scheduler -pthread
+    -I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Scheduler/scheduler -pthread -lboost_program_options
 
 
 echo ...end of building

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <boost/filesystem/operations.hpp>
 
+#include "ArgumentParser/ArgumentParser.h"
 #include "ConnectionManager/ConnectionManager.h"
 #include "TCP/TCPServer.h"
 #include "Traces/Traces.h"
@@ -8,8 +9,10 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char* argv[])
 {
+    ArgumentParser::Parse(argc, argv);
+
     Traces::SetTraceFolder("trace");
 
     ConnectionManager connectionMnager;

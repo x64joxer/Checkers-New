@@ -14,6 +14,10 @@ class ProgramVariables
         static unsigned int GetTimeToSendJobsToFreeWorkers();
         static unsigned int GetMaxTimeoutForMessageResponse();
 
+        //Traffic
+        static bool GetTrafficFlag();
+        static void SetTrafficFlag(const bool flag);
+
         //Trace
         static bool GetTraceFlagForClass_Board();
         static bool GetTraceFlagForClass_Pawn();
@@ -37,6 +41,10 @@ class ProgramVariables
         static bool GetTraceFlagForClass_TCPServer();
 
    private:
+        //Traffic
+        static bool trafficMode;
+
+        //Trace flags
         static bool traceFlagForClass_Board;
         static bool traceFlagForClass_Pawn;
         static bool traceFlagForClass_PawnPos;

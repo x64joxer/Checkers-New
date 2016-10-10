@@ -30,6 +30,18 @@ unsigned int ProgramVariables::GetMaxTimeoutForMessageResponse()
     return 1000;
 }
 
+//Traffic
+
+bool ProgramVariables::GetTrafficFlag()
+{
+    return trafficMode;
+}
+
+void ProgramVariables::SetTrafficFlag(const bool flag)
+{
+    trafficMode = flag;
+}
+
 //Trace flags
 
 bool ProgramVariables::GetTraceFlagForClass_Board()
@@ -127,6 +139,7 @@ bool ProgramVariables::GetTraceFlagForClass_TCPServer()
     return traceFlagForClass_TCPServer;
 }
 
+bool ProgramVariables::trafficMode = false;
 
 bool ProgramVariables::traceFlagForClass_Board = false;
 bool ProgramVariables::traceFlagForClass_Pawn = false;

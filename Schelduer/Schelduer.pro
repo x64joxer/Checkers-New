@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     Scheduler/Worker.cpp \
     QueueTimer/QueueTimer.cpp \
     QueueTimer/QueueTimerList.cpp \
-    ProgramVariables/ProgramVariables.cpp
+    ProgramVariables/ProgramVariables.cpp \
+    ArgumentParser/ArgumentParser.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -55,5 +56,6 @@ HEADERS += \
     Scheduler/Worker.h \
     QueueTimer/QueueTimer.h \
     QueueTimer/QueueTimerList.h \
-    ProgramVariables/ProgramVariables.h
+    ProgramVariables/ProgramVariables.h \
+    ArgumentParser/ArgumentParser.h
 
