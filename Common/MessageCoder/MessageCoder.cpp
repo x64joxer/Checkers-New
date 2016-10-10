@@ -357,7 +357,7 @@ void MessageCoder::CreateTimeoutMessage(char *dest)
     InsertLenMessageHeader(dest);
 }
 
-void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned short respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest)
+void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned long long respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest)
 {
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_ANALYSE_FAST, dest);
@@ -371,7 +371,7 @@ void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned sho
     InsertLenMessageHeader(dest);
 }
 
-void MessageCoder::CreateStartAnalyseWork(const unsigned short respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest)
+void MessageCoder::CreateStartAnalyseWork(const unsigned long long respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest)
 {
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_ANALYSE, dest);
