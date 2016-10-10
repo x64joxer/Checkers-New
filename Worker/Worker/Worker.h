@@ -51,6 +51,14 @@ class Worker
         std::atomic<int> currentPercentOfSteps;
         ThreadIAMove<3000000> jobExpander;
 
+        /////////////////////////
+        //Traffic test purposes
+        /////////////////////////
+        char *destTraffic = new char[MessageCoder::MaxMessageSize()];
+        /////////////////////////
+        //END traffic test purposes
+        /////////////////////////
+
 };
 
 #endif // WORKER_H

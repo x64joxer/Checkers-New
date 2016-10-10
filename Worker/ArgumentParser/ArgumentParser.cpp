@@ -14,7 +14,7 @@ void ArgumentParser::Parse(int argc, char* argv[])
 
     desc.add_options()
     ("help,h", "Print usage message")
-    ("traffic,t", bool_switch(&trafficMode), "Run in traffic mode (for test purposes)");
+    ("traffic,t", bool_switch(&trafficMode), "Run in traffic mode (for test purposes)")
     ("delay,d", value(&delayBetweenBestResultResponses), "Delay between best result responses");
 
     variables_map vm;

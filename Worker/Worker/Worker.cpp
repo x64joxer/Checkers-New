@@ -298,6 +298,24 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
 {
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
 
+    /////////////////////////
+    //Traffic test purposes
+    /////////////////////////
+    if (ProgramVariables::GetTrafficFlag())
+    {
+        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+        MessageCoder::CreateOkMessage(messageId, dest);
+        socket->WriteMessage(dest);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(ProgramVariables::GetDelayBetweenBestResultResponses()));
+
+        Board tmpBoard;
+        SendBestResultWhenJobEnd(tmpBoard, destTraffic, prevousMessageid, jobId, reconnectionTimer);
+    } else
+    /////////////////////////
+    //END traffic test purposes
+    /////////////////////////
     if (myState == Peers::STATE::FREE)
     {
         TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Receiving data from start analyse message";
@@ -362,4 +380,5 @@ Worker::~Worker()
 {
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Worker::~Worker()";
     delete messageQueue;
+    delete [] destTraffic;
 }
