@@ -112,6 +112,7 @@ void TCPSocketBody::Write(char *dataToSend)
 {
     TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Write(char *dataToSend)";
 
+    writeMutex.lock();
     data = dataToSend;
 
     boost::asio::async_write(socket_,
@@ -124,6 +125,8 @@ void TCPSocketBody::Write(char *dataToSend)
 void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
 {
   TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleWrite(const boost::system::error_code& error)";
+
+  writeMutex.unlock();
 
   if (!error)
   {

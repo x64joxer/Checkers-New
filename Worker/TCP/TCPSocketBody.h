@@ -30,7 +30,7 @@ class TCPSocketBody
         void SetMessageQueue(SharedPtrList<Message> *message) { messageQueue = message; }
         void WriteMessage(char *dataToSend);       
         void SetMyWsk(TCPSocket_ptr wsk) { meWsk = wsk; }
-        bool IsConneted() { return connected; }
+        bool IsConneted() { return connected; }        
         ~TCPSocketBody();
 
     private:
@@ -52,8 +52,9 @@ class TCPSocketBody
 
       tcp::socket socket_;
       tcp::resolver resolver;
-      tcp::resolver::iterator iterator;      
-      unsigned int expectedMessage;
+      tcp::resolver::iterator iterator;
+      std::mutex writeMutex;
+      unsigned int expectedMessage;      
 
 };
 
