@@ -168,7 +168,24 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTime());
 
             boardsToAnalyse.Clear();
-            boardsToAnalyse.PushBack(tmpBoard);
+            /////////////////////////
+            //Traffic test purposes
+            /////////////////////////
+            if (ProgramVariables::GetTrafficFlag())
+            {
+                unsigned int tmpSize = freeWorkers.Size();
+
+                for(int i=0; i<tmpSize;i++)
+                {
+                    boardsToAnalyse.PushBack(tmpBoard);
+                }
+            } else
+            /////////////////////////
+            //End traffic test purposes
+            ////////////////////////
+            {
+                boardsToAnalyse.PushBack(tmpBoard);
+            }
 
             SendStateToAllClients(data, dest);
         } else
