@@ -384,7 +384,7 @@ void MessageCoder::CreateStartAnalyseWork(const unsigned long long respTime , co
     InsertLenMessageHeader(dest);
 }
 
-void MessageCoder::CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, const Board & board, char *dest)
+void MessageCoder::CreateStartMessage(const unsigned long long respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, const Board & board, char *dest)
 {
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, START_WORK, dest);

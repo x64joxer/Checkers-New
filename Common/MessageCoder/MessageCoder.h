@@ -30,7 +30,7 @@ class MessageCoder
 
         static void CreateCloseConnectionMessage(char *dest);
         static void CreateConnectedMessage(char *dest);
-        static void CreateStartMessage(const unsigned short respTime, const unsigned short numberOfBoard,  const std::string & id, const std::string & jobId, const Board & board, char *dest);
+        static void CreateStartMessage(const unsigned long long respTime, const unsigned short numberOfBoard,  const std::string & id, const std::string & jobId, const Board & board, char *dest);
         static void CreateBestResultMessage(const Board & board, const std::string & id, const std::string & jobId, unsigned long long numOfAnalysed, char *dest);
         static void CreateGetServerStateMessage(const std::string & id, char *dest);
         static void CreateStateMessage(const Peers::STATE stat, const unsigned int numOfThread, const std::string & id, char *dest);
