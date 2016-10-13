@@ -73,10 +73,15 @@ void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
 
     if (expectedMessage > MessageCoder::MaxMessageSize())
     {
-       Traces() << "\n" << "ERR: Protocol error. Message too long:" << std::string(data_to_read);
+       //TO_DO Traces() << "\n" << "ERR: Protocol error. Message too long:" << std::string(data_to_read);
+       //TO_DO expectedMessage = 0;
+       //TO_DO Close();
+        expectedMessage = 0;
 
-       expectedMessage = 0;
-       Close();
+        boost::asio::async_read(socket_,
+           boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
+           boost::bind(&TCPSocketBody::HandleReadHeader, this,
+             boost::asio::placeholders::error));
     } else
     {
         boost::asio::async_read(socket_,
@@ -139,7 +144,7 @@ void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
   }
   else
   {
-        Traces() << "\n" << "ERR: Read error!";
+        Traces() << "\n" << "ERR: Write error!";
         Close();
   }
 }
