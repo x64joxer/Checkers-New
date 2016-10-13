@@ -12,12 +12,22 @@ unsigned int ProgramVariables::GetMaxThredForIa()
 
 std::string ProgramVariables::GetPortForScheduler()
 {
-    return "6000";
+    return serverPort;
 }
 
 std::string ProgramVariables::GetIpForScheduler()
 {
-    return "192.168.0.7";
+    return serverIP;
+}
+
+void ProgramVariables::SetIpForScheduler(const std::string ip)
+{
+    serverIP = ip;
+}
+
+void ProgramVariables::SetPorForScheduler(const std::string port)
+{
+    serverPort = port;
 }
 
 unsigned int ProgramVariables::GetTimeReserveToSendBestResultToScheduler()
@@ -163,6 +173,9 @@ bool ProgramVariables::GetTraceFlagForClass_Worker()
 {
     return traceFlagForClass_Worker;
 }
+
+std::string ProgramVariables::serverIP = "192.168.0.7";
+std::string ProgramVariables::serverPort = "6000";
 
 bool ProgramVariables::traceFlagForClass_Board = false;
 bool ProgramVariables::traceFlagForClass_Counters = false;
