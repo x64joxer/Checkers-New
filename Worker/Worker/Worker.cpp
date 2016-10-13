@@ -9,7 +9,15 @@ Worker::Worker() : connection_state(DISCONNECTED),
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Worker::Worker()";
 
     messageQueue = new SharedPtrList<Message>;
-    jobExpander.GetThreadIABoardQueueWsk()->SetConditionVariable(condition_var);
+
+    if (ProgramVariables::GetTrafficFlag())
+    {
+        jobExpander = nullptr;
+    } else
+    {
+        jobExpander = new ThreadIAMove<3000000>();
+        jobExpander->GetThreadIABoardQueueWsk()->SetConditionVariable(condition_var);
+    }
 }
 
 void Worker::Start()
@@ -32,8 +40,13 @@ void Worker::StartWorking()
     std::string prevousMessageid;
 
     condition_var = messageQueue->GetCondVar();
-    ThreadIABoardQueue<3000000> * boardThradWsk = jobExpander.GetThreadIABoardQueueWsk();
-    boardThradWsk->SetConditionVariable(condition_var);
+    ThreadIABoardQueue<3000000> * boardThradWsk;
+
+    if (jobExpander)
+    {
+        boardThradWsk = jobExpander->GetThreadIABoardQueueWsk();
+        boardThradWsk->SetConditionVariable(condition_var);
+    }
 
     char *dest = new char[MessageCoder::MaxMessageSize()];
 
@@ -66,8 +79,11 @@ void Worker::StartWorking()
         {
             if ((numOfResultToReturnFast > 0)&&(canITakeBoardToReturnFast)&&(!conversationIsOngoing))
             {
-                tmpBoard = jobExpander.GetThreadIABoardQueueWsk()->PopFront(0);
-                jobToSendFast = !tmpBoard.GetNullBoard();
+                if (jobExpander)
+                {
+                    tmpBoard = jobExpander->GetThreadIABoardQueueWsk()->PopFront(0);
+                    jobToSendFast = !tmpBoard.GetNullBoard();
+                }
             }
 
             return (!messageQueue->Empty()) | (endIaJobFlag&&(!conversationIsOngoing)) | jobToSendFast;
@@ -336,7 +352,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
         firstWorker = std::atoi(data.at(MessageCoder::IS_FIRST_WORKER).c_str());
 
         std::thread tempJob(&ThreadIAMove<3000000>::operator (),
-                            &jobExpander,
+                            jobExpander,
                             &boardToAnalyse,
                             &endIaJobFlag,
                             &currentPercentOfSteps,

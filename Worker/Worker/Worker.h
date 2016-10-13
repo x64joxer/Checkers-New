@@ -49,7 +49,7 @@ class Worker
         std::atomic<bool> canITakeBoardToReturnFast;
         bool firstWorker;
         std::atomic<int> currentPercentOfSteps;
-        ThreadIAMove<3000000> jobExpander;
+        ThreadIAMove<3000000> *jobExpander;
 
         /////////////////////////
         //Traffic test purposes
