@@ -31,6 +31,6 @@ void ArgumentParser::Parse(int argc, char* argv[])
     }
 
     if (vm.count("delay")) {
-        ProgramVariables::SetTrafficFlag(delayBetweenBestResultResponses);
+        ProgramVariables::SetDelayBetweenBestResultResponses(delayBetweenBestResultResponses);
     }
 }
