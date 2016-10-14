@@ -289,6 +289,25 @@ void Worker::SendBestResultWhenJobEnd(Board & board, char * dest, std::string & 
     connection_state = ConState::BEST_RESULT_SEND;
     conversationIsOngoing = true;
 
+    Counters::AddToCounterNumberOfBestResultMessagesSend(1);
+
+    /////////////////////////
+    //Traffic test purposes
+    /////////////////////////
+    if (previousTimeOfClearCounternumberOfBestResultMessagesSend == 0)
+    {
+        previousTimeOfClearCounternumberOfBestResultMessagesSend = Traces::GetMilisecondsSinceEpoch();
+    } else
+    if (previousTimeOfClearCounternumberOfBestResultMessagesSend + 30000 < Traces::GetMilisecondsSinceEpoch())
+    {
+        Traces() << "\n" << "LOG: Counter numberOfBestResultMessagesSend: " << Counters::GetCounterNumberOfBestResultMessagesSend() / 30 << " m/s";
+        Counters::ClearCounterNumberOfBestResultMessagesSend();
+        previousTimeOfClearCounternumberOfBestResultMessagesSend = Traces::GetMilisecondsSinceEpoch();
+    }
+    /////////////////////////
+    //End Traffic test purposes
+    /////////////////////////
+
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     prevousMessageid = MessageCoder::CreateMessageId();
     MessageCoder::CreateBestResultMessage(board, prevousMessageid, jobId, Counters::GetCounterNumberOfAnalysedBoard(), dest);

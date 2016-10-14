@@ -55,6 +55,7 @@ class Worker
         //Traffic test purposes
         /////////////////////////
         char *destTraffic = new char[MessageCoder::MaxMessageSize()];
+        unsigned long long previousTimeOfClearCounternumberOfBestResultMessagesSend;
         /////////////////////////
         //END traffic test purposes
         /////////////////////////
