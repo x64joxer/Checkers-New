@@ -23,9 +23,11 @@ class ServerState
         bool IsThinking() const { std::lock_guard<std::mutex> ls(*mutex); return thinking; }
         void SetStartTime(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); startTime = val; }
         void SetMaxTime(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); maxTime = val;}
+        void SetMaxTimeForWorkers(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); maxTimeForWorkers = val;}
         void SetTimeToEnd(const unsigned long long val) { std::lock_guard<std::mutex> ls(*mutex); timeToEnd = val; }
         unsigned long long GetStartTime() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
         unsigned long long GetMaxTime() const { std::lock_guard<std::mutex> ls(*mutex); return maxTime; }
+        unsigned long long GetMaxTimeForWorkers() const { std::lock_guard<std::mutex> ls(*mutex); return maxTimeForWorkers; }
         unsigned long long GetTimeToEnd() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
 
         const ServerState & operator=(const ServerState  & data);
@@ -38,6 +40,7 @@ class ServerState
         bool thinking;
         unsigned long long startTime;
         unsigned long long maxTime;
+        unsigned long long maxTimeForWorkers;
         unsigned long long timeToEnd;
 
         std::mutex *mutex;

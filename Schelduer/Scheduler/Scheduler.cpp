@@ -68,7 +68,7 @@ void Scheduler::StartScheduling()
         condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate]
         {
             isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty()) & (workOngoing);
-            if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTime()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
+            if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTimeForWorkers()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
             isNewMessage = wskConnectionManager->IsNewMessage();
             isClientToUpate = !clientsToStateUpdate.Empty();
 
@@ -163,9 +163,11 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             MessageCoder::MapToBoard(data, &tmpBoard);
             state.SetBoard(tmpBoard);
             state.SetThinking(true);
-            state.SetMaxTime(std::atoi(data.at(MessageCoder::MAX_TIME).c_str()) - ProgramVariables::GetTimeReserveToSendBestResultToClient());
+            unsigned long long tmpTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
+            state.SetMaxTime(tmpTime);
+            state.SetMaxTimeForWorkers(tmpTime - ProgramVariables::GetTimeReserveToSendBestResultToClient());
             state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
-            CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTime());
+            CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTimeForWorkers());
 
             boardsToAnalyse.Clear();
             /////////////////////////
@@ -691,7 +693,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-            MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+            MessageCoder::CreateStartAnalyseWork(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                  tmpBoard,
                                                  messageId,
                                                  jobId,
@@ -713,7 +715,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-            MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+            MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                                      tmpFreeWorkerListSize - 1,
                                                                      tmpBoard,
                                                                      messageId,
@@ -736,7 +738,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
 
 
 
-            MessageCoder::CreateStartAnalyseWork(state.GetMaxTime() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+            MessageCoder::CreateStartAnalyseWork(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
                                                  tmpBoard,
                                                  messageId,
                                                  jobId,
