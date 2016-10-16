@@ -11,8 +11,10 @@ class ProgramVariables
         static unsigned int GetMaxThredForIa();
         static std::string GetPortForScheduler();
         static std::string GetIpForScheduler();
+        static std::string GetLogDirectory();
         static void SetIpForScheduler(const std::string ip);
         static void SetPorForScheduler(const std::string port);
+        static void SetLogDirectory(const std::string dir);
         static unsigned int GetTimeReserveToSendBestResultToScheduler();
         static unsigned int GetMaxTimeoutForMessageResponse();
 
@@ -49,6 +51,7 @@ class ProgramVariables
     private:
         static std::string serverIP;
         static std::string serverPort;
+        static std::string logDirectory;
 
         //Traffic
         static bool trafficMode;

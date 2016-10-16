@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 {
     ArgumentParser::Parse(argc, argv);
 
-    Traces::SetTraceFolder("trace");
+    Traces::SetTraceFolder(ProgramVariables::GetLogDirectory() + "/trace");
     Worker worker;
 
     worker.Start();

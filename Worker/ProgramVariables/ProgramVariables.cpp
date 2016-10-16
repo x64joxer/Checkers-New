@@ -20,6 +20,11 @@ std::string ProgramVariables::GetIpForScheduler()
     return serverIP;
 }
 
+std::string ProgramVariables::GetLogDirectory()
+{
+    return logDirectory;
+}
+
 void ProgramVariables::SetIpForScheduler(const std::string ip)
 {
     serverIP = ip;
@@ -29,6 +34,12 @@ void ProgramVariables::SetPorForScheduler(const std::string port)
 {
     serverPort = port;
 }
+
+void ProgramVariables::SetLogDirectory(const std::string dir)
+{
+    logDirectory = dir;
+}
+
 
 unsigned int ProgramVariables::GetTimeReserveToSendBestResultToScheduler()
 {
@@ -176,6 +187,7 @@ bool ProgramVariables::GetTraceFlagForClass_Worker()
 
 std::string ProgramVariables::serverIP = "192.168.0.7";
 std::string ProgramVariables::serverPort = "6000";
+std::string ProgramVariables::logDirectory = "/tmp/";
 
 bool ProgramVariables::traceFlagForClass_Board = false;
 bool ProgramVariables::traceFlagForClass_Counters = false;
