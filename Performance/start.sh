@@ -54,7 +54,12 @@ elif [ "$ACTION" == "START" ]; then
 
 elif [ "$ACTION" == "STOP" ]; then
 	echo Stopping workers
-	ssh  ${USER_TRAFFIC_GENERATOR}@${TRAFFIC_GENERATOR_IP} "pkill worker"
+	ssh  ${USER_TRAFFIC_GENERATOR}@${TRAFFIC_GENERATOR_IP} "pkill ${WORKER_BIN_NAME}"
+
+elif [ "$ACTION" == "COUNTER" ]; then
+	echo Stopping workers
+	./get_counters.sh -i=${TRAFFIC_GENERATOR_IP} -w=${NUMBER_OF_WORKERS}  -o=${OUTPUT_DIRECTORY} -u=${USER_TRAFFIC_GENERATOR} -c='numberOfBestResultMessagesSend'
+
 
 else
 	echo Wrong option
