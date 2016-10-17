@@ -73,7 +73,7 @@ for(( i=1; i<=${NUMBER_OF_WORKERS}; i++ ))
 do
 	echo ==================================
 	echo Worker number ${i}
-	ssh -f ${USER_TRAFFIC_GENERATOR}@${TRAFFIC_GENERATOR_IP} "cat /${OUTPUT_DIRECTORY}/${WORKER_GENERATOR_FOLDER}/${WORKER_FOLDER}${i}/trace/* | grep -Eo '${COUNTER}: [0-9]{1,}' | grep -Eo '[0-9]{1,}'"
+	ssh ${USER_TRAFFIC_GENERATOR}@${TRAFFIC_GENERATOR_IP} "cat /${OUTPUT_DIRECTORY}/${WORKER_GENERATOR_FOLDER}/${WORKER_FOLDER}${i}/trace/* | grep -Eo '${COUNTER}: [0-9]{1,}' | grep -Eo '[0-9]{1,}'"
 	echo ==================================
 done
 
