@@ -359,13 +359,13 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         }
         else
         {
-            Traces() << "\n" << "ERR: Unexpected action: " << action << " from" << socket->GetIp() << ":" << socket->GetPort();
+            Traces() << "\n" << "ERR: Unexpected action from host";
         }
 
     }
     catch (std::out_of_range)
     {
-        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+        Traces() << "\n" << "ERR: Protocol error host";
     }
 }
 
@@ -387,7 +387,7 @@ void Scheduler::SetRole(TCPConnection_ptr socket, const std::map<std::string, st
     }
     catch (std::out_of_range)
     {
-        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+        Traces() << "\n" << "ERR: Protocol error host";
     }
 }
 
@@ -414,7 +414,7 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
     }
     catch (std::out_of_range)
     {
-        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+        Traces() << "\n" << "ERR: Protocol error host";
     }
 }
 
@@ -433,7 +433,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     }
     catch (std::out_of_range)
     {
-        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+        Traces() << "\n" << "ERR: Protocol error host";
     }
 }
 
@@ -453,7 +453,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     }
     catch (std::out_of_range)
     {
-        Traces() << "\n" << "ERR: Protocol error host: " << socket->GetIp() << ":" << socket->GetPort();
+        Traces() << "\n" << "ERR: Protocol error host";
     }
 }
 
