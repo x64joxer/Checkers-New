@@ -7,11 +7,15 @@ TCPConnection::TCPConnection(boost::asio::io_service& io_service)
                               io_service_(io_service)
 {
     TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)";
+
 }
 
 void TCPConnection::Start()
 {
   TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::Start()";
+ socket_.set_option( boost::asio::ip::tcp::no_delay( true) );
+ socket_.set_option( boost::asio::socket_base::send_buffer_size( 65536 ) );
+ socket_.set_option( boost::asio::socket_base::receive_buffer_size( 65536 ) );
 
   socket_.async_read_some(boost::asio::buffer(buffer_),
       boost::bind(&TCPConnection::HandleRead, shared_from_this(),

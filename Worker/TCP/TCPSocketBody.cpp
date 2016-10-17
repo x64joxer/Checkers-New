@@ -30,6 +30,8 @@ void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
            boost::asio::placeholders::error));     
 
      socket_.set_option(boost::asio::ip::tcp::no_delay(true));
+     socket_.set_option( boost::asio::socket_base::send_buffer_size( 65536 ) );
+     socket_.set_option( boost::asio::socket_base::receive_buffer_size( 65536 ) );
 
      boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
 }
