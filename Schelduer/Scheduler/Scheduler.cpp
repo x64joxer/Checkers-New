@@ -657,7 +657,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
             }
         } else
         {
-            boardsToAnalyse.PushBack(tmpBoard);
+            freeWorkers.PushBack(tmpWorkerSocket);
         }
 
         if (!listEmpty)
@@ -677,6 +677,9 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                     tmpSizeMoreThanOne = true;
                  }
              }
+        } else
+        {
+            freeWorkers.PushBack(tmpWorkerSocket);
         }
     }
 
