@@ -63,7 +63,7 @@ void Scheduler::StartScheduling()
     {
         TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Waiting for a job..";
         std::mutex tmpMutex;
-        std::unique_lock<std::mutex> guard(tmpMutex);
+        std::unique_lock<std::mutex> guard(tmpMutex);        
 
         condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate]
         {
@@ -73,7 +73,7 @@ void Scheduler::StartScheduling()
             isClientToUpate = !clientsToStateUpdate.Empty();
 
             return (isNewBoardToAnalyse | isNewMessage | isClientToUpate); }
-        );
+        );        
 
         if (isNewMessage)
         {
@@ -177,7 +177,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             {
                 unsigned int tmpSize = freeWorkers.Size();
 
-                for(int i=0; i<tmpSize;i++)
+                for(int i=0; i < (tmpSize*5);i++)
                 {
                     boardsToAnalyse.PushBack(tmpBoard);
                 }
