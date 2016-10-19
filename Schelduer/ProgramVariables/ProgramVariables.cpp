@@ -12,7 +12,7 @@ unsigned int ProgramVariables::GetMaxThredForMessageQueue()
 
 std::string ProgramVariables::GetPortForScheduler()
 {
-    return "6000";
+    return serverPort;
 }
 
 unsigned int ProgramVariables::GetTimeReserveToSendBestResultToClient()
@@ -28,6 +28,11 @@ unsigned int ProgramVariables::GetTimeToSendJobsToFreeWorkers()
 unsigned int ProgramVariables::GetMaxTimeoutForMessageResponse()
 {
     return 1000;
+}
+
+void ProgramVariables::SetPorForScheduler(const std::string & port)
+{
+    serverPort = port;
 }
 
 //Traffic
@@ -138,6 +143,8 @@ bool ProgramVariables::GetTraceFlagForClass_TCPServer()
 {
     return traceFlagForClass_TCPServer;
 }
+
+std::string ProgramVariables::serverPort = "6000";
 
 bool ProgramVariables::trafficMode = false;
 

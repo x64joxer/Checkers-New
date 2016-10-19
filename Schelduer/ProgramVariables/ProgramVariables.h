@@ -13,6 +13,7 @@ class ProgramVariables
         static unsigned int GetTimeReserveToSendBestResultToClient();
         static unsigned int GetTimeToSendJobsToFreeWorkers();
         static unsigned int GetMaxTimeoutForMessageResponse();
+        static void SetPorForScheduler(const std::string & port);
 
         //Traffic
         static bool GetTrafficFlag();
@@ -41,6 +42,8 @@ class ProgramVariables
         static bool GetTraceFlagForClass_TCPServer();
 
    private:
+        static std::string serverPort;
+
         //Traffic
         static bool trafficMode;
 
