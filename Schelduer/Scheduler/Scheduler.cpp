@@ -681,6 +681,8 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
         {
             freeWorkers.PushBack(tmpWorkerSocket);
         }
+
+        if (!tmpFirstJobStarted) firstJobStarted = true;
     }
 
 
@@ -704,8 +706,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                                                  dest);
 
             tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
-            tmpWorkerSocket->SendMessage(dest);
-            firstJobStarted = true;
+            tmpWorkerSocket->SendMessage(dest);            
             CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
         } else
         if ((!tmpFirstJobStarted) && (tmpSizeMoreThanOne))
@@ -726,8 +727,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                                                                      dest);
 
             tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob);
-            tmpWorkerSocket->SendMessage(dest);
-            firstJobStarted = true;
+            tmpWorkerSocket->SendMessage(dest);            
             CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
 
         } else
