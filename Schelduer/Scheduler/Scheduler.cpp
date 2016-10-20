@@ -530,7 +530,7 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
 
     try
     {        
-        UpdateFreeWorkerList(socket, workers.At(socket));
+        freeWorkers.Remove(socket);
         workers.Erase(socket);
         wskConnectionManager->CloseConnection(socket);
     }
