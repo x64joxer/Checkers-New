@@ -22,6 +22,6 @@ g++ main.cpp \
     Board/PawnPos.cpp \
     Board/ThreadIASimpleBoard.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
-    Traces/Traces.cpp	-I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Worker/worker -pthread -lboost_thread -lboost_program_options
+    Traces/Traces.cpp	-I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Worker/worker -pthread -lboost_thread -lboost_program_options -lsfml-system -lsfml-network
 
 echo ...end of building
