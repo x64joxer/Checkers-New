@@ -81,7 +81,7 @@ void TCPSocketBody::HandleRead()
                 {
                     if (socket.receive(data_to_read, MessageCoder::BufferSize(), received) != sf::Socket::Done)
                     {
-                        Traces() << "\n" << "ERR: Read message error";
+                        Traces() << "\n" << "ERR: Read header error";
                     } else
                     {
                         expectedMessage = MessageCoder::HeaderToVal(data_to_read);
@@ -97,6 +97,7 @@ void TCPSocketBody::HandleRead()
                     if (socket.receive(data_to_read, expectedMessage, received) != sf::Socket::Done)
                     {
                         Traces() << "\n" << "ERR: Read message error";
+                        expectedMessage = 0;
                     } else
                     {
                         if (expectedMessage != received)
@@ -117,6 +118,7 @@ void TCPSocketBody::HandleRead()
         }
     }
 
+    readThreadStarted = false;
 }
 
 void TCPSocketBody::DoClose()
@@ -125,7 +127,7 @@ void TCPSocketBody::DoClose()
 
   if (connected) socket.disconnect();
   connected = false;
-  if (readThreadStarted) read_thread.join();
+  while (readThreadStarted) {}
 
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
