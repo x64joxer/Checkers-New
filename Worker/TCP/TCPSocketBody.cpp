@@ -1,8 +1,7 @@
 #include "TCPSocketBody.h"
 
-TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
-                                 resolver(io_service_global),
-                                 connected(false),
+TCPSocketBody::TCPSocketBody() : connected(false),
+                                 readThreadStarted(false),
                                  expectedMessage(0)
 {
     TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: TCPSocketBody::TCPSocketBody(const std::string &adress, const std::string &port)";
@@ -12,151 +11,122 @@ TCPSocketBody::TCPSocketBody() : socket_(io_service_global),
 
 void TCPSocketBody::Close()
 {
-  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Close()";
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Close()";
 
-  io_service_global.post(boost::bind(&TCPSocketBody::DoClose, this));
+    DoClose();
 }
 
 void TCPSocketBody::Connect(const std::string &adress, const std::string &port)
 {
     TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Connect(const std::string &adress, const std::string &port)";
 
-    io_service_global.reset();
-
-    iterator = resolver.resolve({adress, port});
-
-     boost::asio::async_connect(socket_, iterator,
-           boost::bind(&TCPSocketBody::HandleConnect, this,
-           boost::asio::placeholders::error));     
-
-     socket_.set_option(boost::asio::ip::tcp::no_delay(true));
-     socket_.set_option( boost::asio::socket_base::send_buffer_size( 65536 ) );
-     socket_.set_option( boost::asio::socket_base::receive_buffer_size( 65536 ) );
-
-     boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_global));
-}
-
-void TCPSocketBody::HandleConnect(const boost::system::error_code& error)
-{
-  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleConnect(const boost::system::error_code& error)";
-
-  if (!error)
-  {           
-      connected = true;
-
-      Message tempMessage;
-      char *buffer = new char[MessageCoder::MaxMessageConnectedSize()];
-      MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectedSize());
-      MessageCoder::CreateConnectedMessage(buffer);
-      tempMessage.CopyWsk(meWsk, buffer);
-      messageQueue->PushBack(tempMessage);
-
-      TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Sending Connected message to queue: " << buffer;
-
-      boost::asio::async_read(socket_,
-         boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
-         boost::bind(&TCPSocketBody::HandleReadHeader, this,
-           boost::asio::placeholders::error));
-
-  } else
-  {
-        Traces() << "\n" << "ERR: Connection error!";
-        Close();
-  }
-}
-
-void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)
-{
-    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadHeader(const boost::system::error_code& error)";
-
-    expectedMessage = MessageCoder::HeaderToVal(data_to_read);    
-
-    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Expecting message with lenn: " << expectedMessage;
-
-    if (expectedMessage > MessageCoder::MaxMessageSize())
+    sf::Socket::Status status = socket.connect(adress, atoi(port.c_str()));
+    if (status != sf::Socket::Done)
     {
-       //TO_DO Traces() << "\n" << "ERR: Protocol error. Message too long:" << std::string(data_to_read);
-       //TO_DO expectedMessage = 0;
-       //TO_DO Close();
-        expectedMessage = 0;
+        Traces() << "\n" << "ERR: connection error!";
 
-        boost::asio::async_read(socket_,
-           boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
-           boost::bind(&TCPSocketBody::HandleReadHeader, this,
-             boost::asio::placeholders::error));
+        Close();
     } else
     {
-        boost::asio::async_read(socket_,
-           boost::asio::buffer(data_to_read, expectedMessage), boost::asio::transfer_all(),
-           boost::bind(&TCPSocketBody::HandleReadMessage, this,
-             boost::asio::placeholders::error));
+        Message tempMessage;
+        char *buffer = new char[MessageCoder::MaxMessageConnectedSize()];
+        MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectedSize());
+        MessageCoder::CreateConnectedMessage(buffer);
+        tempMessage.CopyWsk(meWsk, buffer);
+        messageQueue->PushBack(tempMessage);
+
+        socket.setBlocking(false);
+        read_thread = std::move(std::thread(&TCPSocketBody::HandleRead,
+                                            this));
+        read_thread.detach();
+        readThreadStarted = true;
+        connected = true;
     }
-}
-
-void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)
-{
-    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleReadMessage(const boost::system::error_code& error)";
-
-    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Message received: " << std::string(data_to_read);
-
-    Message tempMessage;
-    tempMessage.CopyData(meWsk, data_to_read);
-    messageQueue->PushBack(tempMessage);
-    expectedMessage = 0;        
-
-    boost::asio::async_read(socket_,
-       boost::asio::buffer(data_to_read, MessageCoder::BufferSize()), boost::asio::transfer_all(),
-       boost::bind(&TCPSocketBody::HandleReadHeader, this,
-         boost::asio::placeholders::error));
 }
 
 void TCPSocketBody::WriteMessage(char *dataToSend)
 {
-    io_service_global.post(boost::bind(&TCPSocketBody::Write, this, dataToSend));
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::WriteMessage(char *dataToSend)";
+
+    if (connected)
+    {
+        if (socket.send(dataToSend, strlen(dataToSend)) != sf::Socket::Done)
+        {
+            Traces() << "\n" << "ERR: Write message eroor!";
+            Close();
+        }
+    } else
+    {
+        Traces() << "\n" << "ERR: Socket not connected!";
+    }
 }
 
-void TCPSocketBody::Write(char *dataToSend)
+void TCPSocketBody::HandleRead()
 {
-    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::Write(char *dataToSend)";
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleRead()";
 
-    writeMutex.lock();
-    data = dataToSend;
+    sf::SocketSelector selector;
+    selector.add(socket);
 
-    boost::asio::async_write(socket_,
-        boost::asio::buffer(data, std::strlen(data)),
-        boost::bind(&TCPSocketBody::HandleWrite, this,
-          boost::asio::placeholders::error));
+    std::size_t received;
+    expectedMessage = 0;
 
-}
+    while(connected)
+    {
+        if (selector.wait(sf::milliseconds(milisecondCloseSocketInterval)))
+        {
+            if (connected)
+            {
+                if (expectedMessage == 0)
+                {
+                    if (socket.receive(data_to_read, MessageCoder::BufferSize(), received) != sf::Socket::Done)
+                    {
+                        Traces() << "\n" << "ERR: Read message error";
+                    } else
+                    {
+                        expectedMessage = MessageCoder::HeaderToVal(data_to_read);
 
-void TCPSocketBody::HandleWrite(const boost::system::error_code& error)
-{
-  TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::HandleWrite(const boost::system::error_code& error)";
+                        if (expectedMessage > MessageCoder::MaxMessageSize())
+                        {
+                            Traces() << "\n" << "ERR: Message to long";
+                            expectedMessage = 0;
+                        }
+                    }
+                } else
+                {
+                    if (socket.receive(data_to_read, expectedMessage, received) != sf::Socket::Done)
+                    {
+                        Traces() << "\n" << "ERR: Read message error";
+                    } else
+                    {
+                        if (expectedMessage != received)
+                        {
+                            Traces() << "\n" << "ERR: Message to long or to short";
+                            expectedMessage = 0;
+                        } else
+                        {
+                            expectedMessage = 0;
 
-  writeMutex.unlock();
+                            Message tempMessage;
+                            tempMessage.CopyData(meWsk, data_to_read);
+                            messageQueue->PushBack(tempMessage);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-  if (!error)
-  {
-
-      /*boost::asio::async_write(socket_,
-          boost::asio::buffer(data,
-            std::strlen(data)),
-          boost::bind(&TCPSocketBody::HandleWrite, this,
-            boost::asio::placeholders::error));*/
-  }
-  else
-  {
-        Traces() << "\n" << "ERR: Write error!";
-        Close();
-  }
 }
 
 void TCPSocketBody::DoClose()
 {
   TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::DoClose()";
 
-  socket_.close();  
+  if (connected) socket.disconnect();
   connected = false;
+  if (readThreadStarted) read_thread.join();
+
   Message tempMessage;
   char *buffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
   MessageCoder::ClearChar(buffer, MessageCoder::MaxMessageConnectionCloseSize());

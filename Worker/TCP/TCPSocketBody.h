@@ -8,6 +8,7 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
+#include <SFML/Network.hpp>
 #include "../Traces/Traces.h"
 #include "../Worker/MessageCoder.h"
 #include "../Worker/Message.h"
@@ -34,28 +35,21 @@ class TCPSocketBody
         ~TCPSocketBody();
 
     private:
-      void DoClose();
-      void HandleConnect(const boost::system::error_code& error);      
-      void HandleWrite(const boost::system::error_code& error);
-      void HandleReadHeader(const boost::system::error_code& error);
-      void HandleReadMessage(const boost::system::error_code& error);
-      void Write(char *dataToSend);   
+      void DoClose();           
+      void HandleRead();
 
       char *data;
       char *data_to_read;      
       SharedPtrList<Message> *messageQueue;
       TCPSocket_ptr meWsk;
       bool connected;
+      bool readThreadStarted;
 
-      boost::thread thread_io_service;
-      boost::asio::io_service io_service_global;      
-
-      tcp::socket socket_;
-      tcp::resolver resolver;
-      tcp::resolver::iterator iterator;
-      std::mutex writeMutex;
+      std::thread read_thread;
       unsigned int expectedMessage;      
 
+      sf::TcpSocket socket;
+      unsigned int milisecondCloseSocketInterval = 250;
 };
 
 #endif // TCPSOCKEDBODY_H

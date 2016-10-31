@@ -11,7 +11,7 @@ TCPSocket::TCPSocket() : messageQueue(nullptr)
 
 void TCPSocket::Close()
 {
-  if (bodySocket.IsConneted()) bodySocket.Close();
+  bodySocket.Close();
 }
 
 void TCPSocket::Connect(const std::string &adress, const std::string &port)
