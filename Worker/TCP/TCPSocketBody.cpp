@@ -70,6 +70,7 @@ void TCPSocketBody::HandleRead()
 
     std::size_t received;
     expectedMessage = 0;
+    bool closeSocker = false;
 
     while(connected)
     {
@@ -82,6 +83,8 @@ void TCPSocketBody::HandleRead()
                     if (socket.receive(data_to_read, MessageCoder::BufferSize(), received) != sf::Socket::Done)
                     {
                         Traces() << "\n" << "ERR: Read header error";
+                        closeSocker = true;
+                        break;
                     } else
                     {
                         expectedMessage = MessageCoder::HeaderToVal(data_to_read);
@@ -97,7 +100,8 @@ void TCPSocketBody::HandleRead()
                     if (socket.receive(data_to_read, expectedMessage, received) != sf::Socket::Done)
                     {
                         Traces() << "\n" << "ERR: Read message error";
-                        expectedMessage = 0;
+                        closeSocker = true;
+                        break;
                     } else
                     {
                         if (expectedMessage != received)
@@ -119,6 +123,7 @@ void TCPSocketBody::HandleRead()
     }
 
     readThreadStarted = false;
+    if (closeSocker) Close();
 }
 
 void TCPSocketBody::DoClose()

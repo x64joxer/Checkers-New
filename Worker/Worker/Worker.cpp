@@ -240,7 +240,15 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
         if (action == MessageCoder::TIMEOUT)
         {
             TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
-            socket.get()->Close();
+
+            if (connection_state == DISCONNECTED)
+            {
+                socket.get()->Connect(ProgramVariables::GetIpForScheduler(), ProgramVariables::GetPortForScheduler());
+                reconnectionTimer.Start();
+            } else
+            {
+                socket.get()->Close();
+            }
         } else
         {
             Traces() << "\n" << "ERR: Unexpected action: " << action;
