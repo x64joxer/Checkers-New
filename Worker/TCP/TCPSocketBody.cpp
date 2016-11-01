@@ -92,7 +92,9 @@ void TCPSocketBody::HandleRead()
                         if (expectedMessage > MessageCoder::MaxMessageSize())
                         {
                             Traces() << "\n" << "ERR: Message to long";
-                            expectedMessage = 0;
+
+                            closeSocker = true;
+                            break;
                         }
                     }
                 } else
@@ -107,7 +109,9 @@ void TCPSocketBody::HandleRead()
                         if (expectedMessage != received)
                         {
                             Traces() << "\n" << "ERR: Message to long or to short";
-                            expectedMessage = 0;
+
+                            closeSocker = true;
+                            break;
                         } else
                         {
                             expectedMessage = 0;
