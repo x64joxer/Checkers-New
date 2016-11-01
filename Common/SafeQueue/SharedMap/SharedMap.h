@@ -24,6 +24,7 @@ class SharedMap
         int Insert(data1 key, data2 val);
         void SetCondVar(std::condition_variable * wsk);
         void GetAllKeys(SharedPtrList<data1> &return_list);
+        unsigned long long Size();
 
         ~SharedMap();
 	private:       
@@ -123,6 +124,15 @@ void SharedMap<data1, data2>::GetAllKeys(SharedPtrList<data1> &return_list)
         return_list.PushBack(it->first);
     }
 
+}
+
+template<typename data1, typename data2>
+unsigned long long SharedMap<data1, data2>::Size()
+{
+    TRACE_FLAG_FOR_CLASS_SharedMap Traces() << "\n" << "LOG: unsigned long long SharedMap<data1, data2>::Size()";
+
+    std::lock_guard<std::mutex> ls(mutex);
+    return mapList.size();
 }
 
 #endif 

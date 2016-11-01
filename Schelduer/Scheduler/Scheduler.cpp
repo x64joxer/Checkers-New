@@ -67,6 +67,36 @@ void Scheduler::StartScheduling()
 
         condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate]
         {
+            /////////////////////////
+            //Traffic test purposes
+            /////////////////////////
+            if (ProgramVariables::GetTrafficFlag())
+            {
+                if (boardsToAnalyse.Size() < 2 * workers.Size())
+                {
+                    unsigned int tmpSize = freeWorkers.Size();
+
+                    Board tmpBoard;
+                    tmpBoard =
+                            std::string("| |w| |w| |w| |w|") +
+                            std::string("|w| |w| |w| |w| |") +
+                            std::string("| |w| |w| |w| |w|") +
+                            std::string("| | | | | | | | |") +
+                            std::string("| | | | | | | | |") +
+                            std::string("|b| |b| |b| |b| |") +
+                            std::string("| |b| |b| |b| |b|") +
+                            std::string("|b| |b| |b| |b| |");
+
+                    for(int i=0; i < (tmpSize*2);i++)
+                    {
+                        boardsToAnalyse.PushBack(tmpBoard);
+                    }
+                }
+            }
+            /////////////////////////
+            //End traffic test purposes
+            ////////////////////////
+
             isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty()) & (workOngoing);
             if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTimeForWorkers()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
             isNewMessage = wskConnectionManager->IsNewMessage();
