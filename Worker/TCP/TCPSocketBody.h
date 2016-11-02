@@ -4,10 +4,6 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include <boost/thread/thread.hpp>
 #include <SFML/Network.hpp>
 #include "../Traces/Traces.h"
 #include "../Worker/MessageCoder.h"
@@ -20,7 +16,6 @@ class TCPSocket;
 typedef boost::shared_ptr<TCPSocket> TCPSocket_ptr;
 
 using namespace std;
-using boost::asio::ip::tcp;
 
 class TCPSocketBody
 {
