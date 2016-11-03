@@ -54,6 +54,11 @@ bool ProgramVariables::GetTraceFlagForClass_Board()
     return traceFlagForClass_Board;
 }
 
+bool ProgramVariables::GetTraceFlagForClass_Counters()
+{
+    return traceFlagForClass_Counters;
+}
+
 bool ProgramVariables::GetTraceFlagForClass_Pawn()
 {
     return traceFlagForClass_Pawn;
@@ -149,6 +154,7 @@ std::string ProgramVariables::serverPort = "6000";
 bool ProgramVariables::trafficMode = false;
 
 bool ProgramVariables::traceFlagForClass_Board = false;
+bool ProgramVariables::traceFlagForClass_Counters = false;
 bool ProgramVariables::traceFlagForClass_Pawn = false;
 bool ProgramVariables::traceFlagForClass_PawnPos = false;
 bool ProgramVariables::traceFlagForClass_ThreadIASimpleBoard = false;

@@ -184,6 +184,8 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
 
+            Counters::ClearCounterNumberOfAnalysedBoard();
+
             workOngoing = true;
 
             Board tmpBoard;
@@ -832,6 +834,8 @@ void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::
     std::string messageId = data.at(MessageCoder::MESSAGE_ID);
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
     MessageCoder::CreateOkMessage(messageId, dest);
+
+    Counters::AddToCounterNumberOfAnalysedBoard(atoi(data.at(MessageCoder::NUM_OF_ANALYSED).c_str()));
 
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
     socket->SendMessage(dest);

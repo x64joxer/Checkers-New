@@ -4,6 +4,7 @@ echo Building...
 
 g++ -g main.cpp \
     ArgumentParser/ArgumentParser.cpp \
+    Counters/Counters.cpp \
     Scheduler/Message.cpp \
     ProgramVariables/ProgramVariables.cpp \
     ConnectionManager/ConnectionManager.cpp \

@@ -9,6 +9,7 @@
 #include "../ConnectionManager/ConnectionManager.h"
 #include "MessageCoder.h"
 #include "Client.h"
+#include "../Counters/Counters.h"
 #include "Worker.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
