@@ -8,7 +8,8 @@ class ProgramVariables
     public:
         ProgramVariables();
 
-        static unsigned int GetMaxThredForMessageQueue();
+        static unsigned short GetMaxThredForMessageQueue();
+        static void SetMaxThredForMessageQueue(const unsigned short val);
         static std::string GetPortForScheduler();
         static unsigned int GetTimeReserveToSendBestResultToClient();
         static unsigned int GetTimeToSendJobsToFreeWorkers();
@@ -46,6 +47,7 @@ class ProgramVariables
 
    private:
         static std::string serverPort;
+        static unsigned short maxThredForMessageQueue;
 
         //Traffic
         static bool trafficMode;

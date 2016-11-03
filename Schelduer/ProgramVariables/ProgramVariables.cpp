@@ -5,9 +5,14 @@ ProgramVariables::ProgramVariables()
 
 }
 
-unsigned int ProgramVariables::GetMaxThredForMessageQueue()
+unsigned short ProgramVariables::GetMaxThredForMessageQueue()
 {
-    return 10;
+    return maxThredForMessageQueue;
+}
+
+void ProgramVariables::SetMaxThredForMessageQueue(const unsigned short val)
+{
+    maxThredForMessageQueue = val;
 }
 
 std::string ProgramVariables::GetPortForScheduler()
@@ -155,6 +160,7 @@ bool ProgramVariables::GetTraceFlagForClass_TCPServer()
 }
 
 std::string ProgramVariables::serverPort = "6000";
+unsigned short ProgramVariables::maxThredForMessageQueue = 4;
 
 bool ProgramVariables::trafficMode = false;
 
