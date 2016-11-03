@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <mutex>
+#include <sstream>
 #include "../Traces/Traces.h"
 #include "../ConnectionManager/ConnectionManager.h"
 #include "MessageCoder.h"

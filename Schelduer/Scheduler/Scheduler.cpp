@@ -851,6 +851,21 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
     state.SetBoard(CalculateBestResult());
     state.SetThinking(false);
     SendStateToAllClients(data, dest);
+
+    TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************************************************";
+    TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************TOTAL NUMBER OF ANALYSED BOARDS*****************";
+
+    std::string number;
+    std::stringstream strstream;
+    strstream << Counters::GetCounterNumberOfAnalysedBoard();
+    strstream >> number;
+
+    unsigned short firstColum = 33 - (strlen(number.c_str())/2);
+    std::string whiteSigns = "";
+    for(unsigned short i=0;i<firstColum;i++) whiteSigns+=" ";
+
+    TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:" << whiteSigns << number;
+    TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************************************************";
 }
 
 void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)

@@ -20,6 +20,8 @@ class ProgramVariables
         static void SetTrafficFlag(const bool flag);
 
         //Trace
+        static bool GetTraceFlagFor_Notif();
+
         static bool GetTraceFlagForClass_Board();
         static bool GetTraceFlagForClass_Counters();
         static bool GetTraceFlagForClass_Pawn();
@@ -32,7 +34,7 @@ class ProgramVariables
         static bool GetTraceFlagForClass_QueueTimerList();
         static bool GetTraceFlagForClass_SharedMap();
         static bool GetTraceFlagForClass_SharedPtrList();
-        static bool GetTraceFlagForClass_SharedPtrSet();
+        static bool GetTraceFlagForClass_SharedPtrSet();        
         static bool GetTraceFlagForClass_Client();
         static bool GetTraceFlagForClass_Message();
         static bool GetTraceFlagForClass_MessageCoder();
@@ -49,6 +51,7 @@ class ProgramVariables
         static bool trafficMode;
 
         //Trace flags
+        static bool traceFlagFor_Notif;
         static bool traceFlagForClass_Board;
         static bool traceFlagForClass_Counters;
         static bool traceFlagForClass_Pawn;
@@ -71,6 +74,7 @@ class ProgramVariables
         static bool traceFlagForClass_TCPServer;
 };
 
+#define TRACE_FLAG_FOR_Notif if (ProgramVariables::GetTraceFlagFor_Notif())
 #define TRACE_FLAG_FOR_CLASS_Board if (ProgramVariables::GetTraceFlagForClass_Board())
 #define TRACE_FLAG_FOR_CLASS_Counters if (ProgramVariables::GetTraceFlagForClass_Counters())
 #define TRACE_FLAG_FOR_CLASS_Pawn if (ProgramVariables::GetTraceFlagForClass_Pawn())

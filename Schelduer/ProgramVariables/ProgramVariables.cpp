@@ -49,6 +49,11 @@ void ProgramVariables::SetTrafficFlag(const bool flag)
 
 //Trace flags
 
+bool ProgramVariables::GetTraceFlagFor_Notif()
+{
+    return traceFlagFor_Notif;
+}
+
 bool ProgramVariables::GetTraceFlagForClass_Board()
 {
     return traceFlagForClass_Board;
@@ -153,6 +158,7 @@ std::string ProgramVariables::serverPort = "6000";
 
 bool ProgramVariables::trafficMode = false;
 
+bool ProgramVariables::traceFlagFor_Notif = true;
 bool ProgramVariables::traceFlagForClass_Board = false;
 bool ProgramVariables::traceFlagForClass_Counters = false;
 bool ProgramVariables::traceFlagForClass_Pawn = false;
