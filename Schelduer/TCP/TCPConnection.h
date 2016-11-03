@@ -27,9 +27,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      TCPConnection_ptr GetMeWsk() { return meWsk; }
      std::string GetIp() { return socket_.remote_endpoint().address().to_string(); }
      int GetPort() { return socket_.remote_endpoint().port(); }
-     void HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred);
-     void HandleWrite(const boost::system::error_code& e);
-     void SendMessage(const std::string message);
+     void SendMessage(const std::string message);    
      void SetMessageQueue(SharedPtrList<Message> * wsk) { messageQueue = wsk; }
      void SetMeWsk(TCPConnection_ptr me) { meWsk = me; }
      bool IsSocketActive() { return socketActive; }
@@ -37,7 +35,9 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      boost::asio::ip::tcp::socket& Socket();
      ~TCPConnection();
 
-   private:     
+   private:
+     void HandleRead(const boost::system::error_code& e, std::size_t bytes_transferred);
+     void HandleWrite(const boost::system::error_code& e);
      void Stop();
      SharedPtrList<Message> *messageQueue;
      boost::array<char, 8192> buffer_;
