@@ -82,5 +82,5 @@ done
 
 echo ""
 echo Total average:
-echo $(awk "BEGIN {print $TOTAL_SUM/$NUMBER_OF_WORKERS; exit}")
+echo $TOTAL_SUM
 echo ""
