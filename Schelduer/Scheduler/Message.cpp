@@ -18,7 +18,7 @@ void Message::CopyData(TCPConnection_ptr connection, const char *wskM)
 {
     TRACE_FLAG_FOR_CLASS_Message Traces() << "\n" << "LOG: void CopyData(TCPConnection_ptr connection, const char *wskM)";
 
-    char *tmpChar = new char[std::strlen(wskM)];
+    char *tmpChar = new char[std::strlen(wskM)+1];
     std::strcpy(tmpChar, wskM);
 
     wskMessage.reset(tmpChar);
