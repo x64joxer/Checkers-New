@@ -34,7 +34,7 @@ class QueueTimer
         std::mutex acces_mutex;
         std::atomic_bool stop_flag;
         std::atomic_bool threadExist;
-        std::condition_variable mycond;
+        std::condition_variable mycond;        
 
 };
 

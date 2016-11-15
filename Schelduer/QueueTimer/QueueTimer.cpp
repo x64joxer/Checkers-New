@@ -70,7 +70,7 @@ void QueueTimer::Stop()
         mutex_guard.unlock();       
 
         std::unique_lock<std::mutex> guard(acces_mutex);
-        mycond.wait(guard,[this]{ return (float)!threadExist; });
+        mycond.wait_for(guard, std::chrono::milliseconds(50),[this]{ return (float)!threadExist; });
 
         stop_flag = false;
     };
@@ -80,3 +80,4 @@ QueueTimer::~QueueTimer()
 {
     Stop();
 }
+
