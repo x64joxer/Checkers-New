@@ -1,1 +1,1 @@
-/media/BIG_DISC/programowanie/PROJEKTY/Checkers-New/Common/SafeQueue/SharedMap/SharedMap.cpp
+../../../Common/SafeQueue/SharedMap/SharedMap.cpp
