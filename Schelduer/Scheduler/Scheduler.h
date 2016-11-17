@@ -41,6 +41,7 @@ class Scheduler
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
+        void ResetServerState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);

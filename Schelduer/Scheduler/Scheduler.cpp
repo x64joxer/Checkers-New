@@ -164,6 +164,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             if (!removeResult) removeResult = RemoveWorker(socket);
 
         } else
+        if (action == MessageCoder::RESET_SERVER_STATE)
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::RESET_SERVER_STATE";
+
+            ResetServerState(socket, data, dest);
+        } else
         if (action == MessageCoder::SET_STATE)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::SET_STATE";
@@ -577,6 +583,19 @@ bool Scheduler::RemoveWorker(TCPConnection_ptr socket)
     }
 
     return !flag;
+}
+
+void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+
+    Board tmpBoard;
+    MessageCoder::MapToBoard(data, &tmpBoard);
+    state.SetBoard(tmpBoard);
+    state.SetThinking(false);
+    boardsToAnalyse.Clear();
+
+    SendStateToAllClients(data, dest);
 }
 
 void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
