@@ -342,6 +342,8 @@ void Worker::SendResult(Board & board, char * dest, std::string & prevousMessage
 
 void Worker::ReceiveStopAnalyse(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest)
 {
+    TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::ReceiveStopAnalyse(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest)";
+
     stopFlag = true;
 
     while (endIaJobFlag) {}

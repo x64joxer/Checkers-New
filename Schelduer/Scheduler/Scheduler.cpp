@@ -632,6 +632,7 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
     boardsToAnalyse.Clear();
 
     SendStateToAllClients(data, dest);
+    workers.GetAllKeys(workersToStopAnalyse);
 }
 
 void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
@@ -954,8 +955,7 @@ void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> &
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 
-    clients.GetAllKeys(clientsToStateUpdate);
-    workers.GetAllKeys(workersToStopAnalyse);
+    clients.GetAllKeys(clientsToStateUpdate);    
 }
 
 Board Scheduler::CalculateBestResult()
