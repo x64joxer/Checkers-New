@@ -84,6 +84,23 @@ void CheckerArea::SetMessageText(const QString & text)
     messageWindow = text;
 }
 
+void CheckerArea::ResetServerState()
+{
+    *board =
+                std::string("| |w| |w| |w| |w|") +
+                std::string("|w| |w| |w| |w| |") +
+                std::string("| |w| |w| |w| |w|") +
+                std::string("| | | | | | | | |") +
+                std::string("| | | | | | | | |") +
+                std::string("|b| |b| |b| |b| |") +
+                std::string("| |b| |b| |b| |b|") +
+                std::string("|b| |b| |b| |b| |");
+
+    previousBoard = *board;
+    agentTCP->ResetServerState(*board);
+
+}
+
 void CheckerArea::PaintFields(QPainter *painter)
 {
     int widthField = width() / 8;

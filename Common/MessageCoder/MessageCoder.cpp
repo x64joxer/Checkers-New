@@ -384,6 +384,15 @@ void MessageCoder::CreateStartAnalyseWork(const unsigned long long respTime , co
     InsertLenMessageHeader(dest);
 }
 
+void MessageCoder::CreateResetServerStateMessage(const Board & board, const std::string & id, char *dest)
+{
+    InsertHeader(dest);
+    KeyValuePairToChar(ACTION, RESET_SERVER_STATE, dest);
+    MessageCoder::BoardToChar(board, dest, 1);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
+}
+
 void MessageCoder::CreateStartMessage(const unsigned long long respTime, const unsigned short numberOfBoard, const std::string & id, const std::string & jobId, const Board & board, char *dest)
 {
     InsertHeader(dest);
@@ -504,6 +513,7 @@ std::string MessageCoder::START_ANALYSE = GetNextKey("START_ANALYSE");
 std::string MessageCoder::START_ANALYSE_FAST = GetNextKey("START_ANALYSE_FAST");
 std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
 std::string MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS = GetNextKey("TIME_TO_SEND_RESULT_TO_CLIENTS");
+std::string MessageCoder::RESET_SERVER_STATE = GetNextKey("RESET_SERVER_STATE");
 
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");

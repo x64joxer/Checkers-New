@@ -18,7 +18,10 @@ class MainWindow : public QMainWindow
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
-    private:
+private slots:
+    void on_actionNew_triggered();
+
+private:
         CheckerArea *checkerArea;
         Board *board;
 

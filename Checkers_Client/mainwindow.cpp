@@ -32,9 +32,15 @@ void MainWindow::resizeEvent( QResizeEvent *)
     checkerArea->resize(width(),height()-30);
 }
 
+void MainWindow::on_actionNew_triggered()
+{
+    checkerArea->ResetServerState();
+}
+
 MainWindow::~MainWindow()
 {
     delete checkerArea;
     delete board;
     delete ui;
 }
+

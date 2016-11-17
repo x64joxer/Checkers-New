@@ -132,6 +132,24 @@ void TCPHandler::SendJob(const Board &board)
     waitForOKMessageTimer->start();
 }
 
+void TCPHandler::ResetServerState(const Board &board)
+{
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::ResetServerState(const Board &board)";
+
+    while(tcpSocket->waitForBytesWritten()) {}
+
+    MessageCoder::ClearChar(globalData, ProgramVariables::K4);
+    std::string tempId = MessageCoder::CreateMessageId();
+    MessageCoder::CreateResetServerStateMessage(board, tempId, globalData);
+
+    TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: Sending job to server " << globalData;
+
+    tcpSocket->write(globalData);
+
+    connection_state = WAIT_FOR_STATE_UPDATE;
+    waitForOKMessageTimer->start();
+}
+
 void TCPHandler::Start()
 {
     TRACE_FLAG_FOR_CLASS_TCPHandler Traces() << "\n" << "LOG: void TCPHandler::Start()";

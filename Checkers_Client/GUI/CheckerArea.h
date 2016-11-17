@@ -27,6 +27,7 @@ class CheckerArea : public QWidget
         explicit CheckerArea(QWidget *parent = 0);
         void SetBoard(Board *wsk);
         void SetMessageText(const QString & text);
+        void ResetServerState();
         ~CheckerArea();
 
     public slots:
