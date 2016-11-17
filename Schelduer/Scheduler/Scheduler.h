@@ -24,14 +24,14 @@ class Scheduler
     public:
         Scheduler();
 
-        ConnectionManager * GetConnectionManager();
-        void MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data, char * dest);
+        ConnectionManager * GetConnectionManager();        
         void Start(const unsigned short numofthread);
         void SetConnectionManager(ConnectionManager *wsk);        
         ~Scheduler();
 
     private:
         void StartScheduling();
+        void MessageInterpreting(TCPConnection_ptr socket, std::map<std::string, std::string> & data, char * dest);
 
         void AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
