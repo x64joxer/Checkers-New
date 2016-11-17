@@ -13,7 +13,7 @@ class Worker
     public:
         Worker();
         Worker(const std::map<std::string, std::string> & data);
-        enum class ConnectionState { None, WaitForOkMessageAfterSendStatus, WaitForOkMessageAfterSendFirstJob, WaitForOkMessageAfterSendJob };
+        enum class ConnectionState { None, WaitForOkMessageAfterSendStatus, WaitForOkMessageAfterSendFirstJob, WaitForOkMessageAfterSendJob, WaitForOkMessageAfterSendStopAnnalyse };
 
         Peers::STATE GetState() { return workerState; }
         ConnectionState GetConnectionState() { return workerConnectionState; }

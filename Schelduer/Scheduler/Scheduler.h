@@ -36,6 +36,7 @@ class Scheduler
         void AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void AddWorker(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void SendStopAnalyse(TCPConnection_ptr socket, const std::string & messageId, char * dest);
         void SetState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest);
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
@@ -47,6 +48,7 @@ class Scheduler
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
         void DistributeWorkToWorkers(char * dest);
         void UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest);
+        void SendStopAnalyseToWorker(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest);
         void RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void FinishWork(const std::map<std::string, std::string> & data, char * dest);
         void SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest);
@@ -63,6 +65,7 @@ class Scheduler
 
         SharedPtrList<TCPConnection_ptr> freeWorkers;
         SharedPtrList<TCPConnection_ptr> clientsToStateUpdate;
+        SharedPtrList<TCPConnection_ptr> workersToStopAnalyse;
         SharedPtrList<Board> boardsToAnalyse;        
         std::atomic<bool> firstJobStarted;        
         std::atomic<bool> workOngoing;

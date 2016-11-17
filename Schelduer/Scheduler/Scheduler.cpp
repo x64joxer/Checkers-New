@@ -58,6 +58,7 @@ void Scheduler::StartScheduling()
     bool isNewBoardToAnalyse;
     bool isNewMessage;
     bool isClientToUpate;
+    bool isWorkerToStopAnalyse;
 
     while (true)
     {
@@ -65,7 +66,7 @@ void Scheduler::StartScheduling()
         std::mutex tmpMutex;
         std::unique_lock<std::mutex> guard(tmpMutex);        
 
-        condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate]
+        condition_var->wait(guard,[this, &isNewBoardToAnalyse, &isNewMessage, &isClientToUpate, &isWorkerToStopAnalyse]
         {
             /////////////////////////
             //Traffic test purposes
@@ -101,8 +102,9 @@ void Scheduler::StartScheduling()
             if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTimeForWorkers()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
             isNewMessage = wskConnectionManager->IsNewMessage();
             isClientToUpate = !clientsToStateUpdate.Empty();
+            isWorkerToStopAnalyse = !workersToStopAnalyse.Empty();
 
-            return (isNewBoardToAnalyse | isNewMessage | isClientToUpate); }
+            return (isNewBoardToAnalyse | isNewMessage | isClientToUpate | isWorkerToStopAnalyse); }
         );        
 
         if (isNewMessage)
@@ -134,12 +136,18 @@ void Scheduler::StartScheduling()
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: New board to analyse";
             DistributeWorkToWorkers(dest);
-        }
+        } else
         if (isClientToUpate)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client to update";
 
             UpdateNextClientStatus(tmpTCP_Connection_ptr, dest);
+        } else
+        if (isWorkerToStopAnalyse)
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Workers to send stop analyse";
+
+            SendStopAnalyseToWorker(tmpTCP_Connection_ptr, dest);
         }
     }
 
@@ -289,6 +297,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                         tmpWorker->SetConnectionState(Worker::ConnectionState::None);
                         tmpWorker->SetState(Peers::BUSY);
                     } else
+                    if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
+                    {
+                        timerList.RemoveFromList(socket);
+                        tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                        tmpWorker->SetState(Peers::FREE);
+                    } else
                     {
                         Traces() << "\n" << "ERR: Unexpected OK message from worker";
                     }
@@ -386,9 +400,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                 } else
                 if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
                 {
+                    socket->Close();                
+                } else
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
+                {
                     socket->Close();
                 }
-
             }
             catch (const std::out_of_range& oor)
             {
@@ -449,6 +466,25 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
        socket->SendMessage(dest);
+    }
+    catch (std::out_of_range)
+    {
+        Traces() << "\n" << "ERR: Protocol error host";
+    }
+}
+
+void Scheduler::SendStopAnalyse(TCPConnection_ptr socket, const std::string & messageId, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStopAnalyse(TCPConnection_ptr socket, const std::string & messageId, char * dest)";
+
+    try
+    {
+        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+        MessageCoder::CreateStopAnalyse(messageId, dest);
+
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
+
+        socket->SendMessage(dest);
     }
     catch (std::out_of_range)
     {
@@ -842,6 +878,33 @@ void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, 
     }
 }
 
+void Scheduler::SendStopAnalyseToWorker(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStopanalyseToWorker(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest)";
+
+    bool wasWorkerToUpdate = true;
+
+    try
+    {
+        tmpTCP_Connection_ptr = workersToStopAnalyse.PopFront();
+    }
+    catch (std::string)
+    {
+        wasWorkerToUpdate = false;
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: List empty. Not a bug.";
+    }
+
+    if (wasWorkerToUpdate)
+    {
+        if (workers.At(tmpTCP_Connection_ptr)->GetState() == Peers::STATE::BUSY)
+        {
+           SendStopAnalyse(tmpTCP_Connection_ptr, MessageCoder::CreateMessageId(), dest);
+           workers.At(tmpTCP_Connection_ptr)->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse);
+           CreateTimeoutGuard(tmpTCP_Connection_ptr, ProgramVariables::GetMaxTimeoutForMessageResponse());
+        }
+    }
+}
+
 void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::RecevieBestResult(const std::map<std::string, std::string> & data)";
@@ -892,6 +955,7 @@ void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> &
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 
     clients.GetAllKeys(clientsToStateUpdate);
+    workers.GetAllKeys(workersToStopAnalyse);
 }
 
 Board Scheduler::CalculateBestResult()

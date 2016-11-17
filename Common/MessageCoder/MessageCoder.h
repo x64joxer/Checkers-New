@@ -41,6 +41,7 @@ class MessageCoder
         static void CreateStartAnalyseWork(const unsigned long long respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest);
         static void CreateResetServerStateMessage(const Board & board, const std::string & id, char *dest);
         static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned long long respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
+        static void CreateStopAnalyse(const std::string & id, char *dest);
         static void CreateOkMessage(const std::string & id, char *dest);
         static void CreateNotOkMessage(const std::string & id, NOT_OK_REASON reason, char *dest);
 
@@ -72,6 +73,7 @@ class MessageCoder
         static std::string MESSAGE_END;
         static std::string CLOSE_CNNECTION;
         static std::string CONNECTED;
+        static std::string STOP_ANALYSE;
         static std::string START_ANALYSE;
         static std::string START_ANALYSE_FAST;
         static std::string TIMEOUT;

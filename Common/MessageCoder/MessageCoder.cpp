@@ -464,6 +464,15 @@ void MessageCoder::CreateRoleMessage(const ROLE_ENUM role, const std::string & i
     InsertLenMessageHeader(dest);
 }
 
+void MessageCoder::CreateStopAnalyse(const std::string & id, char *dest)
+{
+    InsertHeader(dest);
+    KeyValuePairToChar(ACTION, STOP_ANALYSE, dest);
+    KeyValuePairToChar(MESSAGE_ID, id, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
+}
+
 void MessageCoder::CreateOkMessage(const std::string  & id, char *dest)
 {
     InsertHeader(dest);
@@ -515,6 +524,7 @@ std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
 std::string MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS = GetNextKey("TIME_TO_SEND_RESULT_TO_CLIENTS");
 std::string MessageCoder::RESET_SERVER_STATE = GetNextKey("RESET_SERVER_STATE");
 
+std::string MessageCoder::STOP_ANALYSE = GetNextKey("STOP_ANALYSE");
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
 std::string MessageCoder::SET_STATE = GetNextKey("SET_STATE");
 std::string MessageCoder::SET_ROLE = GetNextKey("SET_ROLE");
