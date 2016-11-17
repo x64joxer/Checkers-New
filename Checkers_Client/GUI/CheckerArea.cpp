@@ -97,6 +97,7 @@ void CheckerArea::ResetServerState()
                 std::string("|b| |b| |b| |b| |");
 
     previousBoard = *board;
+    waitForIATimer->stop();
     agentTCP->ResetServerState(*board);
 
 }
