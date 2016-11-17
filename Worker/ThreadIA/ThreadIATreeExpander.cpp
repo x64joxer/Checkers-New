@@ -14,9 +14,9 @@ ThreadIATreeExpander<MQueue, sQueue>::ThreadIATreeExpander() :
 }
 
 template <unsigned long long MQueue, unsigned long long sQueue>
-void ThreadIATreeExpander<MQueue, sQueue>::ExpandWithoutQueue(const unsigned int howManySteps, const unsigned int frequencyOfTransferData, const unsigned short numThread, std::atomic<int> *percentSteps, const KindOfSteps stepKind)
+void ThreadIATreeExpander<MQueue, sQueue>::ExpandWithoutQueue(const unsigned int howManySteps, const unsigned int frequencyOfTransferData, const unsigned short numThread, std::atomic<int> *percentSteps, const KindOfSteps stepKind, std::atomic_bool * stopFlag)
 {
-    Expand(howManySteps, frequencyOfTransferData, *mainBoardQueueLocal, numThread, percentSteps, stepKind);
+    Expand(howManySteps, frequencyOfTransferData, *mainBoardQueueLocal, numThread, percentSteps, stepKind, stopFlag);
 }
 
 template <unsigned long long MQueue, unsigned long long sQueue>
@@ -26,7 +26,7 @@ void ThreadIATreeExpander<MQueue, sQueue>::SetMainBoardQueue(ThreadIABoardQueue<
 }
 
 template <unsigned long long MQueue, unsigned long long sQueue>
-void ThreadIATreeExpander<MQueue, sQueue>::Expand(const unsigned long long howManySteps, const unsigned int frequencyOfTransferData, ThreadIABoardQueue<MQueue> & mainBoardQueue, const unsigned short numThread, std::atomic<int> *percentSteps, const KindOfSteps stepKind)
+void ThreadIATreeExpander<MQueue, sQueue>::Expand(const unsigned long long howManySteps, const unsigned int frequencyOfTransferData, ThreadIABoardQueue<MQueue> & mainBoardQueue, const unsigned short numThread, std::atomic<int> *percentSteps, const KindOfSteps stepKind, std::atomic_bool * stopFlag)
 {
     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: EXPAND START";
     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: void ThreadIATreeExpander<MQueue, sQueue>::Expand(unsigned int howManySteps, unsigned int frequencyOfTransferData, ThreadIABoardQueue<MQueue> &mainBoardQueue)";
@@ -55,6 +55,7 @@ void ThreadIATreeExpander<MQueue, sQueue>::Expand(const unsigned long long howMa
     while (step < howManyStepsLocal)
     {
         if (queue[firstQueueElement].GetNullBoard()) break;
+        if (*stopFlag) break;
 
         for (current = firstQueueElement; current <= lastQueueElement; )
         {            
@@ -179,8 +180,13 @@ void ThreadIATreeExpander<MQueue, sQueue>::Expand(const unsigned long long howMa
 
     };
 
-    TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Number of temporary queue array " << lastQueueElement;
-    TransferBoards(mainBoardQueue);
+
+    if (*stopFlag == false)
+    {
+        TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: Number of temporary queue array " << lastQueueElement;
+
+        TransferBoards(mainBoardQueue);
+    }
 
     TRACE_FLAG_FOR_CLASS_ThreadIATreeExpander Traces() << "\n" << "LOG: EXPAND STOP";
     Traces::RemoveThreadID();

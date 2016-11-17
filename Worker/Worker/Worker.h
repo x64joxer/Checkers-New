@@ -27,6 +27,7 @@ class Worker
         void SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
         void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
         void SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
+        void ReceiveStopAnalyse(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest);
 
         void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
         unsigned int CalculateMaxTimeForIA(const unsigned int maxTime, const unsigned int reservedTime);
@@ -50,6 +51,7 @@ class Worker
         bool firstWorker;
         std::atomic<int> currentPercentOfSteps;
         ThreadIAMove<3000000> *jobExpander;
+        std::atomic_bool stopFlag;
 
         /////////////////////////
         //Traffic test purposes

@@ -4,7 +4,8 @@ Worker::Worker() : connection_state(DISCONNECTED),
                    myState(Peers::STATE::FREE),
                    maxThread(ProgramVariables::GetMaxThredForIa()),
                    endIaJobFlag(false),
-                   conversationIsOngoing(false)
+                   conversationIsOngoing(false),
+                   stopFlag(false)
 {
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: Worker::Worker()";
 
@@ -231,6 +232,12 @@ void Worker::MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std
             ReceiveJob(socket, data, dest, reconnectionTimer, prevousMessageid);
 
         } else
+        if (action == MessageCoder::STOP_ANALYSE)
+        {
+            TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::STOP_ANALYSE";
+            ReceiveStopAnalyse(socket, data, dest);
+
+        } else
         if (action == MessageCoder::START_ANALYSE_FAST)
         {
             TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: action == MessageCoder::START_ANALYSE_FAST";
@@ -333,6 +340,19 @@ void Worker::SendResult(Board & board, char * dest, std::string & prevousMessage
     reconnectionTimer.Start();
 }
 
+void Worker::ReceiveStopAnalyse(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest)
+{
+    stopFlag = true;
+
+    while (endIaJobFlag) {}
+    myState = Peers::STATE::FREE;
+
+    MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+    MessageCoder::CreateOkMessage(data.at(MessageCoder::MESSAGE_ID), dest);
+    socket->WriteMessage(dest);
+
+}
+
 void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid, bool fast)
 {
     TRACE_FLAG_FOR_CLASS_Worker Traces() << "\n" << "LOG: void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid)";
@@ -361,6 +381,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
 
         Counters::ClearCounterNumberOfAnalysedBoard();
         endIaJobFlag = false;
+        stopFlag = false;
         canITakeBoardToReturnFast = false;
         maxIaTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
         if (fast)
@@ -378,6 +399,7 @@ void Worker::ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string>
                             jobExpander,
                             &boardToAnalyse,
                             &endIaJobFlag,
+                            &stopFlag,
                             &currentPercentOfSteps,
                             maxThread,
                             3000,
