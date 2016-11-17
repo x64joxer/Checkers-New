@@ -55,10 +55,10 @@ class MessageCoder
         static void MapToBoard(const std::map<std::string, std::string> & dest, Board *board);
 
         static unsigned int MaxMessageSize() { return 4048; }
-        static unsigned int MaxMessageConnectionCloseSize() { return 48; }
-        static unsigned int MaxMessageConnectedSize() { return 48; }
-        static unsigned int MaxMessageTimeToSendResultToClientsSize() { return 128; }
-        static unsigned int MaxMessageTimeoutSize() { return 48; }
+        static unsigned int MaxMessageConnectionCloseSize() { return 4048; }
+        static unsigned int MaxMessageConnectedSize() { return 4048; }
+        static unsigned int MaxMessageTimeToSendResultToClientsSize() { return 4048; }
+        static unsigned int MaxMessageTimeoutSize() { return 4048; }
         static unsigned int BufferSize() { return 4; }
 
         static std::string CreateMessageId();
