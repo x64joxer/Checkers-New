@@ -24,12 +24,12 @@ unsigned long long ProgramVariables::GetMaxTimeWaitToServer()
 
 QString ProgramVariables::GetServerIP()
 {
-    return "192.168.0.7";
+    return serverIP;
 }
 
 int ProgramVariables::GetServerPort()
 {
-   return 6000;
+   return serverPort;
 }
 
 unsigned int ProgramVariables::GetRecconectingTime()
@@ -98,6 +98,9 @@ bool ProgramVariables::GetTraceFlagForClass_PossibleMoves()
 {
     return traceFlagForClass_PossibleMoves;
 }
+
+QString ProgramVariables::serverIP = "127.0.0.1";
+int ProgramVariables::serverPort = 6000;
 
 bool ProgramVariables::traceFlagForClass_Board = false;
 bool ProgramVariables::traceFlagForClass_Pawn = false;

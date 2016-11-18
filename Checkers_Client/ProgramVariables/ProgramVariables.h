@@ -42,6 +42,8 @@ class ProgramVariables
 
    private:
         static unsigned long long numOfAnalysded;
+        static QString serverIP;
+        static int serverPort;
 
         static bool traceFlagForClass_Board;
         static bool traceFlagForClass_Pawn;
