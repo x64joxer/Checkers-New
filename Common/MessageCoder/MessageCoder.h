@@ -79,6 +79,7 @@ class MessageCoder
         static std::string TIMEOUT;
         static std::string TIME_TO_SEND_RESULT_TO_CLIENTS;
         static std::string RESET_SERVER_STATE;
+        static std::string SERVER_ERROR;
 
         static std::string START_WORK;
         static std::string SET_STATE;        

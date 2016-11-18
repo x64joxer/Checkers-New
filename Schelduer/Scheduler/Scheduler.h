@@ -40,7 +40,7 @@ class Scheduler
         void SetState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SetState(TCPConnection_ptr socket, Peers::STATE state);
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest);
-        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
+        void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);
         bool RemoveClient(TCPConnection_ptr socket);
         bool RemoveWorker(TCPConnection_ptr socket);
         void ResetServerState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
@@ -69,7 +69,7 @@ class Scheduler
         SharedPtrList<TCPConnection_ptr> workersToStopAnalyse;
         SharedPtrList<Board> boardsToAnalyse;        
         std::atomic<bool> firstJobStarted;        
-        std::atomic<bool> workOngoing;
+        std::atomic<bool> workOngoing;        
 
         ServerState state;
         QueueTimerList timerList;

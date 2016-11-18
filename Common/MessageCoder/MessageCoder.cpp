@@ -448,6 +448,7 @@ void MessageCoder::CreateServerStateMessage(const ServerState & serverState, con
     KeyValuePairToChar(MAX_IA_TIME, serverState.GetMaxTime(), dest);
     KeyValuePairToChar(START_TIME, serverState.GetStartTime(), dest);
     KeyValuePairToChar(TIME_TO_END, serverState.GetTimeToEnd(), dest);
+    KeyValuePairToChar(SERVER_ERROR, serverState.GetLastServerError(), dest);
     BoardToChar(serverState.GetBoard(), dest + strlen(dest) , 1);
 
     KeyValuePairToChar(MESSAGE_END, 0, dest);
@@ -523,6 +524,7 @@ std::string MessageCoder::START_ANALYSE_FAST = GetNextKey("START_ANALYSE_FAST");
 std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
 std::string MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS = GetNextKey("TIME_TO_SEND_RESULT_TO_CLIENTS");
 std::string MessageCoder::RESET_SERVER_STATE = GetNextKey("RESET_SERVER_STATE");
+std::string MessageCoder::SERVER_ERROR = GetNextKey("SERVER_ERROR");
 
 std::string MessageCoder::STOP_ANALYSE = GetNextKey("STOP_ANALYSE");
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");

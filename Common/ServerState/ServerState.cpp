@@ -1,6 +1,7 @@
 #include "ServerState.h"
 
-ServerState::ServerState() : thinking(false)
+ServerState::ServerState() : thinking(false),
+                             lastServerError(ServerState::NO_SERVER_ERROR_TEXT)
 {
     current =
     std::string("| |w| |w| |w| |w|") +
@@ -47,3 +48,5 @@ ServerState::~ServerState()
 {
     delete mutex;
 }
+
+std::string ServerState::NO_SERVER_ERROR_TEXT = "NO_ERROR";

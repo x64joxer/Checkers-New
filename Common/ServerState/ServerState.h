@@ -29,10 +29,14 @@ class ServerState
         unsigned long long GetMaxTime() const { std::lock_guard<std::mutex> ls(*mutex); return maxTime; }
         unsigned long long GetMaxTimeForWorkers() const { std::lock_guard<std::mutex> ls(*mutex); return maxTimeForWorkers; }
         unsigned long long GetTimeToEnd() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
+        void SetlastServerError(const std::string & error) { lastServerError = error; }
+        std::string GetLastServerError() const { return lastServerError; }
 
         const ServerState & operator=(const ServerState  & data);
 
         ~ServerState();
+
+        static std::string NO_SERVER_ERROR_TEXT;
 
     private:
         Board current;
@@ -42,8 +46,9 @@ class ServerState
         unsigned long long maxTime;
         unsigned long long maxTimeForWorkers;
         unsigned long long timeToEnd;
+        std::string lastServerError;
 
-        std::mutex *mutex;
+        std::mutex *mutex;        
 
 };
 

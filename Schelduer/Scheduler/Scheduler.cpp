@@ -943,9 +943,20 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
 
     jobTimer.Stop();
     workOngoing = false;
-    firstJobStarted = false;
-    state.SetBoard(CalculateBestResult());
+    firstJobStarted = false;    
     state.SetThinking(false);
+    if (boardsToAnalyse.Size() > 0)
+    {
+        state.SetBoard(CalculateBestResult());
+
+        state.SetlastServerError(ServerState::NO_SERVER_ERROR_TEXT);
+    } else
+    {
+        Traces() << "\n" << "ERR: No result to send";
+
+        state.SetlastServerError("No result received form workers!");
+    }
+
     SendStateToAllClients(data, dest);
 
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************************************************";
