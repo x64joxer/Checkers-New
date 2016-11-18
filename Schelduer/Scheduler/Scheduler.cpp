@@ -645,7 +645,7 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
     state.SetBoard(tmpBoard);
     state.SetThinking(false);
     boardsToAnalyse.Clear();
-    timerList.RemoveFromList(nullptr);
+    jobTimer.Stop();
 
     SendStateToAllClients(data, dest);
     workers.GetAllKeys(workersToStopAnalyse);
@@ -673,18 +673,15 @@ void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, c
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
 
-    QueueTimer_ptr tmpTimer;
-    tmpTimer = std::shared_ptr<QueueTimer> (new QueueTimer());
-    tmpTimer->SetTime(miliseconds);
-    tmpTimer->SetQueue(wskConnectionManager->GetMessageQueue());
+    jobTimer.SetTime(miliseconds);
+    jobTimer.SetQueue(wskConnectionManager->GetMessageQueue());
     char *tmpData = new char[MessageCoder::MaxMessageTimeToSendResultToClientsSize()];
     MessageCoder::ClearChar(tmpData, MessageCoder::MaxMessageTimeToSendResultToClientsSize());
     MessageCoder::CreateTimeToSendResultToClientsMessage(tmpData);
     Message tmpMessage;
     tmpMessage.CopyWsk(nullptr, tmpData);
-    tmpTimer->SetMessageToSend(tmpMessage);
-    tmpTimer->Start();
-    timerList.InsertIntoList(nullptr, tmpTimer);
+    jobTimer.SetMessageToSend(tmpMessage);
+    jobTimer.Start();
 }
 
 void Scheduler::UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker)
@@ -944,7 +941,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char * dest)";
 
-    timerList.RemoveFromList(nullptr);
+    jobTimer.Stop();
     workOngoing = false;
     firstJobStarted = false;
     state.SetBoard(CalculateBestResult());

@@ -73,6 +73,7 @@ class Scheduler
 
         ServerState state;
         QueueTimerList timerList;
+        QueueTimer jobTimer;
 };
 
 #endif // SCHEDULER_H
