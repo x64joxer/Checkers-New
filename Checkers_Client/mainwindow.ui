@@ -44,7 +44,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>Reset game</string>
    </property>
   </action>
   <action name="actionExit">
@@ -54,7 +54,7 @@
   </action>
   <action name="actionServer_IP">
    <property name="text">
-    <string>Server IP...</string>
+    <string>Server IP and Port...</string>
    </property>
   </action>
  </widget>
