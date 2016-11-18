@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
      //Create board area
     checkerArea = new CheckerArea(this);
     checkerArea->SetBoard(board);
+
+    //Create Ip set server IP window
+    ipServerSetWindow = new IpSetDialog();
 }
 
 void MainWindow::resizeEvent( QResizeEvent *)
@@ -34,7 +37,12 @@ void MainWindow::resizeEvent( QResizeEvent *)
 
 void MainWindow::on_actionNew_triggered()
 {
-    checkerArea->ResetServerState();
+    checkerArea->ResetServerState();    
+}
+
+void MainWindow::on_actionServer_IP_triggered()
+{
+    ipServerSetWindow->show();
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -46,6 +54,7 @@ MainWindow::~MainWindow()
 {
     delete checkerArea;
     delete board;
+    delete ipServerSetWindow;
     delete ui;
 }
 

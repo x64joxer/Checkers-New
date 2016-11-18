@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "Board/Board.h"
 #include "GUI/CheckerArea.h"
+#include "GUI/IpSetDialog.h"
 #include "../Common/Traces/Traces.h"
 
 namespace Ui {
@@ -23,9 +24,12 @@ private slots:
 
     void on_actionExit_triggered();
 
+    void on_actionServer_IP_triggered();
+
 private:
         CheckerArea *checkerArea;
         Board *board;
+        IpSetDialog *ipServerSetWindow;
 
         void resizeEvent( QResizeEvent *);
 

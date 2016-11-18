@@ -28,6 +28,7 @@
      <string>Game</string>
     </property>
     <addaction name="actionNew"/>
+    <addaction name="actionServer_IP"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuGame"/>
@@ -49,6 +50,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionServer_IP">
+   <property name="text">
+    <string>Server IP...</string>
    </property>
   </action>
  </widget>

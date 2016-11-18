@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     MessageCoder/MessageCoder.cpp \
     Peers/Peers.cpp \
     ServerState/ServerState.cpp \
-    ProgramVariables/ProgramVariables.cpp
+    ProgramVariables/ProgramVariables.cpp \
+    GUI/IpSetDialog.cpp
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
     Board/Board.h \
@@ -41,7 +42,9 @@ HEADERS  += mainwindow.h \
     MessageCoder/MessageCoder.h \
     Peers/Peers.h \
     ServerState/ServerState.h \
-    ProgramVariables/ProgramVariables.h
+    ProgramVariables/ProgramVariables.h \
+    GUI/IpSetDialog.h
 
 FORMS    += mainwindow.ui \
-    GUI/CheckerArea.ui
+    GUI/CheckerArea.ui \
+    GUI/IpSetDialog.ui
