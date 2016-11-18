@@ -44,7 +44,12 @@ unsigned long long ProgramVariables::GetMaxSecondsToEnd()
 
 unsigned long long ProgramVariables::GetMaxMilisecondsForIa()
 {    
-    return 5000;
+    return maxTimeForIA;
+}
+
+void ProgramVariables::SetMaxMilisecondsForIa(const unsigned long long maxTime)
+{
+    maxTimeForIA = maxTime;
 }
 
 //Trace flags
@@ -101,6 +106,7 @@ bool ProgramVariables::GetTraceFlagForClass_PossibleMoves()
 
 QString ProgramVariables::serverIP = "127.0.0.1";
 int ProgramVariables::serverPort = 6000;
+unsigned long long ProgramVariables::maxTimeForIA = 5000;
 
 bool ProgramVariables::traceFlagForClass_Board = false;
 bool ProgramVariables::traceFlagForClass_Pawn = false;

@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionServer_IP"/>
+    <addaction name="actionMax_time_for_IA"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuGame"/>
@@ -55,6 +56,11 @@
   <action name="actionServer_IP">
    <property name="text">
     <string>Server IP and Port...</string>
+   </property>
+  </action>
+  <action name="actionMax_time_for_IA">
+   <property name="text">
+    <string>Max time for IA...</string>
    </property>
   </action>
  </widget>

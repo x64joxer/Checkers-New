@@ -15,6 +15,7 @@ class ProgramVariables
         static unsigned long long GetSecondsSinceEpoch();
         static unsigned long long GetMaxSecondsToEnd();
         static unsigned long long GetMaxMilisecondsForIa();
+        static void SetMaxMilisecondsForIa(unsigned long long maxTime);
         static unsigned long long GetMaxTimeWaitToWorkers();
         static unsigned long long GetMaxTimeWaitToServer();
         static unsigned int GetRecconectingTime();
@@ -47,6 +48,7 @@ class ProgramVariables
         static unsigned long long numOfAnalysded;
         static QString serverIP;
         static int serverPort;
+        static unsigned long long maxTimeForIA;
 
         static bool traceFlagForClass_Board;
         static bool traceFlagForClass_Pawn;

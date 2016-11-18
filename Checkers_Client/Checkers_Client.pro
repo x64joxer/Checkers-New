@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     Peers/Peers.cpp \
     ServerState/ServerState.cpp \
     ProgramVariables/ProgramVariables.cpp \
-    GUI/IpSetDialog.cpp
+    GUI/IpSetDialog.cpp \
+    GUI/IAMaxTimeDialog.cpp
 HEADERS  += mainwindow.h \
     GUI/CheckerArea.h \
     Board/Board.h \
@@ -43,8 +44,10 @@ HEADERS  += mainwindow.h \
     Peers/Peers.h \
     ServerState/ServerState.h \
     ProgramVariables/ProgramVariables.h \
-    GUI/IpSetDialog.h
+    GUI/IpSetDialog.h \
+    GUI/IAMaxTimeDialog.h
 
 FORMS    += mainwindow.ui \
     GUI/CheckerArea.ui \
-    GUI/IpSetDialog.ui
+    GUI/IpSetDialog.ui \
+    GUI/IAMaxTimeDialog.ui

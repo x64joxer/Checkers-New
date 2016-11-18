@@ -5,6 +5,7 @@
 #include "Board/Board.h"
 #include "GUI/CheckerArea.h"
 #include "GUI/IpSetDialog.h"
+#include "GUI/IAMaxTimeDialog.h"
 #include "../Common/Traces/Traces.h"
 
 namespace Ui {
@@ -26,10 +27,13 @@ private slots:
 
     void on_actionServer_IP_triggered();
 
+    void on_actionMax_time_for_IA_triggered();
+
 private:
         CheckerArea *checkerArea;
         Board *board;
         IpSetDialog *ipServerSetWindow;
+        IAMaxTimeDialog *iaMaxTimeDialog;
 
         void resizeEvent( QResizeEvent *);
 

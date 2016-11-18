@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //Create Ip set server IP window
     ipServerSetWindow = new IpSetDialog();
 
+    //Create max time set for IA window
+    iaMaxTimeDialog = new IAMaxTimeDialog();
+
     //Connect signals with slots
     connect(ipServerSetWindow, SIGNAL(IpChanged(QString,int)), checkerArea, SLOT(SetServerIpAndPort(QString,int)));
 }
@@ -48,6 +51,11 @@ void MainWindow::on_actionServer_IP_triggered()
     ipServerSetWindow->show();
 }
 
+void MainWindow::on_actionMax_time_for_IA_triggered()
+{
+    iaMaxTimeDialog->show();
+}
+
 void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
@@ -58,6 +66,6 @@ MainWindow::~MainWindow()
     delete checkerArea;
     delete board;
     delete ipServerSetWindow;
+    delete iaMaxTimeDialog;
     delete ui;
 }
-
