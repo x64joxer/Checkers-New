@@ -301,7 +301,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
                     {
                         timerList.RemoveFromList(socket);
                         tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                        tmpWorker->SetState(Peers::FREE);
+                        SetState(socket, Peers::FREE);
                     } else
                     {
                         Traces() << "\n" << "ERR: Unexpected OK message from worker";
@@ -470,6 +470,21 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
     catch (std::out_of_range)
     {
         Traces() << "\n" << "ERR: Protocol error host";
+    }
+}
+
+void Scheduler::SetState(TCPConnection_ptr socket, Peers::STATE state)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SetState(TCPConnection_ptr socket, Peers::STATE state)";
+    try
+    {
+       Worker_ptr tmpWorker = workers.At(socket);
+       tmpWorker->SetState(state);
+       UpdateFreeWorkerList(socket, tmpWorker);
+    }
+    catch (...)
+    {
+        Traces() << "\n" << "ERR: No such worker";
     }
 }
 

@@ -38,6 +38,7 @@ class Scheduler
         void SetRole(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void SendStopAnalyse(TCPConnection_ptr socket, const std::string & messageId, char * dest);
         void SetState(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void SetState(TCPConnection_ptr socket, Peers::STATE state);
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::string & messageId, char * dest);
         void SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest);        
         bool RemoveClient(TCPConnection_ptr socket);
