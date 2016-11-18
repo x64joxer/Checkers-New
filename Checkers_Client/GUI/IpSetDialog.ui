@@ -17,10 +17,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Set server IP</string>
+   <string>Set server IP and Port</string>
   </property>
   <property name="sizeGripEnabled">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <widget class="QLineEdit" name="IPlineEdit">
    <property name="geometry">
