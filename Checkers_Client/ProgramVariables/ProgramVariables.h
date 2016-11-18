@@ -22,6 +22,9 @@ class ProgramVariables
         static QString GetServerIP();
         static int GetServerPort();
 
+        static void SetServerIP(const QString ip) { serverIP = ip; }
+        static void SetServerPort(const int port) { serverPort = port; }
+
         static void SetNumOfAnalyded(const unsigned long long val) { numOfAnalysded = val; }
         static unsigned long long GetNumOfAnalyded() { return numOfAnalysded; }
         static void IncreaseNumOfAnalyded(const unsigned long long val) { numOfAnalysded+= val; }

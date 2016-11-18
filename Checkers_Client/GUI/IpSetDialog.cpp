@@ -10,13 +10,19 @@ IpSetDialog::IpSetDialog(QWidget *parent) :
 
 void IpSetDialog::on_OKButton_released()
 {
-    emit IpChanged(ui->IPlineEdit->displayText());
+    emit IpChanged(ui->IPlineEdit->displayText().remove(" "), ui->serverPort->displayText().toInt());
     close();
 }
 
 void IpSetDialog::on_CancelButton_released()
 {
     close();
+}
+
+void IpSetDialog::showEvent(QShowEvent *event)
+{
+    ui->IPlineEdit->setText(ProgramVariables::GetServerIP());
+    ui->serverPort->setText(QString::number(ProgramVariables::GetServerPort()));
 }
 
 IpSetDialog::~IpSetDialog()

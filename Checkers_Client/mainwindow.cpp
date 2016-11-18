@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Create Ip set server IP window
     ipServerSetWindow = new IpSetDialog();
+
+    //Connect signals with slots
+    connect(ipServerSetWindow, SIGNAL(IpChanged(QString,int)), checkerArea, SLOT(SetServerIpAndPort(QString,int)));
 }
 
 void MainWindow::resizeEvent( QResizeEvent *)

@@ -32,6 +32,7 @@ class CheckerArea : public QWidget
 
     public slots:
         void GetServerState(const ServerState &state);
+        void SetServerIpAndPort(const QString IP, const int port);
 
     signals:
         void Disconnect();

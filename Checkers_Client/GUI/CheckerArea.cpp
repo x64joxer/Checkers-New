@@ -479,6 +479,19 @@ void CheckerArea::GetServerState(const ServerState &state)
     repaint();
 }
 
+void CheckerArea::SetServerIpAndPort(const QString IP, const int port)
+{
+    TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::SetServerIpAndPort(const QString IP, const int port)";
+
+    if ((ProgramVariables::GetServerIP() != IP)||(ProgramVariables::GetServerPort() != port))
+    {
+        ProgramVariables::SetServerIP(IP);
+        ProgramVariables::SetServerPort(port);
+
+        agentTCP->ConnectToServer(ProgramVariables::GetServerIP(), ProgramVariables::GetServerPort());
+    }
+}
+
 void CheckerArea::ClearStateMessage()
 {
     TRACE_FLAG_FOR_CLASS_CheckerArea Traces() << "\n" << "LOG: void CheckerArea::ClearStateMessage()";
