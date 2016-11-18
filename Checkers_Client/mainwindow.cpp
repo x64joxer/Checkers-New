@@ -37,6 +37,11 @@ void MainWindow::on_actionNew_triggered()
     checkerArea->ResetServerState();
 }
 
+void MainWindow::on_actionExit_triggered()
+{
+    QApplication::quit();
+}
+
 MainWindow::~MainWindow()
 {
     delete checkerArea;

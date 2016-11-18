@@ -21,6 +21,8 @@ class MainWindow : public QMainWindow
 private slots:
     void on_actionNew_triggered();
 
+    void on_actionExit_triggered();
+
 private:
         CheckerArea *checkerArea;
         Board *board;
