@@ -466,7 +466,7 @@ void CheckerArea::GetServerState(const ServerState &state)
     if (serverState.IsThinking())
     {
         cursorState = WaitForIA;
-        startTime = Traces::GetCurrentDateLL();
+        startTime = serverState.GetStartTime();
         waitForIATimer->start();
         clearMessageTimer->stop();
         ClearStateMessage();

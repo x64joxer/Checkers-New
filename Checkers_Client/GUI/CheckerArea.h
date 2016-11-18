@@ -58,7 +58,7 @@ class CheckerArea : public QWidget
         int mouseX;
         int mouseY;
         unsigned short grabbed;
-        unsigned short currentPercentOfSteps;
+        unsigned long long currentPercentOfSteps;
         unsigned long long startTime;
 
         QString messageWindow;
