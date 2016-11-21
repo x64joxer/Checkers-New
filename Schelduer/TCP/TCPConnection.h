@@ -24,13 +24,13 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
 
      void Start();
      void Close();
-     TCPConnection_ptr GetMeWsk() { return meWsk; }
-     std::string GetIp() { return socket_.remote_endpoint().address().to_string(); }
-     int GetPort() { return socket_.remote_endpoint().port(); }
+     TCPConnection_ptr GetMeWsk() const { return meWsk; }
+     std::string GetIp() const{ return socket_.remote_endpoint().address().to_string(); }
+     int GetPort() const { return socket_.remote_endpoint().port(); }
      void SendMessage(const std::string & message);
      void SetMessageQueue(SharedPtrList<Message> * wsk) { messageQueue = wsk; }
      void SetMeWsk(TCPConnection_ptr me) { meWsk = me; }
-     bool IsSocketActive() { return socketActive; }
+     bool IsSocketActive() const { return socketActive; }
 
      boost::asio::ip::tcp::socket& Socket();
      ~TCPConnection();

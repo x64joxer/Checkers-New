@@ -22,8 +22,8 @@ class Message
         void CopyData(TCPConnection_ptr connection, const char *wskM);
         void CopyWsk(TCPConnection_ptr connection, char *wskM);
         void Clear() { connectionWsk.reset(); wskMessage.reset(); }
-        char *GetWskMessage() { return wskMessage.get(); }
-        TCPConnection_ptr GetTCPConnection_ptr() { return connectionWsk; }
+        char *GetWskMessage() const { return wskMessage.get(); }
+        TCPConnection_ptr GetTCPConnection_ptr() const { return connectionWsk; }
 
         Message & operator=(const Message  & data);
         ~Message();

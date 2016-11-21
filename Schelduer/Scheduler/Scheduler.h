@@ -24,7 +24,7 @@ class Scheduler
     public:
         Scheduler();
 
-        ConnectionManager * GetConnectionManager();        
+        ConnectionManager * GetConnectionManager();
         void Start(const unsigned short numofthread);
         void SetConnectionManager(ConnectionManager *wsk);        
         ~Scheduler();

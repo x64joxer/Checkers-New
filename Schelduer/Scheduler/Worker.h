@@ -15,11 +15,11 @@ class Worker
         Worker(const std::map<std::string, std::string> & data);
         enum class ConnectionState { None, WaitForOkMessageAfterSendStatus, WaitForOkMessageAfterSendFirstJob, WaitForOkMessageAfterSendJob, WaitForOkMessageAfterSendStopAnnalyse };
 
-        Peers::STATE GetState() { return workerState; }
-        ConnectionState GetConnectionState() { return workerConnectionState; }
-        unsigned int GetMaxThread() { return maxThread; }
+        Peers::STATE GetState() const { return workerState; }
+        ConnectionState GetConnectionState() const { return workerConnectionState; }
+        unsigned int GetMaxThread() const { return maxThread; }
         void SetState(const Peers::STATE state) { workerState = state; }
-        void SetConnectionState(ConnectionState state) { workerConnectionState = state; }
+        void SetConnectionState(const ConnectionState state) { workerConnectionState = state; }
         void SetMaxThread(const unsigned int val) { maxThread = val; }
 
         ~Worker();

@@ -11,7 +11,7 @@ class Client
         Client();
 
         enum class ConnectionState { None, WaitForOkMessageAfterSendStatus };
-        ConnectionState GetConnectionState() { return workerConnectionState; }
+        ConnectionState GetConnectionState() const { return workerConnectionState; }
         void SetConnectionState(ConnectionState state) { workerConnectionState = state; }
 
     private:

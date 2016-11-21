@@ -16,11 +16,11 @@ class ConnectionManager
         ConnectionManager();
 
         Message GetFirstMessage();
-        SharedPtrList<Message> * GetMessageQueue() { return messageQueue; }
+        SharedPtrList<Message> * GetMessageQueue() const { return messageQueue; }
         void NewConnection(TCPConnection_ptr wsk);
         void CloseConnection(TCPConnection_ptr wsk);
         void SetConditionVariable(std::condition_variable *wsk) { messageQueue->SetCondVar(wsk); }
-        bool IsNewMessage() { return !messageQueue->Empty(); }
+        bool IsNewMessage() const { return !messageQueue->Empty(); }
 
         ~ConnectionManager();
 
