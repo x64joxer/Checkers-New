@@ -18,15 +18,18 @@ class Worker
         Peers::STATE GetState() const { return workerState; }
         ConnectionState GetConnectionState() const { return workerConnectionState; }
         unsigned int GetMaxThread() const { return maxThread; }
+        std::string GetLastMessageID() const { return lastMessageId; }
         void SetState(const Peers::STATE state) { workerState = state; }
         void SetConnectionState(const ConnectionState state) { workerConnectionState = state; }
         void SetMaxThread(const unsigned int val) { maxThread = val; }
+        void SetLastMessageID(const std::string & id)  { lastMessageId = id; }
 
         ~Worker();
     private:
         Peers::STATE workerState;        
         ConnectionState workerConnectionState = ConnectionState::None;
         unsigned int maxThread;
+        std::string lastMessageId;
 };
 
 typedef boost::shared_ptr<Worker> Worker_ptr;

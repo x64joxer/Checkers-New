@@ -360,6 +360,44 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     }
 }
 
+void Scheduler::SetLastMessageIdtoWorker(TCPConnection_ptr socket, const std::string & id)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SetLastMessageIdtoWorker(TCPConnection_ptr socket, const std::string & id)";
+
+    try
+    {
+        Worker_ptr tmpWorker = workers.At(socket);
+
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the timer list";
+
+        tmpWorker->SetLastMessageID(id);
+
+    }
+    catch (const std::out_of_range& oor)
+    {
+
+    }
+}
+
+void Scheduler::SetLastMessageIdtoClinet(TCPConnection_ptr socket, const std::string & id)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SetLastMessageIdtoClinet(TCPConnection_ptr socket, const std::string & id)";
+
+    try
+    {
+        Client_ptr tmpClinet = clients.At(socket);
+
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the timer list";
+
+        tmpClinet->SetLastMessageID(id);
+    }
+    catch (const std::out_of_range& oor)
+    {
+
+    }
+
+}
+
 void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
@@ -546,15 +584,21 @@ void Scheduler::ReceiveOKMessage(TCPConnection_ptr socket, const std::map<std::s
     {
         Client_ptr tmpClinet = clients.At(socket);
 
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the timer list";
 
-        if (tmpClinet->GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
+        if (data.at(MessageCoder::MESSAGE_ID) == tmpClinet->GetLastMessageID())
         {
-            timerList.RemoveFromList(socket);
-            tmpClinet->SetConnectionState(Client::ConnectionState::None);
+            if (tmpClinet->GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
+            {
+                timerList.RemoveFromList(socket);
+                tmpClinet->SetConnectionState(Client::ConnectionState::None);
+            } else
+            {
+                Traces() << "\n" << "ERR: Unexpected OK message from client";
+            }
         } else
         {
-            Traces() << "\n" << "ERR: Unexpected OK message from client";
+            Traces() << "\n" << "ERR: Wrong message ID";
         }
 
         okFlag = true;
@@ -572,26 +616,32 @@ void Scheduler::ReceiveOKMessage(TCPConnection_ptr socket, const std::map<std::s
 
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
 
-            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+            if (data.at(MessageCoder::MESSAGE_ID) == tmpWorker->GetLastMessageID())
             {
-                timerList.RemoveFromList(socket);
-                tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                tmpWorker->SetState(Peers::BUSY);
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+                {
+                    timerList.RemoveFromList(socket);
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                    tmpWorker->SetState(Peers::BUSY);
+                } else
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+                {
+                    timerList.RemoveFromList(socket);
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                    tmpWorker->SetState(Peers::BUSY);
+                } else
+                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
+                {
+                    timerList.RemoveFromList(socket);
+                    tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                    SetState(socket, Peers::FREE);
+                } else
+                {
+                    Traces() << "\n" << "ERR: Unexpected OK message from worker";
+                }
             } else
-            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
             {
-                timerList.RemoveFromList(socket);
-                tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                tmpWorker->SetState(Peers::BUSY);
-            } else
-            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
-            {
-                timerList.RemoveFromList(socket);
-                tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                SetState(socket, Peers::FREE);
-            } else
-            {
-                Traces() << "\n" << "ERR: Unexpected OK message from worker";
+                Traces() << "\n" << "ERR: Wrong message ID";
             }
 
             okFlag = true;
@@ -616,37 +666,43 @@ void Scheduler::ReceiveNotOKMessage(TCPConnection_ptr socket, const std::map<std
 
         TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
 
-        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+        if (data.at(MessageCoder::MESSAGE_ID) == tmpWorker->GetLastMessageID())
         {
-            MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
-
-            if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
             {
-                timerList.RemoveFromList(socket);
-                tmpWorker->SetState(Peers::BUSY);
-                firstJobStarted = false;
-                boardsToAnalyse.PushBack(state.GetBoard());
+                MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
+
+                if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+                {
+                    timerList.RemoveFromList(socket);
+                    tmpWorker->SetState(Peers::BUSY);
+                    firstJobStarted = false;
+                    boardsToAnalyse.PushBack(state.GetBoard());
+                } else
+                {
+                    Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+                }
+
+            } else
+            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+            {
+                MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
+
+                if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+                {
+                    timerList.RemoveFromList(socket);
+                    tmpWorker->SetState(Peers::BUSY);
+                } else
+                {
+                    Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+                }
             } else
             {
-                Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
-            }
-
-        } else
-        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
-        {
-            MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
-
-            if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
-            {
-                timerList.RemoveFromList(socket);
-                tmpWorker->SetState(Peers::BUSY);
-            } else
-            {
-                Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+                Traces() << "\n" << "ERR: Unexpected NOT_OK message from worker";
             }
         } else
         {
-            Traces() << "\n" << "ERR: Unexpected NOT_OK message from worker";
+            Traces() << "\n" << "ERR: Wrong message ID";
         }
 
         okFlag = true;
@@ -852,10 +908,10 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
             {
                 TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Send job to only one worker";
 
-                std::string messageId = MessageCoder::CreateMessageId();
+                std::string messageId = MessageCoder::CreateMessageId();                
                 std::string jobId = MessageCoder::CreateMessageId();
+                SetLastMessageIdtoWorker(tmpWorkerSocket, messageId);
                 MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
 
 
                 MessageCoder::CreateStartAnalyseWork(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
@@ -876,7 +932,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 std::string messageId = MessageCoder::CreateMessageId();
                 std::string jobId = MessageCoder::CreateMessageId();
                 MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
+                SetLastMessageIdtoWorker(tmpWorkerSocket, messageId);
 
 
                 MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
@@ -898,7 +954,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 std::string messageId = MessageCoder::CreateMessageId();
                 std::string jobId = MessageCoder::CreateMessageId();
                 MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
+                SetLastMessageIdtoWorker(tmpWorkerSocket, messageId);
 
 
                 MessageCoder::CreateStartAnalyseWork(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
@@ -935,7 +991,9 @@ void Scheduler::UpdateNextClientStatus(TCPConnection_ptr tmpTCP_Connection_ptr, 
 
     if (wasClientToUpdate)
     {
-           SendServerState(tmpTCP_Connection_ptr, state, MessageCoder::CreateMessageId(), dest);
+           std::string tmpessageID = MessageCoder::CreateMessageId();
+           SetLastMessageIdtoClinet(tmpTCP_Connection_ptr, tmpessageID);
+           SendServerState(tmpTCP_Connection_ptr, state, tmpessageID, dest);
            clients.At(tmpTCP_Connection_ptr)->SetConnectionState(Client::ConnectionState::WaitForOkMessageAfterSendStatus);
            CreateTimeoutGuard(tmpTCP_Connection_ptr, ProgramVariables::GetMaxTimeoutForMessageResponse());
     }
@@ -961,7 +1019,9 @@ void Scheduler::SendStopAnalyseToWorker(TCPConnection_ptr tmpTCP_Connection_ptr,
     {
         if (workers.At(tmpTCP_Connection_ptr)->GetState() == Peers::STATE::BUSY)
         {
-           SendStopAnalyse(tmpTCP_Connection_ptr, MessageCoder::CreateMessageId(), dest);
+           std::string tmpessageID = MessageCoder::CreateMessageId();
+           SetLastMessageIdtoWorker(tmpTCP_Connection_ptr, tmpessageID);
+           SendStopAnalyse(tmpTCP_Connection_ptr, tmpessageID, dest);
            workers.At(tmpTCP_Connection_ptr)->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse);
            CreateTimeoutGuard(tmpTCP_Connection_ptr, ProgramVariables::GetMaxTimeoutForMessageResponse());
         }
