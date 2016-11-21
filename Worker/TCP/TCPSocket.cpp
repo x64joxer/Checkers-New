@@ -22,13 +22,6 @@ void TCPSocket::Connect(const std::string &adress, const std::string &port)
     bodySocket.Connect(adress,port);
 }
 
-void TCPSocket::HandleConnect(const boost::system::error_code& error)
-{
-  TRACE_FLAG_FOR_CLASS_TCPSocket Traces() << "\n" << "LOG: void TCPSocket::HandleConnect(const boost::system::error_code& error)";
-
-}
-
-
 void TCPSocket::WriteMessage(char *dataToSend)
 {
     bodySocket.WriteMessage(dataToSend);

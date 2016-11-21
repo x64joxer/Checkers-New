@@ -29,12 +29,10 @@ class TCPSocket
         void WriteMessage(char *dataToSend);
         TCPSocket_ptr GeetMyWsk() { return meWsk; }
 
-    private:
-      void HandleConnect(const boost::system::error_code& error);      
-
-      TCPSocketBody bodySocket;
-      TCPSocket_ptr meWsk;
-      SharedPtrList<Message> *messageQueue;      
+    private:      
+       TCPSocketBody bodySocket;
+       TCPSocket_ptr meWsk;
+       SharedPtrList<Message> *messageQueue;
 };
 
 #endif // TCPSOCKET_H
