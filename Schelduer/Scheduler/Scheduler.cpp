@@ -378,6 +378,8 @@ void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, 
     {
         Counters::ClearCounterNumberOfAnalysedBoard();
 
+        state.SetlastServerError(ServerState::NO_SERVER_ERROR_TEXT);
+
         workOngoing = true;
 
         Board tmpBoard;
