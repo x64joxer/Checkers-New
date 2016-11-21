@@ -219,7 +219,8 @@ void TCPHandler::DecodeMessage(const char * data)
                                                          atof(messageContent.at((MessageCoder::IS_THINKING)).c_str()),
                                                          atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
                                                          atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
-                                                         atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str())
+                                                         atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str()),
+                                                         messageContent.at((MessageCoder::SERVER_ERROR))
                                                          ));
 
                     connection_state = ConState::UPDATED;
@@ -243,7 +244,8 @@ void TCPHandler::DecodeMessage(const char * data)
                                                      atof(messageContent.at((MessageCoder::IS_THINKING)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
-                                                     atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str())
+                                                     atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str()),
+                                                     messageContent.at((MessageCoder::SERVER_ERROR))
                                                      ));
 
                SendOkMessage(messageContent.at(MessageCoder::MESSAGE_ID));
@@ -260,7 +262,8 @@ void TCPHandler::DecodeMessage(const char * data)
                                                      atof(messageContent.at((MessageCoder::IS_THINKING)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
-                                                     atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str())
+                                                     atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str()),
+                                                     messageContent.at((MessageCoder::SERVER_ERROR))
                                                      ));
 
 

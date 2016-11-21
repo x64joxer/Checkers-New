@@ -20,12 +20,14 @@ ServerState::ServerState(const Board & tmpCurrent,
             const bool tmpThinking,
             const unsigned long long tmpStartTime,
             const unsigned long long tmpMaxTime,
-            const unsigned long long tmpTimeToEnd) :
+            const unsigned long long tmpTimeToEnd,
+            const std::string & serverError) :
             current(tmpCurrent),
             thinking(tmpThinking),
             startTime(tmpStartTime),
             maxTime(tmpMaxTime),
-            timeToEnd(tmpTimeToEnd)
+            timeToEnd(tmpTimeToEnd),
+            lastServerError(serverError)
 {
     mutex = new std::mutex();
 }
@@ -40,6 +42,7 @@ const ServerState & ServerState::operator=(const ServerState  & data)
     startTime = data.startTime;
     maxTime = data.maxTime;
     timeToEnd = data.timeToEnd;
+    lastServerError = data.lastServerError;
 
     return *this;
 }

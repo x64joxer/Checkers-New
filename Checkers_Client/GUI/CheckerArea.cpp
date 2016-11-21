@@ -476,6 +476,11 @@ void CheckerArea::GetServerState(const ServerState &state)
         waitForIATimer->stop();
     }
 
+    if (serverState.GetLastServerError() != ServerState::NO_SERVER_ERROR_TEXT)
+    {
+        SetMessageText(QString(serverState.GetLastServerError().c_str()));
+    }
+
     repaint();
 }
 

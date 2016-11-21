@@ -232,6 +232,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
             //End traffic test purposes
             ////////////////////////
             {
+                tmpBoard.SetOrigin(tmpBoard);
                 boardsToAnalyse.PushBack(tmpBoard);
             }
 
@@ -945,6 +946,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
     workOngoing = false;
     firstJobStarted = false;    
     state.SetThinking(false);
+
     if (boardsToAnalyse.Size() > 0)
     {
         state.SetBoard(CalculateBestResult());
