@@ -41,8 +41,9 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
 
     Message tempMessage;
     tempMessage.CopyData(meWsk, buffer_.data());
-    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Push back new message";
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Push back new message: " << buffer_.data();
     messageQueue->PushBack(tempMessage);
+
 
     socket_.async_read_some(boost::asio::buffer(buffer_),
         boost::bind(&TCPConnection::HandleRead, shared_from_this(),
@@ -79,9 +80,11 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
 
 void TCPConnection::SendMessage(const std::string & message)
 {
-     TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
 
     sendMutex.lock();
+
+    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Sending message: " << message;
 
     boost::asio::async_write(socket_, boost::asio::buffer(message),
               boost::bind(&TCPConnection::HandleWrite, shared_from_this(),

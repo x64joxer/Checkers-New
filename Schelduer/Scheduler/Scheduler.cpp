@@ -278,12 +278,8 @@ void Scheduler::SetState(TCPConnection_ptr socket, const std::map<std::string, s
        UpdateFreeWorkerList(socket, tmpWorker);
 
        std::string messageId = data.at(MessageCoder::MESSAGE_ID);
-
        MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
-       MessageCoder::CreateOkMessage(messageId, dest);
-
-       TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
+       MessageCoder::CreateOkMessage(messageId, dest);       
 
        socket->SendMessage(dest);
     }
@@ -315,9 +311,7 @@ void Scheduler::SendStopAnalyse(TCPConnection_ptr socket, const std::string & me
     try
     {
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-        MessageCoder::CreateStopAnalyse(messageId, dest);
-
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
+        MessageCoder::CreateStopAnalyse(messageId, dest);       
 
         socket->SendMessage(dest);
     }
@@ -334,9 +328,7 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     try
     {
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-        MessageCoder::CreateServerStateMessage(serverState, messageId, dest);
-
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
+        MessageCoder::CreateServerStateMessage(serverState, messageId, dest);        
 
         socket->SendMessage(dest);
     }
@@ -356,8 +348,6 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
 
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateServerStateMessage(serverState, messageId, dest);
-
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
         socket->SendMessage(dest);
     }
@@ -433,10 +423,7 @@ void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, 
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
 
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
-
         MessageCoder::CreateOkMessage(messageId, dest);
-
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
 
         socket->SendMessage(dest);
     }
@@ -458,7 +445,6 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
         MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
         MessageCoder::CreateOkMessage(messageId, dest);
 
-        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
         socket->SendMessage(dest);
     }    
 }
@@ -993,7 +979,6 @@ void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::
 
     Counters::AddToCounterNumberOfAnalysedBoard(atoi(data.at(MessageCoder::NUM_OF_ANALYSED).c_str()));
 
-    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
     socket->SendMessage(dest);
 }
 
