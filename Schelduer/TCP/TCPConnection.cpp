@@ -77,7 +77,7 @@ void TCPConnection::HandleWrite(const boost::system::error_code& e)
   }
 }
 
-void TCPConnection::SendMessage(const std::string message)
+void TCPConnection::SendMessage(const std::string & message)
 {
      TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: void TCPConnection::SendMessage(const std::string message)";
 

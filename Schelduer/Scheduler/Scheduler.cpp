@@ -198,42 +198,48 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
 
-            Counters::ClearCounterNumberOfAnalysedBoard();
-
-            workOngoing = true;
-
-            Board tmpBoard;
-            tmpBoard = state.GetBoard();
-            state.SetPreviousBoard(tmpBoard);
-
-            MessageCoder::MapToBoard(data, &tmpBoard);
-            state.SetBoard(tmpBoard);
-            state.SetThinking(true);
-            unsigned long long tmpTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
-            state.SetMaxTime(tmpTime);
-            state.SetMaxTimeForWorkers(tmpTime - ProgramVariables::GetTimeReserveToSendBestResultToClient());
-            state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
-            CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTimeForWorkers());
-
-            boardsToAnalyse.Clear();
-            /////////////////////////
-            //Traffic test purposes
-            /////////////////////////
-            if (ProgramVariables::GetTrafficFlag())
+            if (freeWorkers.Size() == 0)
             {
-                unsigned int tmpSize = freeWorkers.Size();
+                state.SetlastServerError("No free workers!");
+            } else
+            {
+                Counters::ClearCounterNumberOfAnalysedBoard();
 
-                for(int i=0; i < (tmpSize*5);i++)
+                workOngoing = true;
+
+                Board tmpBoard;
+                tmpBoard = state.GetBoard();
+                state.SetPreviousBoard(tmpBoard);
+
+                MessageCoder::MapToBoard(data, &tmpBoard);
+                state.SetBoard(tmpBoard);
+                state.SetThinking(true);
+                unsigned long long tmpTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
+                state.SetMaxTime(tmpTime);
+                state.SetMaxTimeForWorkers(tmpTime - ProgramVariables::GetTimeReserveToSendBestResultToClient());
+                state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
+                CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTimeForWorkers());
+
+                boardsToAnalyse.Clear();
+                /////////////////////////
+                //Traffic test purposes
+                /////////////////////////
+                if (ProgramVariables::GetTrafficFlag())
                 {
+                    unsigned int tmpSize = freeWorkers.Size();
+
+                    for(int i=0; i < (tmpSize*5);i++)
+                    {
+                        boardsToAnalyse.PushBack(tmpBoard);
+                    }
+                } else
+                /////////////////////////
+                //End traffic test purposes
+                ////////////////////////
+                {
+                    tmpBoard.SetOrigin(tmpBoard);
                     boardsToAnalyse.PushBack(tmpBoard);
                 }
-            } else
-            /////////////////////////
-            //End traffic test purposes
-            ////////////////////////
-            {
-                tmpBoard.SetOrigin(tmpBoard);
-                boardsToAnalyse.PushBack(tmpBoard);
             }
 
             SendStateToAllClients(data, dest);
