@@ -18,8 +18,8 @@ class Message
         Message(const Message & data);
         void CopyData(TCPSocket_ptr connection, const char *wskM);
         void CopyWsk(TCPSocket_ptr connection, char *wskM);
-        char *GetWskMessage() { return wskMessage; }
-        TCPSocket_ptr GetTCPSocket_ptr() { return connectionWsk; }
+        char *GetWskMessage() const { return wskMessage; }
+        TCPSocket_ptr GetTCPSocket_ptr() const { return connectionWsk; }
         Message & operator=(const Message  & data);
         ~Message();
 
