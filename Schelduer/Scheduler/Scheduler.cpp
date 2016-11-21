@@ -98,10 +98,16 @@ void Scheduler::StartScheduling()
             //End traffic test purposes
             ////////////////////////
 
-            isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty()) & (workOngoing);
-            if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTimeForWorkers()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
+            //Check if new board to analyse are present
+            isNewBoardToAnalyse = CheckIfNewBoardToAnalyse();
+
+            //Check if new messagee to analyse are present
             isNewMessage = wskConnectionManager->IsNewMessage();
+
+            //Check if clinet to update are present
             isClientToUpate = !clientsToStateUpdate.Empty();
+
+            //Check if worker to stop analyse are present
             isWorkerToStopAnalyse = !workersToStopAnalyse.Empty();
 
             return (isNewBoardToAnalyse | isNewMessage | isClientToUpate | isWorkerToStopAnalyse); }
@@ -166,11 +172,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::CLOSE_CNNECTION";
 
-            bool removeResult;
-
-            removeResult = RemoveClient(socket);
-            if (!removeResult) removeResult = RemoveWorker(socket);
-
+            CloseConnection(socket);
         } else
         if (action == MessageCoder::RESET_SERVER_STATE)
         {
@@ -198,51 +200,7 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::START_WORK";
 
-            if (freeWorkers.Size() == 0)
-            {
-                state.SetlastServerError("No free workers!");
-            } else
-            {
-                Counters::ClearCounterNumberOfAnalysedBoard();
-
-                workOngoing = true;
-
-                Board tmpBoard;
-                tmpBoard = state.GetBoard();
-                state.SetPreviousBoard(tmpBoard);
-
-                MessageCoder::MapToBoard(data, &tmpBoard);
-                state.SetBoard(tmpBoard);
-                state.SetThinking(true);
-                unsigned long long tmpTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
-                state.SetMaxTime(tmpTime);
-                state.SetMaxTimeForWorkers(tmpTime - ProgramVariables::GetTimeReserveToSendBestResultToClient());
-                state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
-                CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTimeForWorkers());
-
-                boardsToAnalyse.Clear();
-                /////////////////////////
-                //Traffic test purposes
-                /////////////////////////
-                if (ProgramVariables::GetTrafficFlag())
-                {
-                    unsigned int tmpSize = freeWorkers.Size();
-
-                    for(int i=0; i < (tmpSize*5);i++)
-                    {
-                        boardsToAnalyse.PushBack(tmpBoard);
-                    }
-                } else
-                /////////////////////////
-                //End traffic test purposes
-                ////////////////////////
-                {
-                    tmpBoard.SetOrigin(tmpBoard);
-                    boardsToAnalyse.PushBack(tmpBoard);
-                }
-            }
-
-            SendStateToAllClients(data, dest);
+            StartWork(socket, data, dest);
         } else
         if (action == MessageCoder::BEST_RESULT)
         {
@@ -260,164 +218,19 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::OK";
 
-            bool okFlag = false;
-
-            try
-            {
-                Client_ptr tmpClinet = clients.At(socket);
-
-                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
-
-                if (tmpClinet->GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
-                {
-                    timerList.RemoveFromList(socket);
-                    tmpClinet->SetConnectionState(Client::ConnectionState::None);
-                } else
-                {
-                    Traces() << "\n" << "ERR: Unexpected OK message from client";
-                }
-
-                okFlag = true;
-            }
-            catch (const std::out_of_range& oor)
-            {
-
-            }
-
-            if (!okFlag)
-            {
-                try
-                {
-                    Worker_ptr tmpWorker = workers.At(socket);
-
-                    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
-
-                    if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
-                    {
-                        timerList.RemoveFromList(socket);
-                        tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                        tmpWorker->SetState(Peers::BUSY);
-                    } else                        
-                    if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
-                    {
-                        timerList.RemoveFromList(socket);
-                        tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                        tmpWorker->SetState(Peers::BUSY);
-                    } else
-                    if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
-                    {
-                        timerList.RemoveFromList(socket);
-                        tmpWorker->SetConnectionState(Worker::ConnectionState::None);
-                        SetState(socket, Peers::FREE);
-                    } else
-                    {
-                        Traces() << "\n" << "ERR: Unexpected OK message from worker";
-                    }
-
-                    okFlag = true;
-                }
-                catch (const std::out_of_range& oor)
-                {
-
-                }
-            }
-
+            ReceiveOKMessage(socket, data, dest);
         } else
         if (action == MessageCoder::NOT_OK)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::NOT_OK";
 
-            bool okFlag = false;
-
-            try
-            {
-                Worker_ptr tmpWorker = workers.At(socket);
-
-                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
-
-                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
-                {
-                    MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
-
-                    if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
-                    {
-                        timerList.RemoveFromList(socket);
-                        tmpWorker->SetState(Peers::BUSY);
-                        firstJobStarted = false;
-                        boardsToAnalyse.PushBack(state.GetBoard());
-                    } else
-                    {
-                        Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
-                    }
-
-                } else
-                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
-                {
-                    MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
-
-                    if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
-                    {
-                        timerList.RemoveFromList(socket);
-                        tmpWorker->SetState(Peers::BUSY);
-                    } else
-                    {
-                        Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
-                    }
-                } else
-                {
-                    Traces() << "\n" << "ERR: Unexpected NOT_OK message from worker";
-                }
-
-                okFlag = true;
-            }
-            catch (const std::out_of_range& oor)
-            {
-
-            }
-
-
+            ReceiveNotOKMessage(socket, data, dest);
         } else
         if (action == MessageCoder::TIMEOUT)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::TIMEOUT";
 
-            timerList.RemoveFromList(socket);
-
-            try
-            {                
-                clients.At(socket);
-                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
-                socket->Close();
-            }
-            catch (const std::out_of_range& oor)
-            {
-
-            }
-
-            try
-            {
-                Worker_ptr tmpWorker = workers.At(socket);
-                TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
-
-                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
-                {
-                    socket->Close();
-                    firstJobStarted = false;
-                    boardsToAnalyse.PushBack(state.GetBoard());
-                } else
-                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
-                {
-                    socket->Close();                
-                } else
-                if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
-                {
-                    socket->Close();
-                }
-            }
-            catch (const std::out_of_range& oor)
-            {
-
-            }
+            ReceiveTimeoutMessage(socket, data, dest);
         }
         else
         {
@@ -535,7 +348,8 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
 
 void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)
 {
-    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)";
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendState(TCPConnection_ptr socket, const ServerState & serverState, const std::map<std::string, std::string> & data, char * dest)";
+
     try
     {
         std::string messageId = data.at(MessageCoder::MESSAGE_ID);
@@ -551,6 +365,57 @@ void Scheduler::SendServerState(TCPConnection_ptr socket, const ServerState & se
     {
         Traces() << "\n" << "ERR: Protocol error host";
     }
+}
+
+void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+
+    if (freeWorkers.Size() == 0)
+    {
+        state.SetlastServerError("No free workers!");
+    } else
+    {
+        Counters::ClearCounterNumberOfAnalysedBoard();
+
+        workOngoing = true;
+
+        Board tmpBoard;
+        tmpBoard = state.GetBoard();
+        state.SetPreviousBoard(tmpBoard);
+
+        MessageCoder::MapToBoard(data, &tmpBoard);
+        state.SetBoard(tmpBoard);
+        state.SetThinking(true);
+        unsigned long long tmpTime = std::atoi(data.at(MessageCoder::MAX_TIME).c_str());
+        state.SetMaxTime(tmpTime);
+        state.SetMaxTimeForWorkers(tmpTime - ProgramVariables::GetTimeReserveToSendBestResultToClient());
+        state.SetStartTime(Traces::GetMilisecondsSinceEpoch());
+        CreateTimeToSendResultToClientsGuard(socket, state.GetMaxTimeForWorkers());
+
+        boardsToAnalyse.Clear();
+        /////////////////////////
+        //Traffic test purposes
+        /////////////////////////
+        if (ProgramVariables::GetTrafficFlag())
+        {
+            unsigned int tmpSize = freeWorkers.Size();
+
+            for(int i=0; i < (tmpSize*5);i++)
+            {
+                boardsToAnalyse.PushBack(tmpBoard);
+            }
+        } else
+        /////////////////////////
+        //End traffic test purposes
+        ////////////////////////
+        {
+            tmpBoard.SetOrigin(tmpBoard);
+            boardsToAnalyse.PushBack(tmpBoard);
+        }
+    }
+
+    SendStateToAllClients(data, dest);
 }
 
 void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
@@ -594,6 +459,28 @@ void Scheduler::AddWorker(TCPConnection_ptr socket, const std::map<std::string, 
         TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Sending: " << dest;
         socket->SendMessage(dest);
     }    
+}
+
+void Scheduler::CloseConnection(TCPConnection_ptr socket)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::CloseConnection(TCPConnection_ptr socket)";
+
+    bool removeResult;
+
+    removeResult = RemoveClient(socket);
+    if (!removeResult) removeResult = RemoveWorker(socket);
+}
+
+bool Scheduler::CheckIfNewBoardToAnalyse()
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: bool Scheduler::CheckIfNewBoardToAnalyse()";
+
+    bool isNewBoardToAnalyse;
+
+    isNewBoardToAnalyse = (!boardsToAnalyse.Empty()) & (!freeWorkers.Empty()) & (workOngoing);
+    if (Traces::GetMilisecondsSinceEpoch() > ((state.GetStartTime() + state.GetMaxTimeForWorkers()) - (ProgramVariables::GetTimeReserveToSendBestResultToClient() + ProgramVariables::GetTimeToSendJobsToFreeWorkers()))) isNewBoardToAnalyse = false;
+
+    return isNewBoardToAnalyse;
 }
 
 bool Scheduler::RemoveClient(TCPConnection_ptr socket)
@@ -656,6 +543,170 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
 
     SendStateToAllClients(data, dest);
     workers.GetAllKeys(workersToStopAnalyse);
+}
+
+void Scheduler::ReceiveOKMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::ReceiveOKMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+
+    bool okFlag = false;
+
+    try
+    {
+        Client_ptr tmpClinet = clients.At(socket);
+
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
+
+        if (tmpClinet->GetConnectionState() == Client::ConnectionState::WaitForOkMessageAfterSendStatus)
+        {
+            timerList.RemoveFromList(socket);
+            tmpClinet->SetConnectionState(Client::ConnectionState::None);
+        } else
+        {
+            Traces() << "\n" << "ERR: Unexpected OK message from client";
+        }
+
+        okFlag = true;
+    }
+    catch (const std::out_of_range& oor)
+    {
+
+    }
+
+    if (!okFlag)
+    {
+        try
+        {
+            Worker_ptr tmpWorker = workers.At(socket);
+
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
+
+            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+            {
+                timerList.RemoveFromList(socket);
+                tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                tmpWorker->SetState(Peers::BUSY);
+            } else
+            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+            {
+                timerList.RemoveFromList(socket);
+                tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                tmpWorker->SetState(Peers::BUSY);
+            } else
+            if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
+            {
+                timerList.RemoveFromList(socket);
+                tmpWorker->SetConnectionState(Worker::ConnectionState::None);
+                SetState(socket, Peers::FREE);
+            } else
+            {
+                Traces() << "\n" << "ERR: Unexpected OK message from worker";
+            }
+
+            okFlag = true;
+        }
+        catch (const std::out_of_range& oor)
+        {
+
+        }
+    }
+
+}
+
+void Scheduler::ReceiveNotOKMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::ReceiveNotOKMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+
+    bool okFlag = false;
+
+    try
+    {
+        Worker_ptr tmpWorker = workers.At(socket);
+
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Worker found on the tiemr list";
+
+        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+        {
+            MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
+
+            if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+            {
+                timerList.RemoveFromList(socket);
+                tmpWorker->SetState(Peers::BUSY);
+                firstJobStarted = false;
+                boardsToAnalyse.PushBack(state.GetBoard());
+            } else
+            {
+                Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+            }
+
+        } else
+        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+        {
+            MessageCoder::NOT_OK_REASON tmpReason = static_cast<MessageCoder::NOT_OK_REASON>(std::atoi(data.at(MessageCoder::REASON).c_str()));
+
+            if (tmpReason == MessageCoder::NOT_OK_REASON::BUSY)
+            {
+                timerList.RemoveFromList(socket);
+                tmpWorker->SetState(Peers::BUSY);
+            } else
+            {
+                Traces() << "\n" << "ERR: Unexpected NOT_OK reason from worker";
+            }
+        } else
+        {
+            Traces() << "\n" << "ERR: Unexpected NOT_OK message from worker";
+        }
+
+        okFlag = true;
+    }
+    catch (const std::out_of_range& oor)
+    {
+
+    }
+}
+
+void Scheduler::ReceiveTimeoutMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::ReceiveTimeout(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)";
+
+    timerList.RemoveFromList(socket);
+
+    try
+    {
+        clients.At(socket);
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
+        socket->Close();
+    }
+    catch (const std::out_of_range& oor)
+    {
+
+    }
+
+    try
+    {
+        Worker_ptr tmpWorker = workers.At(socket);
+        TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Client found on the tiemr list";
+
+        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob)
+        {
+            socket->Close();
+            firstJobStarted = false;
+            boardsToAnalyse.PushBack(state.GetBoard());
+        } else
+        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendJob)
+        {
+            socket->Close();
+        } else
+        if (tmpWorker->GetConnectionState() == Worker::ConnectionState::WaitForOkMessageAfterSendStopAnnalyse)
+        {
+            socket->Close();
+        }
+    }
+    catch (const std::out_of_range& oor)
+    {
+
+    }
 }
 
 void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
