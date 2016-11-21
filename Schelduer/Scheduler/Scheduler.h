@@ -63,7 +63,7 @@ class Scheduler
 
         ConnectionManager *wskConnectionManager;
 
-        std::thread schedulerThread[16];
+        std::list<std::thread> schedulerThread;
         std::mutex mutex;
         std::mutex mutexWorkDistribute;
         std::condition_variable *condition_var;

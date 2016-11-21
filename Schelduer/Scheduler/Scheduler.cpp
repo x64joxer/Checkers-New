@@ -37,13 +37,16 @@ void Scheduler::Start(const unsigned short numofthread)
         throw std::string("Wrong number of threads");
     }
 
+    std::thread tmpThread;
+
     for (unsigned short i=0;i<numofthread;i++)
     {
         TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: Start thread: " << i + 1;
-        schedulerThread[i] = std::move(std::thread(&Scheduler::StartScheduling,
-                                            this));
 
-        schedulerThread[i].detach();
+        tmpThread = std::move(std::thread(&Scheduler::StartScheduling,
+                                          this));
+        tmpThread.detach();
+        schedulerThread.push_back(std::move(tmpThread));
     }
 }
 
