@@ -48,6 +48,8 @@ void TCPSocketBody::WriteMessage(char *dataToSend)
 {
     TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: void TCPSocketBody::WriteMessage(char *dataToSend)";
 
+    TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Sending: " << dataToSend;
+
     if (connected)
     {
         if (socket.send(dataToSend, strlen(dataToSend)) != sf::Socket::Done)
@@ -112,8 +114,10 @@ void TCPSocketBody::HandleRead()
 
                             closeSocker = true;
                             break;
-                        } else
+                        } else                            
                         {
+                            TRACE_FLAG_FOR_CLASS_TCPSocketBody Traces() << "\n" << "LOG: Message received: " << data_to_read;
+
                             expectedMessage = 0;
 
                             Message tempMessage;
