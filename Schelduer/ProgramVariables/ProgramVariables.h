@@ -92,7 +92,7 @@ class ProgramVariables
 #define TRACE_FLAG_FOR_CLASS_SharedPtrList if (ProgramVariables::GetTraceFlagForClass_SharedPtrList())
 #define TRACE_FLAG_FOR_CLASS_SharedPtrSet if (ProgramVariables::GetTraceFlagForClass_SharedPtrSet())
 #define TRACE_FLAG_FOR_CLASS_Client if (ProgramVariables::GetTraceFlagForClass_Client())
-#define TRACE_FLAG_FOR_CLASS_Joblist if (ProgramVariables::GetTraceFlagForClass_Joblist())
+#define TRACE_FLAG_FOR_CLASS_JobList if (ProgramVariables::GetTraceFlagForClass_JobList())
 #define TRACE_FLAG_FOR_CLASS_Message if (ProgramVariables::GetTraceFlagForClass_Message())
 #define TRACE_FLAG_FOR_CLASS_MessageCoder if (ProgramVariables::GetTraceFlagForClass_MessageCoder())
 #define TRACE_FLAG_FOR_CLASS_Scheduler if (ProgramVariables::GetTraceFlagForClass_Scheduler())
