@@ -124,6 +124,11 @@ bool ProgramVariables::GetTraceFlagForClass_Client()
     return traceFlagForClass_Client;
 }
 
+bool ProgramVariables::GetTraceFlagForClass_JobList()
+{
+    return traceFlagForClass_JobList;
+}
+
 bool ProgramVariables::GetTraceFlagForClass_Message()
 {
     return traceFlagForClass_Message;
@@ -178,6 +183,7 @@ bool ProgramVariables::traceFlagForClass_SharedMap = false;
 bool ProgramVariables::traceFlagForClass_SharedPtrList = false;
 bool ProgramVariables::traceFlagForClass_SharedPtrSet = false;
 bool ProgramVariables::traceFlagForClass_Client = false;
+bool ProgramVariables::traceFlagForClass_JobList = false;
 bool ProgramVariables::traceFlagForClass_Message = false;
 bool ProgramVariables::traceFlagForClass_MessageCoder = false;
 bool ProgramVariables::traceFlagForClass_Scheduler = false;

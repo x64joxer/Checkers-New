@@ -23,7 +23,7 @@ class SharedMap
         std::condition_variable *GetCondVar();
         int Insert(data1 key, data2 val);
         void SetCondVar(std::condition_variable * wsk);
-        void GetAllKeys(SharedPtrList<data1> &return_list);
+        void GetAllKeys(SharedPtrList<data1> & return_list);
         unsigned long long Size();
 
         ~SharedMap();
