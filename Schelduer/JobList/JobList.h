@@ -14,6 +14,7 @@ class JobList
         void Clear();
         void RemoveJob(const std::string & jobid);
         void GetJobList(SharedPtrList<std::string> & jobIdlist);
+        JobInfo GetJobInfo(std::string & jobid);
         bool IsJobId(std::string & jobid);
 
     private:

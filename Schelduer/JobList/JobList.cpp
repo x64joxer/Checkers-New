@@ -26,6 +26,13 @@ void JobList::GetJobList(SharedPtrList<std::string> & jobIdlist)
     jobMap.GetAllKeys(jobIdlist);
 }
 
+JobInfo JobList::GetJobInfo(std::string & jobid)
+{
+    TRACE_FLAG_FOR_CLASS_JobList Traces() << "\n" << "LOG: JobInfo JobList::GetJobInfo(const std::string & jobid)";
+
+    return jobMap.At(jobid);
+}
+
 void JobList::RemoveJob(const std::string & jobid)
 {
     TRACE_FLAG_FOR_CLASS_JobList Traces() << "\n" << "LOG: void JobList::RemoveJob(const std::string & jobid)";

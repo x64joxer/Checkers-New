@@ -11,6 +11,8 @@
 #include "MessageCoder.h"
 #include "Client.h"
 #include "../Counters/Counters.h"
+#include "../JobList/JobInfo.h"
+#include "../JobList/JobList.h"
 #include "Worker.h"
 #include "../SafeQueue/SharedMap/SharedMap.h"
 #include "../SafeQueue/SharedPtrSet/SharedPtrList.h"
@@ -78,6 +80,7 @@ class Scheduler
         SharedPtrList<Board> boardsToAnalyse;        
         std::atomic<bool> firstJobStarted;        
         std::atomic<bool> workOngoing;        
+        JobList jobList;
 
         ServerState state;
         QueueTimerList timerList;
