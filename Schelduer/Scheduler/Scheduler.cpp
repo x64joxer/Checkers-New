@@ -568,6 +568,7 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
     state.SetBoard(tmpBoard);
     state.SetThinking(false);
     boardsToAnalyse.Clear();
+    state.SetlastServerError(ServerState::NO_SERVER_ERROR_TEXT);
     jobTimer.Stop();
 
     SendStateToAllClients(data, dest);
