@@ -573,7 +573,8 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
     MessageCoder::MapToBoard(data, &tmpBoard);
     state.SetBoard(tmpBoard);
     state.SetThinking(false);
-    boardsToAnalyse.Clear();
+    state.ClearWins();
+    boardsToAnalyse.Clear();    
     state.SetlastServerError(ServerState::NO_SERVER_ERROR_TEXT);
     jobTimer.Stop();
 

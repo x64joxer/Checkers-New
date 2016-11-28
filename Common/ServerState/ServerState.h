@@ -38,6 +38,7 @@ class ServerState
         void SetBlackWins() { whiteWins = false; blackWins = true; }
         bool IsWhiteWins() const { return whiteWins; }
         bool IsBlackWins() const { return blackWins; }
+        void ClearWins() { whiteWins = false; blackWins =false; }
 
         const ServerState & operator=(const ServerState  & data);
 
