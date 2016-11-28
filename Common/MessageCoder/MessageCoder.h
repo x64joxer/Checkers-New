@@ -82,6 +82,8 @@ class MessageCoder
         static std::string RESET_SERVER_STATE;
         static std::string SERVER_ERROR;
         static std::string CAN_NOT_MOVE;
+        static std::string WHITE_WINS;
+        static std::string BLACK_WINS;
 
         static std::string START_WORK;
         static std::string SET_STATE;        

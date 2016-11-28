@@ -32,6 +32,10 @@ class ServerState
         unsigned long long GetTimeToEnd() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
         void SetlastServerError(const std::string & error) { lastServerError = error; }
         std::string GetLastServerError() const { return lastServerError; }
+        void SetWhiteWins() { whiteWins = true; blackWins = false; }
+        void SetBlackWins() { whiteWins = false; blackWins = true; }
+        bool IsWhiteWins() const { return whiteWins; }
+        bool IsBlackWins() const { return blackWins; }
 
         const ServerState & operator=(const ServerState  & data);
 
@@ -47,6 +51,8 @@ class ServerState
         unsigned long long maxTime;
         unsigned long long maxTimeForWorkers;
         unsigned long long timeToEnd;
+        bool whiteWins;
+        bool blackWins;
         std::string lastServerError;
 
         std::mutex *mutex;        

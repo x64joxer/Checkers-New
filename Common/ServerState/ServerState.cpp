@@ -1,7 +1,9 @@
 #include "ServerState.h"
 
 ServerState::ServerState() : thinking(false),
-                             lastServerError(ServerState::NO_SERVER_ERROR_TEXT)
+                             lastServerError(ServerState::NO_SERVER_ERROR_TEXT),
+                             whiteWins(false),
+                             blackWins(false)
 {
     current =
     std::string("| |w| |w| |w| |w|") +
