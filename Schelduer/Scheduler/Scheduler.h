@@ -54,6 +54,7 @@ class Scheduler
         void ReceiveOKMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void ReceiveNotOKMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void ReceiveTimeoutMessage(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
+        void ReceiveCanNotMove(TCPConnection_ptr socket, char * dest);
         void CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void CreateTimeToSendResultToClientsGuard(TCPConnection_ptr socket, const unsigned int miliseconds);
         void UpdateFreeWorkerList(TCPConnection_ptr & socket, Worker_ptr worker);
@@ -62,7 +63,7 @@ class Scheduler
         void SendStopAnalyseToWorker(TCPConnection_ptr tmpTCP_Connection_ptr, char * dest);
         void RecevieBestResult(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest);
         void FinishWork(const std::map<std::string, std::string> & data, char * dest);
-        void SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest);
+        void SendStateToAllClients();
         Board CalculateBestResult();
 
         ConnectionManager *wskConnectionManager;

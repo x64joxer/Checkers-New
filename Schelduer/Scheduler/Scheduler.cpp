@@ -217,6 +217,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
             FinishWork(data, dest);
         } else
+        if (action == MessageCoder::CAN_NOT_MOVE)
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::CAN_NOT_MOVE";
+
+            ReceiveCanNotMove(socket, dest);
+        } else
         if (action == MessageCoder::OK)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::OK";
@@ -448,7 +454,7 @@ void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, 
         }
     }
 
-    SendStateToAllClients(data, dest);
+    SendStateToAllClients();
 }
 
 void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
@@ -571,7 +577,7 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
     state.SetlastServerError(ServerState::NO_SERVER_ERROR_TEXT);
     jobTimer.Stop();
 
-    SendStateToAllClients(data, dest);
+    SendStateToAllClients();
     workers.GetAllKeys(workersToStopAnalyse);
 }
 
@@ -755,6 +761,20 @@ void Scheduler::ReceiveTimeoutMessage(TCPConnection_ptr socket, const std::map<s
     {
 
     }
+}
+
+void Scheduler::ReceiveCanNotMove(TCPConnection_ptr socket, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::ReceiveCanNotMove(TCPConnection_ptr socket, char * dest)";
+
+    jobTimer.Stop();
+    workOngoing = false;
+    firstJobStarted = false;
+    state.SetThinking(false);
+    state.SetBlackWins();
+
+    SendStateToAllClients();
+
 }
 
 void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
@@ -1082,7 +1102,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
         state.SetlastServerError("No result received form workers!");
     }
 
-    SendStateToAllClients(data, dest);
+    SendStateToAllClients();
 
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************************************************";
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************TOTAL NUMBER OF ANALYSED BOARDS*****************";
@@ -1140,7 +1160,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
     jobList.Clear();
 }
 
-void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)
+void Scheduler::SendStateToAllClients()
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 

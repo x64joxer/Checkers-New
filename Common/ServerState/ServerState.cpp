@@ -45,6 +45,8 @@ const ServerState & ServerState::operator=(const ServerState  & data)
     maxTime = data.maxTime;
     timeToEnd = data.timeToEnd;
     lastServerError = data.lastServerError;
+    whiteWins = data.whiteWins;
+    blackWins = data.blackWins;
 
     return *this;
 }
