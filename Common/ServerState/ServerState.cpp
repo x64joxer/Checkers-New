@@ -23,13 +23,17 @@ ServerState::ServerState(const Board & tmpCurrent,
             const unsigned long long tmpStartTime,
             const unsigned long long tmpMaxTime,
             const unsigned long long tmpTimeToEnd,
-            const std::string & serverError) :
+            const std::string & serverError,
+            bool whitwins,
+            bool blackwins) :
             current(tmpCurrent),
             thinking(tmpThinking),
             startTime(tmpStartTime),
             maxTime(tmpMaxTime),
             timeToEnd(tmpTimeToEnd),
-            lastServerError(serverError)
+            lastServerError(serverError),
+            whiteWins(whitwins),
+            blackWins(blackwins)
 {
     mutex = new std::mutex();
 }

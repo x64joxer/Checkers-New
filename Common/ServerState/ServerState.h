@@ -14,7 +14,9 @@ class ServerState
                     const unsigned long long tmpStartTime,
                     const unsigned long long tmpMaxTime,
                     const unsigned long long tmpTimeToEnd,
-                    const std::string & serverError);
+                    const std::string & serverError,
+                    bool whitewins,
+                    bool blackwins);
 
         void SetBoard(const Board & board) { std::lock_guard<std::mutex> ls(*mutex); current = board; }
         Board GetBoard() const { std::lock_guard<std::mutex> ls(*mutex); return current; }
