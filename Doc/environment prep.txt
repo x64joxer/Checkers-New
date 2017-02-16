@@ -1,0 +1,6 @@
+==================================
+To install on Ubuntu Linux
+==================================
+
+sudo apt-get install libboost-all-dev
+sudo apt-get install libsfml-dev
