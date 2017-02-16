@@ -322,17 +322,20 @@ void CheckerArea::TakeMouseClickEvent(QMouseEvent *event)
 
     if (cursorState == Free)
     {
-        if (agentTCP->GecConnectionState() == TCPHandler::ConState::UPDATED)
+        if (!(serverState.IsBlackWins() | serverState.IsWhiteWins()))
         {
-            if (board->IsBlackPawnOnPos(x,y))
+            if (agentTCP->GecConnectionState() == TCPHandler::ConState::UPDATED)
             {
-                grabbed = board->GetBlackPawnNumber(x,y);
-
-                if (possibleMoves.CanIGrab(grabbed, *board))
+                if (board->IsBlackPawnOnPos(x,y))
                 {
-                    cursorState = Grab;
+                    grabbed = board->GetBlackPawnNumber(x,y);
+
+                    if (possibleMoves.CanIGrab(grabbed, *board))
+                    {
+                        cursorState = Grab;
+                    };
                 };
-            };
+            }
         }
     };
 }
@@ -479,6 +482,9 @@ void CheckerArea::GetServerState(const ServerState &state)
     if (serverState.GetLastServerError() != ServerState::NO_SERVER_ERROR_TEXT)
     {
         SetMessageText(QString(serverState.GetLastServerError().c_str()));
+    } else
+    {
+        SetMessageText("");
     }
 
     repaint();

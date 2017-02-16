@@ -25,6 +25,8 @@ g++ main.cpp \
     SafeQueue/SharedPtrSet/SharedPtrList.cpp \
     QueueTimer/QueueTimer.cpp \
     QueueTimer/QueueTimerList.cpp \
+    JobList/JobInfo.cpp \
+    JobList/JobList.cpp \
     Traces/Traces.cpp \
     -I /opt/local/include/ -L/opt/local/lib -std=c++11 -lboost_system -Wl,-rpath,/opt/local/lib -o ../build-Scheduler/scheduler -pthread -lboost_program_options
 

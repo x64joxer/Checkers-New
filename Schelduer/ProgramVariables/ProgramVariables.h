@@ -37,6 +37,7 @@ class ProgramVariables
         static bool GetTraceFlagForClass_SharedPtrList();
         static bool GetTraceFlagForClass_SharedPtrSet();        
         static bool GetTraceFlagForClass_Client();
+        static bool GetTraceFlagForClass_JobList();
         static bool GetTraceFlagForClass_Message();
         static bool GetTraceFlagForClass_MessageCoder();
         static bool GetTraceFlagForClass_Scheduler();
@@ -67,6 +68,7 @@ class ProgramVariables
         static bool traceFlagForClass_SharedPtrList;
         static bool traceFlagForClass_SharedPtrSet;
         static bool traceFlagForClass_Client;
+        static bool traceFlagForClass_JobList;
         static bool traceFlagForClass_Message;
         static bool traceFlagForClass_MessageCoder;
         static bool traceFlagForClass_Scheduler;
@@ -90,6 +92,7 @@ class ProgramVariables
 #define TRACE_FLAG_FOR_CLASS_SharedPtrList if (ProgramVariables::GetTraceFlagForClass_SharedPtrList())
 #define TRACE_FLAG_FOR_CLASS_SharedPtrSet if (ProgramVariables::GetTraceFlagForClass_SharedPtrSet())
 #define TRACE_FLAG_FOR_CLASS_Client if (ProgramVariables::GetTraceFlagForClass_Client())
+#define TRACE_FLAG_FOR_CLASS_JobList if (ProgramVariables::GetTraceFlagForClass_JobList())
 #define TRACE_FLAG_FOR_CLASS_Message if (ProgramVariables::GetTraceFlagForClass_Message())
 #define TRACE_FLAG_FOR_CLASS_MessageCoder if (ProgramVariables::GetTraceFlagForClass_MessageCoder())
 #define TRACE_FLAG_FOR_CLASS_Scheduler if (ProgramVariables::GetTraceFlagForClass_Scheduler())

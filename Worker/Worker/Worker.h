@@ -22,11 +22,12 @@ class Worker
 
     private:
         void StartWorking();
-        void ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid, bool fast = false);
+        void ReceiveJob(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, bool fast = false);
         void SendRegisterMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
         void SendStateMessage(TCPSocket_ptr socket, char * dest, std::string & prevousMessageid);
-        void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
-        void SendResult(Board & board, char * dest, std::string & prevousMessageid, std::string & jobId, QueueTimer & reconnectionTimer);
+        void SendBestResultWhenJobEnd(Board & board, char * dest, std::string & jobId, QueueTimer & reconnectionTimer);
+        void SendResult(Board & board, char * dest, std::string & jobId, QueueTimer & reconnectionTimer);
+        void SendCanNotMoveMessage(char * dest, std::string & jobId, QueueTimer & reconnectionTimer);
         void ReceiveStopAnalyse(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest);
 
         void MessageInterpreting(TCPSocket_ptr socket, std::map<std::string, std::string> & data, char * dest, QueueTimer & reconnectionTimer, std::string & prevousMessageid);
@@ -37,9 +38,10 @@ class Worker
         TCPSocket socketToServer;
         SharedPtrList<Message> *messageQueue;
         std::condition_variable *condition_var;
-        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED, BEST_RESULT_SEND, BEST_RESULT_FAST_SEND } connection_state;
+        enum ConState { DISCONNECTED, CONNECTED, REGISTERED, STATEUPDATED, BEST_RESULT_SEND, BEST_RESULT_FAST_SEND, CAN_NOT_MOVE_SEND } connection_state;
         Peers::STATE myState;
         bool conversationIsOngoing;
+        std::string prevousMessageid;
 
         unsigned int maxIaTime;
         unsigned int numOfResultToReturnFast;
@@ -51,7 +53,8 @@ class Worker
         bool firstWorker;
         std::atomic<int> currentPercentOfSteps;
         ThreadIAMove<3000000> *jobExpander;
-        std::atomic_bool stopFlag;
+        std::atomic_bool stopFlag;        
+        std::atomic_bool canNotMoveFlag;
 
         /////////////////////////
         //Traffic test purposes

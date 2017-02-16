@@ -217,6 +217,12 @@ void Scheduler::MessageInterpreting(TCPConnection_ptr socket, std::map<std::stri
 
             FinishWork(data, dest);
         } else
+        if (action == MessageCoder::CAN_NOT_MOVE)
+        {
+            TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::CAN_NOT_MOVE";
+
+            ReceiveCanNotMove(socket, dest);
+        } else
         if (action == MessageCoder::OK)
         {
             TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: action == MessageCoder::OK";
@@ -448,7 +454,7 @@ void Scheduler::StartWork(TCPConnection_ptr socket, const std::map<std::string, 
         }
     }
 
-    SendStateToAllClients(data, dest);
+    SendStateToAllClients();
 }
 
 void Scheduler::AddClient(TCPConnection_ptr socket, const std::map<std::string, std::string> & data, char * dest)
@@ -567,10 +573,12 @@ void Scheduler::ResetServerState(TCPConnection_ptr socket, const std::map<std::s
     MessageCoder::MapToBoard(data, &tmpBoard);
     state.SetBoard(tmpBoard);
     state.SetThinking(false);
-    boardsToAnalyse.Clear();
+    state.ClearWins();
+    boardsToAnalyse.Clear();    
+    state.SetlastServerError(ServerState::NO_SERVER_ERROR_TEXT);
     jobTimer.Stop();
 
-    SendStateToAllClients(data, dest);
+    SendStateToAllClients();
     workers.GetAllKeys(workersToStopAnalyse);
 }
 
@@ -756,6 +764,20 @@ void Scheduler::ReceiveTimeoutMessage(TCPConnection_ptr socket, const std::map<s
     }
 }
 
+void Scheduler::ReceiveCanNotMove(TCPConnection_ptr socket, char * dest)
+{
+    TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::ReceiveCanNotMove(TCPConnection_ptr socket, char * dest)";
+
+    jobTimer.Stop();
+    workOngoing = false;
+    firstJobStarted = false;
+    state.SetThinking(false);
+    state.SetBlackWins();
+
+    SendStateToAllClients();
+
+}
+
 void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::CreateTimeoutGuard(TCPConnection_ptr socket, const unsigned int miliseconds)";
@@ -912,9 +934,9 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 std::string jobId = MessageCoder::CreateMessageId();
                 SetLastMessageIdtoWorker(tmpWorkerSocket, messageId);
                 MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
+                unsigned long long maxTime = state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime());
 
-
-                MessageCoder::CreateStartAnalyseWork(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+                MessageCoder::CreateStartAnalyseWork(maxTime,
                                                      tmpBoard,
                                                      messageId,
                                                      jobId,
@@ -924,6 +946,8 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
                 tmpWorkerSocket->SendMessage(dest);
                 CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+                jobList.AddJob(jobId, tmpWorkerSocket->GetIp(), tmpWorkerSocket->GetPort(), maxTime);
+
             } else
             if ((!tmpFirstJobStarted) && (tmpSizeMoreThanOne))
             {
@@ -933,9 +957,9 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 std::string jobId = MessageCoder::CreateMessageId();
                 MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
                 SetLastMessageIdtoWorker(tmpWorkerSocket, messageId);
+                unsigned long long maxTime = state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime());
 
-
-                MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+                MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(maxTime,
                                                                          tmpFreeWorkerListSize - 1,
                                                                          tmpBoard,
                                                                          messageId,
@@ -945,6 +969,7 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendFirstJob);
                 tmpWorkerSocket->SendMessage(dest);
                 CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+                jobList.AddJob(jobId, tmpWorkerSocket->GetIp(), tmpWorkerSocket->GetPort(), maxTime);
 
             } else
             if (tmpFirstJobStarted)
@@ -955,9 +980,9 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 std::string jobId = MessageCoder::CreateMessageId();
                 MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
                 SetLastMessageIdtoWorker(tmpWorkerSocket, messageId);
+                unsigned long long maxTime = state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime());
 
-
-                MessageCoder::CreateStartAnalyseWork(state.GetMaxTimeForWorkers() - (Traces::GetMilisecondsSinceEpoch() - state.GetStartTime()),
+                MessageCoder::CreateStartAnalyseWork(maxTime,
                                                      tmpBoard,
                                                      messageId,
                                                      jobId,
@@ -967,6 +992,8 @@ void Scheduler::DistributeWorkToWorkers(char * dest)
                 tmpWorker->SetConnectionState(Worker::ConnectionState::WaitForOkMessageAfterSendJob);
                 tmpWorkerSocket->SendMessage(dest);
                 CreateTimeoutGuard(tmpWorkerSocket, ProgramVariables::GetMaxTimeoutForMessageResponse());
+                jobList.AddJob(jobId, tmpWorkerSocket->GetIp(), tmpWorkerSocket->GetPort(), maxTime);
+
             }
         }
     }
@@ -1032,9 +1059,19 @@ void Scheduler::RecevieBestResult(TCPConnection_ptr socket, const std::map<std::
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::RecevieBestResult(const std::map<std::string, std::string> & data)";
 
-    Board tmpBoard;
-    MessageCoder::MapToBoard(data, &tmpBoard);
-    boardsToAnalyse.PushBack(tmpBoard);
+    std::string jobId = data.at(MessageCoder::JOB_ID);
+
+    if (jobList.IsJobId(jobId))
+    {
+        Board tmpBoard;
+        MessageCoder::MapToBoard(data, &tmpBoard);
+        boardsToAnalyse.PushBack(tmpBoard);
+        jobList.RemoveJob(jobId);
+
+    } else
+    {
+        Traces() << "\n" << "ERR: Wrong job ID!";
+    }
 
     std::string messageId = data.at(MessageCoder::MESSAGE_ID);
     MessageCoder::ClearChar(dest, MessageCoder::MaxMessageSize());
@@ -1052,7 +1089,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
     jobTimer.Stop();
     workOngoing = false;
     firstJobStarted = false;    
-    state.SetThinking(false);
+    state.SetThinking(false);    
 
     if (boardsToAnalyse.Size() > 0)
     {
@@ -1066,7 +1103,7 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
         state.SetlastServerError("No result received form workers!");
     }
 
-    SendStateToAllClients(data, dest);
+    SendStateToAllClients();
 
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************************************************";
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************TOTAL NUMBER OF ANALYSED BOARDS*****************";
@@ -1082,9 +1119,49 @@ void Scheduler::FinishWork(const std::map<std::string, std::string> & data, char
 
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:" << whiteSigns << number;
     TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************************************************";
+    TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:";
+
+
+    SharedPtrList<std::string> tmpJobIdList;
+    jobList.GetJobList(tmpJobIdList);
+
+    if (!tmpJobIdList.Empty())
+    {
+        TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:******************************************************************************";
+        TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:****************************JOB(s) NOT COMPLETED******************************";
+        TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:******************************************************************************";
+        TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:* "
+                                      << Traces::CreateStringWithSpaces("Job ID", 21)
+                                      << " * " << Traces::CreateStringWithSpaces("Max time (seconds)", 18)
+                                      << " * " << Traces::CreateStringWithSpaces("Worker IP", 15)
+                                      << " * " << Traces::CreateStringWithSpaces("Worker port",11)
+                                      << " *";
+
+        JobInfo tmpJobInfo;
+        std::string tmpJobId;
+
+        while(!tmpJobIdList.Empty())
+        {
+            TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:******************************************************************************";
+
+            tmpJobId = tmpJobIdList.PopFront();
+            tmpJobInfo = jobList.GetJobInfo(tmpJobId);
+            TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:* "
+                                          << Traces::CreateStringWithSpaces(tmpJobInfo.GetJobId(), 21)
+                                          << " * " << Traces::CreateStringWithSpaces(tmpJobInfo.GetMaxTime()/1000, 18)
+                                          << " * " << Traces::CreateStringWithSpaces(tmpJobInfo.GetWorkerIp(), 15)
+                                          << " * " << Traces::CreateStringWithSpaces(tmpJobInfo.GetWorkerPort(),11)
+                                          << " *";
+        }
+
+        TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:******************************************************************************";
+        TRACE_FLAG_FOR_Notif Traces() << "\n" << "LOG:";
+    }
+
+    jobList.Clear();
 }
 
-void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)
+void Scheduler::SendStateToAllClients()
 {
     TRACE_FLAG_FOR_CLASS_Scheduler Traces() << "\n" << "LOG: void Scheduler::SendStateToAllClients(const std::map<std::string, std::string> & data, char * dest)";
 

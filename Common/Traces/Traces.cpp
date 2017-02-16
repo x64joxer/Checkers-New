@@ -30,6 +30,64 @@ void Traces::SetTraceFileNameMethod(const Traces::TraceFileNameMode mode)
     fileNameModeForTrace = mode;
 }
 
+std::string Traces::CreateStringWithSpaces(const std::string text, const unsigned int numOfSpaces)
+{
+    int tmpNumOfSpaces = numOfSpaces - text.length();
+    if (tmpNumOfSpaces < 0) tmpNumOfSpaces = 0;
+    std::string spaces = "";
+
+    for (unsigned int i = 0;i < tmpNumOfSpaces;++i)
+    {
+        spaces += " ";
+    }
+
+    return text + spaces;
+}
+
+std::string Traces::CreateStringWithSpaces(const unsigned long long val, const unsigned int numOfSpaces)
+{
+    std::string text = std::to_string(val);
+    int tmpNumOfSpaces = numOfSpaces - text.length();
+    if (tmpNumOfSpaces < 0) tmpNumOfSpaces = 0;
+    std::string spaces = "";
+
+    for (unsigned int i = 0;i < tmpNumOfSpaces;++i)
+    {
+        spaces += " ";
+    }
+
+    return text + spaces;
+}
+
+std::string Traces::CreateStringWithSpaces(const unsigned int val, const unsigned int numOfSpaces)
+{
+    std::string text = std::to_string(val);
+    int tmpNumOfSpaces = numOfSpaces - text.length();
+    if (tmpNumOfSpaces < 0) tmpNumOfSpaces = 0;
+    std::string spaces = "";
+
+    for (unsigned int i = 0;i < tmpNumOfSpaces;++i)
+    {
+        spaces += " ";
+    }
+
+    return text + spaces;
+}
+
+std::string Traces::CreateStringWithSpaces(const float val, const unsigned int numOfSpaces)
+{
+    std::string text = std::to_string(val);
+    int tmpNumOfSpaces = numOfSpaces - text.length();
+    if (tmpNumOfSpaces < 0) tmpNumOfSpaces = 0;
+    std::string spaces = "";
+    for (unsigned int i = 0;i < tmpNumOfSpaces;++i)
+    {
+        spaces += " ";
+    }
+
+    return text + spaces;
+}
+
 unsigned long long Traces::GetThreadId()
 {
     std::stringstream ss;

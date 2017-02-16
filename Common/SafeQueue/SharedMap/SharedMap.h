@@ -18,12 +18,13 @@ class SharedMap
         SharedMap();
 
         data2 At(data1 &val);
+        void Clear();
         bool Empty();
         void Erase(data1 key);
         std::condition_variable *GetCondVar();
         int Insert(data1 key, data2 val);
         void SetCondVar(std::condition_variable * wsk);
-        void GetAllKeys(SharedPtrList<data1> &return_list);
+        void GetAllKeys(SharedPtrList<data1> & return_list);
         unsigned long long Size();
 
         ~SharedMap();
@@ -31,7 +32,7 @@ class SharedMap
         std::mutex mutex;
         std::map<data1, data2> mapList;
         std::condition_variable *condition_var;
-        std::condition_variable *org_condition_var;
+        std::condition_variable *org_condition_var;        
 };
 
 template<typename data1, typename data2>
@@ -50,6 +51,16 @@ data2 SharedMap<data1, data2>::At(data1 &val)
         throw;
     }
 
+}
+
+template<typename data1, typename data2>
+void SharedMap<data1, data2>::Clear()
+{
+    std::lock_guard<std::mutex> ls(mutex);
+
+    TRACE_FLAG_FOR_CLASS_SharedMap Traces() << "\n" << "LOG: void SharedMap<data1, data2>::Clear()";
+
+    mapList.clear();
 }
 
 template<typename data1, typename data2>

@@ -27,7 +27,7 @@ class Traces
         static unsigned long long GetCurrentTime();
         static unsigned long long GetMilisecondsSinceEpoch();
         static std::string GetCurrentDate();
-        static unsigned long long GetCurrentDateLL();
+        static unsigned long long GetCurrentDateLL();        
 
         static void TurnOnTraces();
         static void TurnOffTraces();
@@ -36,6 +36,10 @@ class Traces
         static void SetTraceFolder(const std::string &dir);
         static void SetTraceFileNameMethod(const Traces::TraceFileNameMode mode);
 
+        static std::string CreateStringWithSpaces(const std::string text, const unsigned int numOfSpaces);
+        static std::string CreateStringWithSpaces(const unsigned long long val, const unsigned int numOfSpaces);
+        static std::string CreateStringWithSpaces(const unsigned int val, const unsigned int numOfSpaces);
+        static std::string CreateStringWithSpaces(const float val, const unsigned int numOfSpaces);
     private:
         static std::string patchAndNameFile;
         inline void StringToFile(std::string log);

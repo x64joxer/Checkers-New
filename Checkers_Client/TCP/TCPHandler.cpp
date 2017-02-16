@@ -220,7 +220,9 @@ void TCPHandler::DecodeMessage(const char * data)
                                                          atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
                                                          atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
                                                          atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str()),
-                                                         messageContent.at((MessageCoder::SERVER_ERROR))
+                                                         messageContent.at((MessageCoder::SERVER_ERROR)),
+                                                         std::stoi(messageContent.at((MessageCoder::WHITE_WINS)).c_str()),
+                                                         std::stoi(messageContent.at((MessageCoder::BLACK_WINS)).c_str())
                                                          ));
 
                     connection_state = ConState::UPDATED;
@@ -245,7 +247,9 @@ void TCPHandler::DecodeMessage(const char * data)
                                                      atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str()),
-                                                     messageContent.at((MessageCoder::SERVER_ERROR))
+                                                     messageContent.at((MessageCoder::SERVER_ERROR)),
+                                                     std::stoi(messageContent.at((MessageCoder::WHITE_WINS)).c_str()),
+                                                     std::stoi(messageContent.at((MessageCoder::BLACK_WINS)).c_str())
                                                      ));
 
                SendOkMessage(messageContent.at(MessageCoder::MESSAGE_ID));
@@ -263,7 +267,9 @@ void TCPHandler::DecodeMessage(const char * data)
                                                      atoll(messageContent.at((MessageCoder::START_TIME)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::MAX_IA_TIME)).c_str()),
                                                      atoll(messageContent.at((MessageCoder::TIME_TO_END)).c_str()),
-                                                     messageContent.at((MessageCoder::SERVER_ERROR))
+                                                     messageContent.at((MessageCoder::SERVER_ERROR)),
+                                                     std::stoi(messageContent.at((MessageCoder::WHITE_WINS)).c_str()),
+                                                     std::stoi(messageContent.at((MessageCoder::BLACK_WINS)).c_str())
                                                      ));
 
 

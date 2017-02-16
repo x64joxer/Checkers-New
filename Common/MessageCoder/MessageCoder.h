@@ -38,6 +38,7 @@ class MessageCoder
         static void CreateRoleMessage(const ROLE_ENUM role, const std::string & id, char *dest);
         static void CreateTimeToSendResultToClientsMessage(char *dest);
         static void CreateTimeoutMessage(char *dest);
+        static void CreateCanNotMoveMessage(char *dest, const std::string & jobId);
         static void CreateStartAnalyseWork(const unsigned long long respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest);
         static void CreateResetServerStateMessage(const Board & board, const std::string & id, char *dest);
         static void CreateStartAnalyseWorkAndReturnNResultFast(const unsigned long long respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest);
@@ -80,6 +81,9 @@ class MessageCoder
         static std::string TIME_TO_SEND_RESULT_TO_CLIENTS;
         static std::string RESET_SERVER_STATE;
         static std::string SERVER_ERROR;
+        static std::string CAN_NOT_MOVE;
+        static std::string WHITE_WINS;
+        static std::string BLACK_WINS;
 
         static std::string START_WORK;
         static std::string SET_STATE;        

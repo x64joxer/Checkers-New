@@ -14,7 +14,9 @@ class ServerState
                     const unsigned long long tmpStartTime,
                     const unsigned long long tmpMaxTime,
                     const unsigned long long tmpTimeToEnd,
-                    const std::string & serverError);
+                    const std::string & serverError,
+                    bool whitewins,
+                    bool blackwins);
 
         void SetBoard(const Board & board) { std::lock_guard<std::mutex> ls(*mutex); current = board; }
         Board GetBoard() const { std::lock_guard<std::mutex> ls(*mutex); return current; }
@@ -32,6 +34,11 @@ class ServerState
         unsigned long long GetTimeToEnd() const { std::lock_guard<std::mutex> ls(*mutex); return startTime; }
         void SetlastServerError(const std::string & error) { lastServerError = error; }
         std::string GetLastServerError() const { return lastServerError; }
+        void SetWhiteWins() { whiteWins = true; blackWins = false; }
+        void SetBlackWins() { whiteWins = false; blackWins = true; }
+        bool IsWhiteWins() const { return whiteWins; }
+        bool IsBlackWins() const { return blackWins; }
+        void ClearWins() { whiteWins = false; blackWins =false; }
 
         const ServerState & operator=(const ServerState  & data);
 
@@ -47,6 +54,8 @@ class ServerState
         unsigned long long maxTime;
         unsigned long long maxTimeForWorkers;
         unsigned long long timeToEnd;
+        bool whiteWins;
+        bool blackWins;
         std::string lastServerError;
 
         std::mutex *mutex;        

@@ -357,6 +357,15 @@ void MessageCoder::CreateTimeoutMessage(char *dest)
     InsertLenMessageHeader(dest);
 }
 
+void MessageCoder::CreateCanNotMoveMessage(char *dest, const std::string & jobId)
+{
+    InsertHeader(dest);
+    KeyValuePairToChar(ACTION, CAN_NOT_MOVE, dest);
+    KeyValuePairToChar(JOB_ID, jobId, dest);
+    KeyValuePairToChar(MESSAGE_END, 0, dest);
+    InsertLenMessageHeader(dest);
+}
+
 void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned long long respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest)
 {
     InsertHeader(dest);
@@ -449,6 +458,8 @@ void MessageCoder::CreateServerStateMessage(const ServerState & serverState, con
     KeyValuePairToChar(START_TIME, serverState.GetStartTime(), dest);
     KeyValuePairToChar(TIME_TO_END, serverState.GetTimeToEnd(), dest);
     KeyValuePairToChar(SERVER_ERROR, serverState.GetLastServerError(), dest);
+    KeyValuePairToChar(WHITE_WINS, serverState.IsWhiteWins(), dest);
+    KeyValuePairToChar(BLACK_WINS, serverState.IsBlackWins(), dest);
     BoardToChar(serverState.GetBoard(), dest + strlen(dest) , 1);
 
     KeyValuePairToChar(MESSAGE_END, 0, dest);
@@ -525,6 +536,9 @@ std::string MessageCoder::TIMEOUT = GetNextKey("TIMEOUT");
 std::string MessageCoder::TIME_TO_SEND_RESULT_TO_CLIENTS = GetNextKey("TIME_TO_SEND_RESULT_TO_CLIENTS");
 std::string MessageCoder::RESET_SERVER_STATE = GetNextKey("RESET_SERVER_STATE");
 std::string MessageCoder::SERVER_ERROR = GetNextKey("SERVER_ERROR");
+std::string MessageCoder::CAN_NOT_MOVE = GetNextKey("CAN_NOT_MOVE");
+std::string MessageCoder::WHITE_WINS = GetNextKey("WHITE_WINS");
+std::string MessageCoder::BLACK_WINS = GetNextKey("BLACK_WINS");
 
 std::string MessageCoder::STOP_ANALYSE = GetNextKey("STOP_ANALYSE");
 std::string MessageCoder::START_WORK = GetNextKey("START_WORK");
