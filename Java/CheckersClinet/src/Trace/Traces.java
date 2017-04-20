@@ -150,10 +150,27 @@ public class Traces
     	bufWriter.close();
     }               
 
+    private static boolean deleteDirectory(File directory) {
+        if(directory.exists()){
+            File[] files = directory.listFiles();
+            if(null!=files){
+                for(int i=0; i<files.length; i++) {
+                    if(files[i].isDirectory()) {
+                        deleteDirectory(files[i]);
+                    }
+                    else {
+                        files[i].delete();
+                    }
+                }
+            }
+        }
+        return(directory.delete());
+    }
+    
     private static void CreateTraceFolder()
-    {
+    {    	
     	File dir = new File(traceFolder);
-    	dir.delete();
+    	deleteDirectory(dir);
     	dir.mkdir();    	
     }
     
