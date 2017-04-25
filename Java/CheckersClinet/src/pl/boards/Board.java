@@ -514,8 +514,8 @@ public class Board
 	    String line;
 	    boolean flag = false;
 	    
-	    if (ProgramVariables.GetTraceFlagForClass_Board()) { Traces.Debug("\n" + "LOG: White= " + String.valueOf(GetNumberOfWhite())); };
-	    if (ProgramVariables.GetTraceFlagForClass_Board()) { Traces.Debug("\n" + "LOG: Black= " + String.valueOf(GetNumberOfBlack())); };
+	    if (ProgramVariables.GetTraceFlagForClass_Board()) { Traces.Debug("LOG: White= " + String.valueOf(GetNumberOfWhite())); };
+	    if (ProgramVariables.GetTraceFlagForClass_Board()) { Traces.Debug("LOG: Black= " + String.valueOf(GetNumberOfBlack())); };
 
 	    for (int y=0; y<8; y++)
 	    {
@@ -560,7 +560,7 @@ public class Board
 	            flag = !flag;
 	        };
 
-	        Traces.Debug("\n" + line);
+	        Traces.Debug(line);
 	        flag = !flag;
 	    };
 	}
