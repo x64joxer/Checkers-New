@@ -129,16 +129,16 @@ public class ProgramVariables
 	private static int serverPort = 6000;
 	private static long maxTimeForIA = 5000;
 
-	private static boolean traceFlagForClass_Board = false;
-	private static boolean traceFlagForClass_Pawn = false;
-	private static boolean traceFlagForClass_PawnPos = false;
-	private static boolean traceFlagForClass_ThreadIASimpleBoard = false;
-	private static boolean traceFlagForClass_Peers = false;
-	private static boolean traceFlagForClass_MessageCoder = false;
-	private static boolean traceFlagForClass_ServerState = false;
-	private static boolean traceFlagForClass_CheckerArea = false;
-	private static boolean traceFlagForClass_TCPHandler = false;
-	private static boolean traceFlagForClass_PossibleMoves = false;
+	private static boolean traceFlagForClass_Board = true;
+	private static boolean traceFlagForClass_Pawn = true;
+	private static boolean traceFlagForClass_PawnPos = true;
+	private static boolean traceFlagForClass_ThreadIASimpleBoard = true;
+	private static boolean traceFlagForClass_Peers = true;
+	private static boolean traceFlagForClass_MessageCoder = true;
+	private static boolean traceFlagForClass_ServerState = true;
+	private static boolean traceFlagForClass_CheckerArea = true;
+	private static boolean traceFlagForClass_TCPHandler = true;
+	private static boolean traceFlagForClass_PossibleMoves = true;
 
 
 	private static long numOfAnalysded = 0;

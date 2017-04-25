@@ -10,10 +10,17 @@ import java.util.Set;
 
 public class Traces 
 {
-	public static void Debug(String text) throws IOException
+	public static void Debug(String text)
 	{
 		mutex.lock();
-		StringToFile(text);
+				
+		try {
+			StringToFile(text);
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}			
+		
 		mutex.unlock();
 	}	
 	
