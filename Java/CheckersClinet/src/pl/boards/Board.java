@@ -21,6 +21,9 @@ public class Board
 
 	    for (int i =0; i<12; i++)
 	    {
+	    	black[i] = new Pawn();
+	    	white[i] = new Pawn();
+	    	
 	        black[i].dead = true;
 	        white[i].dead = true;
 	    }
