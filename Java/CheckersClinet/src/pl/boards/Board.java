@@ -576,6 +576,8 @@ public class Board
 	    //| |b| |b| |b| |b|
 	    //|b| |b| |b| |b| |
 
+		Clear();
+		
 	    clearWhite();
 	    clearBlack();
 
