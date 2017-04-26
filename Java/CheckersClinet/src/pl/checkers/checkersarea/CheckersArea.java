@@ -40,6 +40,7 @@ public class CheckersArea extends JPanel
         g.drawOval(0, 0, getWidth(), getHeight());
         PaintFields(g);
         PaintPawn(g);
+        PaintGrabbedBlackPawn(g);
     }
     
     private void PaintFields(Graphics painter)
@@ -73,7 +74,7 @@ public class CheckersArea extends JPanel
         };
     }
 
-    void PaintPawn(Graphics painter)
+    private void PaintPawn(Graphics painter)
     {
         Board boardToPaint;
 
@@ -127,7 +128,7 @@ public class CheckersArea extends JPanel
         };
     }
     
-    void DrawPawn(Graphics painter, final int x, final int y, final int widthField, final int heightField, final boolean blackWhite, final boolean pons)
+    private void DrawPawn(Graphics painter, final int x, final int y, final int widthField, final int heightField, final boolean blackWhite, final boolean pons)
     {
         if (blackWhite)
         {            
@@ -188,6 +189,17 @@ public class CheckersArea extends JPanel
         };
     }
     
+    private void PaintGrabbedBlackPawn(Graphics painter)
+    {
+        if (cursorState == CursorState.Grab)
+        {
+            int widthField = getWidth() / 8;
+            int heightField = getHeight() / 8;
+
+            DrawPawn(painter, mouseX, mouseY, widthField, heightField, false, board.GetBlackPawnPons(grabbed));
+        };
+    }
+    
     private class MouseHandler extends MouseAdapter 
     {     
         public void mousePressed(MouseEvent e) 
@@ -206,13 +218,19 @@ public class CheckersArea extends JPanel
         {
         	System.out.println("drag");
         }
+        
+        private int mouseX = 0;
+        private int mouseY = 0;
     }
     
-    Color field1 = Color.BLACK;
-    Color field2 = Color.WHITE;
+    private Color field1 = Color.BLACK;
+    private Color field2 = Color.WHITE;    
+    private Color pawn1 = Color.RED;
+    private Color pawn2 = Color.BLUE;
     
-    Color pawn1 = Color.RED;
-    Color pawn2 = Color.BLUE;
+    private int mouseX = 0;
+    private int mouseY = 0;
+    private int grabbed = 0;
     
     private Board board;
     private Board previousBoard;
