@@ -1,7 +1,5 @@
 package pl.boards;
 
-import java.io.IOException;
-
 import Trace.Traces;
 import pl.boards.*;
 import pl.programvariables.*;
@@ -13,11 +11,33 @@ public class Board
 	    Clear();
 	}
 
+	public Board(final Board val)
+	{
+	    Clear();
+	    
+	    previousMurder = val.GetPreviousMurder();	    
+	    val.CopyTo(origin);
+	    whitePatchEnd = val.GetWhitePatchEnd();
+	    blackWhite = val.White();
+	    nullBoard = val.GetNullBoard();
+	 
+	    for (int i =0; i<val.GetNumberOfBlack(); i++)
+	    {
+	    	black[i] = val.GetBlackPawn(i);	    		   
+	    }
+
+	    for (int i =0; i<val.GetNumberOfWhite(); i++)
+	    {
+	    	white[i] = val.GetWhitePawn(i);	    		   
+	    }
+	}
+	
 	public void Clear()
 	{
 	    SetPreviousMurder(12);
 	    SetNullBoard(false);    
 	    whitePatchEnd = true;
+	    origin = new ThreadIASimpleBoard();
 
 	    for (int i =0; i<12; i++)
 	    {
@@ -257,6 +277,30 @@ public class Board
 	    eraseWhite(number);
 	}
 
+	public Pawn GetWhitePawn(final int number)
+	{
+	    if (number>numberOfWhite()-1)
+	    {
+	        Traces.Debug("\n" + "ERROR! GetWhitePawnPos(final int number) Requesting " + String.valueOf(number) + " white pawn not exist!");
+	    } else        
+	    {	        
+	        return new Pawn(white[number]);
+	    };
+	    return new Pawn();
+	}	
+
+	public Pawn GetBlackPawn(final int number)
+	{
+	    if (number>numberOfBlack()-1)
+	    {        
+	        Traces.Debug("\n" + "ERROR! GetBlackPawnPos(final int number) Requesting black " + String.valueOf(number) + " pawn not exist!");
+	    } else
+	    {	        
+	        return new Pawn(black[number]);        
+	    };
+	    return new Pawn();
+	}
+	
 	public PawnPos GetWhitePawnPos(final int number)
 	{
 	    if (number>numberOfWhite()-1)
@@ -788,9 +832,9 @@ public class Board
 	public void CopyTo(ThreadIASimpleBoard data)
 	{
 	    for (int i=0;i<12;i++)
-	    {
-	        data.black[i] = black[i];
-	        data.white[i] = white[i];
+	    {	    	
+	    	data.black[i] = new Pawn(black[i]);		    	
+    		data.white[i] = new Pawn(white[i]);		    		       
 	    };
 	}
 
@@ -798,8 +842,8 @@ public class Board
 	{
 	    for (int i=0;i<12;i++)
 	    {
-	        black[i] = data.black[i];
-	        white[i] = data.white[i];
+	        black[i] = new Pawn(data.black[i]);
+	        white[i] = new Pawn(data.white[i]);
 	    };
 	}
 
