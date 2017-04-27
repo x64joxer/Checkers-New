@@ -7,15 +7,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import pl.boards.*;
+import pl.serverstate.*;
 
 import javax.swing.JPanel;
 
 public class CheckersArea extends JPanel 
-{
-	private MouseHandler mouseHandler = new MouseHandler();
+{	
 	
     public CheckersArea()
     {
+    	mouseHandler.SetRefToCheckersArea(this);
+    	
         board = new Board("| |w| |w| |w| |w|" +
         "|w| |w| |w| |w| |" +
         "| |w| |w| |w| |w|" +
@@ -200,27 +202,58 @@ public class CheckersArea extends JPanel
         };
     }
     
+    private void TakeMouseClickEvent(MouseEvent e)
+    {
+        int widthField = getWidth() / 8;
+        int heightField = getHeight() / 8;
+
+        int x = (e.getX() / widthField);
+        int y = (e.getY() / heightField);
+
+        if (cursorState == CursorState.Free)
+        {
+            if (!(serverState.IsBlackWins() | serverState.IsWhiteWins()))
+            {
+            	//TODO
+            	//if (agentTCP->GecConnectionState() == TCPHandler::ConState::UPDATED)
+                //{
+                    if (board.IsBlackPawnOnPos(x,y))
+                    {
+                        grabbed = board.GetBlackPawnNumber(x,y);
+
+                        if (possibleMoves.CanIGrab(grabbed, board))
+                        {
+                            cursorState = CursorState.Grab;
+                        };
+                    };
+                //}
+            }
+        }
+    }
+    
     private class MouseHandler extends MouseAdapter 
     {     
         public void mousePressed(MouseEvent e) 
         {
-        	System.out.println("press");
-            repaint();
+        	refsToCheckersArea.TakeMouseClickEvent(e);        	           
         }
         
         public void mouseReleased(MouseEvent e) 
         {
-        	System.out.println("releas");
-            repaint();
+        	System.out.println("releas");        	      
         }
 
         public void mouseDragged(MouseEvent e) 
         {
-        	System.out.println("drag");
+        	System.out.println("drag");        	
+        }        
+        
+        public void SetRefToCheckersArea(CheckersArea ref)
+        {
+        	refsToCheckersArea = ref;
         }
         
-        private int mouseX = 0;
-        private int mouseY = 0;
+        private CheckersArea refsToCheckersArea;
     }
     
     private Color field1 = Color.BLACK;
@@ -228,6 +261,7 @@ public class CheckersArea extends JPanel
     private Color pawn1 = Color.RED;
     private Color pawn2 = Color.BLUE;
     
+    private MouseHandler mouseHandler = new MouseHandler();    
     private int mouseX = 0;
     private int mouseY = 0;
     private int grabbed = 0;
@@ -235,6 +269,8 @@ public class CheckersArea extends JPanel
     private Board board;
     private Board previousBoard;
     private int displayedBoard;
+    private PossibleMoves possibleMoves = new PossibleMoves();
+    ServerState serverState = new ServerState();
     
     private enum CursorState { Free, Grab, WaitForSerwerStateUpdate, WaitForIA };
     private CursorState cursorState;
