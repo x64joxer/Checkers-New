@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import pl.boards.*;
 import pl.serverstate.*;
+import Trace.Traces;
 
 import javax.swing.JPanel;
 
@@ -223,12 +224,95 @@ public class CheckersArea extends JPanel
 
                         if (possibleMoves.CanIGrab(grabbed, board))
                         {
-                            cursorState = CursorState.Grab;
+                            cursorState = CursorState.Grab;                            
                         };
                     };
                 //}
             }
         }
+    }
+    
+    public void TakeMouseMoveEvent(MouseEvent e)
+    {
+        mouseX = e.getX();
+        mouseY = e.getY();
+
+        if (cursorState == CursorState.Grab) repaint();
+
+    }
+    
+    public void TakeMouseReleaseEvent(MouseEvent e)
+    {    
+        int widthField = getWidth() / 8;
+        int heightField = getHeight() / 8;
+
+        int x = (e.getX() / widthField);
+        int y = (e.getY() / heightField);
+
+        if (cursorState == CursorState.Grab)
+        {                
+            Traces.Debug("if (cursorState == Grab)");
+            previousBoard = board;
+
+            if (possibleMoves.CanIPutHere(grabbed, x, y, board))
+            {
+                int killed = 0;
+                if (possibleMoves.IsKill(grabbed, x, y, board, killed))
+                {
+                    board.RemoveWhitePawn(killed);
+
+                    board.SetBlackPawnPos(grabbed,x,y);
+                    if (possibleMoves.CheckHitTopLeft(x,y,board) | possibleMoves.CheckHitTopRight(x,y,board))
+                    {
+                        Traces.Debug("After kill possibleMoves.CheckHitTopLeft(x,y,board) | possibleMoves.CheckHitTopRight(x,y,board) is true, cursorState = Free");
+                        cursorState = CursorState.Free;
+                    } else
+                    if (board.GetBlackPawnPons(grabbed))
+                    {
+                        if (possibleMoves.CheckHitBottomLeft(x,y,board) | possibleMoves.CheckHitBottomRight(x,y,board))
+                        {
+                            Traces.Debug("cursorState = Free");
+                            cursorState = CursorState.Free;
+                        } //Error here
+                        else
+                        {
+                            if (board.GetNumberOfWhite()>0)
+                            {
+                                Traces.Debug("cursorState = WaitForSerwerStateUpdate");                            
+                                cursorState = CursorState.WaitForSerwerStateUpdate;
+                                SendingJob("");
+                                StartThinking();                            
+                            } else cursorState = CursorState.Free;
+                        };
+                    }
+                    else
+                    {
+                        if (board.GetNumberOfWhite()>0)
+                        {
+                            Traces.Debug("cursorState = WaitForSerwerStateUpdate");                        
+                            cursorState = CursorState.WaitForSerwerStateUpdate;
+                            SendingJob("");
+                            StartThinking();                        
+                        } else cursorState = CursorState.Free;
+                    };
+                } else
+                {
+                    if (board.GetNumberOfWhite()>0)
+                    {
+                        Traces.Debug("cursorState = WaitForSerwerStateUpdate");
+                        board.SetBlackPawnPos(grabbed,x,y);                    
+                        cursorState = CursorState.WaitForSerwerStateUpdate;
+                        SendingJob("");
+                        StartThinking();
+                    } else cursorState = CursorState.Free;
+                }
+            } else
+            {
+                cursorState = CursorState.Free;
+                Traces.Debug("cursorState = Free");
+            };
+        };    
+        repaint();
     }
     
     private class MouseHandler extends MouseAdapter 
@@ -240,12 +324,12 @@ public class CheckersArea extends JPanel
         
         public void mouseReleased(MouseEvent e) 
         {
-        	System.out.println("releas");        	      
+        	refsToCheckersArea.TakeMouseReleaseEvent(e);        	      
         }
 
         public void mouseDragged(MouseEvent e) 
         {
-        	System.out.println("drag");        	
+        	refsToCheckersArea.TakeMouseMoveEvent(e);        
         }        
         
         public void SetRefToCheckersArea(CheckersArea ref)
@@ -254,6 +338,16 @@ public class CheckersArea extends JPanel
         }
         
         private CheckersArea refsToCheckersArea;
+    }
+    
+    private void StartThinking()
+    {
+        //TODO
+    }
+
+    private void SendingJob(final String server)
+    {
+    	//TODO
     }
     
     private Color field1 = Color.BLACK;
