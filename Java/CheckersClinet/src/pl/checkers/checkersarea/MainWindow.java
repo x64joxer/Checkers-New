@@ -2,6 +2,7 @@ package pl.checkers.checkersarea;
 import java.io.IOException;
 import javax.swing.JFrame;
 import Trace.Traces;
+import pl.tcp.*;
 
 public class MainWindow extends JFrame 
 {		
@@ -12,6 +13,8 @@ public class MainWindow extends JFrame
 		add(checkersArea);
 		checkersArea.setVisible(true);
 		checkersArea.setSize(1000, 1000);
+		
+		
 	}
 	
 	

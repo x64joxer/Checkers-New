@@ -1,5 +1,6 @@
 package pl.checkers.checkersarea;
 import java.awt.Color;
+
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
@@ -9,6 +10,7 @@ import java.awt.event.MouseMotionListener;
 import pl.boards.*;
 import pl.serverstate.*;
 import Trace.Traces;
+import pl.tcp.*;
 
 import javax.swing.JPanel;
 
@@ -26,7 +28,7 @@ public class CheckersArea extends JPanel
         "| | | | | | | | |" +
         "|b| |b| |b| |b| |" +
         "| |b| |b| |b| |b|" +
-        "|b| |b| |b| |b| |");
+        "|b| |b| |b| |b| |");               
         
         previousBoard = board;
         cursorState = CursorState.Free;
