@@ -98,12 +98,17 @@ public class ProgramVariables
 	{
 	    return traceFlagForClass_Peers;
 	}
-
+	
 	public static boolean GetTraceFlagForClass_MessageCoder()
 	{
 	    return traceFlagForClass_MessageCoder;
 	}
 
+	public static boolean GetTraceFlagForClass_NotifyClass()
+	{
+	    return traceFlagForClass_NotifyClass;
+	}
+	
 	public static boolean GetTraceFlagForClass_ServerState()
 	{
 	    return traceFlagForClass_ServerState;
@@ -135,6 +140,7 @@ public class ProgramVariables
 	private static boolean traceFlagForClass_ThreadIASimpleBoard = true;
 	private static boolean traceFlagForClass_Peers = true;
 	private static boolean traceFlagForClass_MessageCoder = true;
+	private static boolean traceFlagForClass_NotifyClass = true;
 	private static boolean traceFlagForClass_ServerState = true;
 	private static boolean traceFlagForClass_CheckerArea = true;
 	private static boolean traceFlagForClass_TCPHandler = true;
