@@ -119,9 +119,9 @@ public class ProgramVariables
 	    return traceFlagForClass_CheckerArea;
 	}
 
-	public static boolean GetTraceFlagForClass_TCPHandler()
+	public static boolean GetTraceFlagForClass_TCPClient()
 	{
-	    return traceFlagForClass_TCPHandler;
+	    return traceFlagForClass_TCPClient;
 	}
 
 	public static boolean GetTraceFlagForClass_PossibleMoves()
@@ -143,7 +143,7 @@ public class ProgramVariables
 	private static boolean traceFlagForClass_NotifyClass = true;
 	private static boolean traceFlagForClass_ServerState = true;
 	private static boolean traceFlagForClass_CheckerArea = true;
-	private static boolean traceFlagForClass_TCPHandler = true;
+	private static boolean traceFlagForClass_TCPClient = true;
 	private static boolean traceFlagForClass_PossibleMoves = true;
 
 
