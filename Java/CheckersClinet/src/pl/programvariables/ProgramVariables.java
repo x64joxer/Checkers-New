@@ -128,6 +128,11 @@ public class ProgramVariables
 	{
 	    return traceFlagForClass_PossibleMoves;
 	}
+	
+	public static boolean GetTraceFlagForClass_ServerConnection()
+	{
+	    return traceFlagForClass_ServerConnection;
+	}
 
 	public static final int K4 =  4 * 1024;
 	private static String serverIP = "127.0.0.1";
@@ -145,6 +150,7 @@ public class ProgramVariables
 	private static boolean traceFlagForClass_CheckerArea = true;
 	private static boolean traceFlagForClass_TCPClient = true;
 	private static boolean traceFlagForClass_PossibleMoves = true;
+	private static boolean traceFlagForClass_ServerConnection = true;
 
 
 	private static long numOfAnalysded = 0;
