@@ -81,12 +81,15 @@ public class MessageCoder
 		
 		if (source.length() > 4)
 		{			
-			    String header = String.valueOf((size & 0x000F) + 65) +
-			    		 		String.valueOf(((size & 0x00F0) >> 4) + 65) +
-			    		 		String.valueOf(((size & 0x0F00) >> 8) + 65) +
-			    		 		String.valueOf(((size & 0xF000) >> 12) + 65);
+			String header = String.valueOf((char)((size & 0x000F) + 65)) +
+			  				String.valueOf((char)(((size & 0x00F0) >> 4) + 65)) +
+			   				String.valueOf((char)(((size & 0x0F00) >> 8) + 65)) +
+			   				String.valueOf((char)(((size & 0xF000) >> 12) + 65));
+			
+		    copy = copy.replaceFirst("[a-zA-Z0-9]{4,4}", header);
 			    
-			copy.replaceFirst("^[a-zA-Z0-9]{4,4}", header);
+			    
+			System.out.print(copy);    
 		} else
 		{
 			copy = "AAAA";		   
@@ -100,13 +103,14 @@ public class MessageCoder
 		String copy = new String(source);		
 		
 		if (source.length() > 4)
-		{			
-			    String header = String.valueOf((val & 0x000F) + 65) +
-			    		 		String.valueOf(((val & 0x00F0) >> 4) + 65) +
-			    		 		String.valueOf(((val & 0x0F00) >> 8) + 65) +
-			    		 		String.valueOf(((val & 0xF000) >> 12) + 65);
-			    
-			copy.replaceFirst("^[a-zA-Z0-9]{4,4}", header);
+		{						    
+			
+			String header = String.valueOf((char)((val & 0x000F) + 65)) +
+	  				String.valueOf((char)(((val & 0x00F0) >> 4) + 65)) +
+	   				String.valueOf((char)(((val & 0x0F00) >> 8) + 65)) +
+	   				String.valueOf((char)(((val & 0xF000) >> 12) + 65));
+	
+			copy = copy.replaceFirst("[a-zA-Z0-9]{4,4}", header);			
 		} else
 		{
 			copy = String.valueOf((val & 0x000F) + 65) +
@@ -632,7 +636,11 @@ public class MessageCoder
 			return value;
 		}    
     };
-	
+    
+    private static int nextKey = 0;
+    private static boolean debugMode = true;
+    private static long messageId = 0;
+    
     public static String ACTION = GetNextKey("ACTION");
     public static String OK = GetNextKey("OK");
     public static String NOT_OK = GetNextKey("NOT_OK");
@@ -696,8 +704,5 @@ public class MessageCoder
     public static String BLACK_Y = GetNextKey("BLACK_Y_");
     public static String WHITE_PONS = GetNextKey("WHITE_PONS_");
     public static String BLACK_PONS = GetNextKey("BLACK_PONS_");
-	
-    private static int nextKey = 0;
-    private static boolean debugMode = true;
-    private static long messageId = 0;    
+	    
 }
