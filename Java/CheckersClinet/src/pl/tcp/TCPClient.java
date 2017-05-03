@@ -4,9 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import Trace.Traces;
-
 import pl.notify.NotifyClass;
 import pl.programvariables.ProgramVariables;
 
@@ -14,12 +12,12 @@ public class TCPClient implements Runnable
 {
 	public TCPClient() 
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: public TCPClient()");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient public TCPClient()");
 	}
 
 	public TCPClient(final String ip, final int tcpPort) 
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: public TCPClient(final String ip, final int tcpPort)");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient public TCPClient(final String ip, final int tcpPort)");
 		
 		port = tcpPort;
 		ipAddres = ip;
@@ -27,21 +25,21 @@ public class TCPClient implements Runnable
 	
 	synchronized public void AddNotification(final NotifyClass n)
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: synchronized public void AddNotification(final NotifyClass n)");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient synchronized public void AddNotification(final NotifyClass n)");
 		
 		mynotify.AddToNotifyList(n);
 	}
 	
 	synchronized public void DelNotification(final NotifyClass n)
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: synchronized public void DelNotification(final NotifyClass n)");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient synchronized public void DelNotification(final NotifyClass n)");
 		
 		mynotify.DelFromNotifyList(n);
 	}
 	
 	synchronized public void Close()
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: synchronized public void Close()");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient synchronized public void Close()");
 		
 		try 
 		{
@@ -78,25 +76,28 @@ public class TCPClient implements Runnable
 	
 	public void Connect() 
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: public void Connect()");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient public void Connect()");
 		
 		new Thread(this).start();
 	}	
 	
 	public boolean IsConnected()
 	{				
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: public boolean IsConnected()");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient public boolean IsConnected()");
 		
-		return IntToBoolean(connected.getValue());
+		if (connected == ConnectionState.CONNECTED) return true;
+		
+		return false;
 	}
 	
 	synchronized public void Send(final String message)
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: synchronized public void Send(final String message)");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient synchronized public void Send(final String message)");
 		
 		try 
 		{
-			outToServer.writeBytes(message);
+			if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: Sending message: " + message);
+			outToServer.writeBytes(message);			
 		} catch (IOException e) 
 		{
 			Traces.Debug("ERROR: Write message error! " +  e.getMessage());
@@ -108,7 +109,7 @@ public class TCPClient implements Runnable
 	
 	private void connect()
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: private void connect()");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient private void connect()");
 		
 		//TODO can be removed?
 		BufferedReader inFromUser = new BufferedReader( new InputStreamReader(System.in));
@@ -116,10 +117,10 @@ public class TCPClient implements Runnable
 		try 
 		{			
 			clientSocket = new Socket(ipAddres, port);
-			outToServer = new DataOutputStream(clientSocket.getOutputStream());
+			outToServer = new DataOutputStream(clientSocket.getOutputStream());			
 			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			
-			if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: Socket connected!");
+			if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient Socket connected!");
 			connected = ConnectionState.CONNECTED;
 			mynotify.NotifyAll();
 			
@@ -127,7 +128,7 @@ public class TCPClient implements Runnable
 			
 			while(true)
 			{
-				if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: Waiting for message...");				
+				if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient Waiting for message...");				
 								
 				message = inFromServer.readLine();				
 				
@@ -138,7 +139,7 @@ public class TCPClient implements Runnable
 					break;
 				}
 									
-				if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: Message receivd: " + message);
+				if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient Message receivd: " + message);
 				incomingMessageList.add(message);
 				
 				mynotify.NotifyAll();
@@ -157,7 +158,7 @@ public class TCPClient implements Runnable
 	
 	public void run() 
 	{
-		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: if (ProgramVariables.GetTraceFlagForClass_TCPClient())");
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient public void run()");
 		
 		connect();
 	}
@@ -168,7 +169,7 @@ public class TCPClient implements Runnable
 	private Socket clientSocket = new Socket();
 	private DataOutputStream outToServer;
 	private BufferedReader inFromServer;
-	private NotifyClass mynotify = new NotifyClass();
+	private volatile NotifyClass mynotify = new NotifyClass();
 	private List<String> incomingMessageList = new ArrayList<String>();
 	
 	public enum  ConnectionState 
