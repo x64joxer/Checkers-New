@@ -18,6 +18,8 @@ class MessageCoder
         enum ROLE_ENUM { CLIENT, WORKER };
         enum class NOT_OK_REASON { BUSY };
 
+        static void AddEndlLine(char *dest);
+
         static void KeyValuePairToChar(const std::string & key, const int value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const unsigned int value, char *dest);
         static void KeyValuePairToChar(const std::string & key, const short value, char *dest);
@@ -65,6 +67,7 @@ class MessageCoder
 
         static std::string CreateMessageId();
 
+        static std::string ENDLINE;
         //Keys
         static std::string ACTION;
         static std::string OK;

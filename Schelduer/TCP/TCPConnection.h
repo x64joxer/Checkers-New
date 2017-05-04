@@ -41,6 +41,8 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection>,
      void Stop();
      SharedPtrList<Message> *messageQueue;
      boost::array<char, 8192> buffer_;
+     char *finalBuffer;
+     int bytesInFinalBuffer;
      TCPConnection_ptr meWsk;     
      boost::asio::ip::tcp::socket socket_;
      boost::asio::io_service& io_service_;

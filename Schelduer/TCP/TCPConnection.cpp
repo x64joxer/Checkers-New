@@ -8,6 +8,9 @@ TCPConnection::TCPConnection(boost::asio::io_service& io_service)
 {
     TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: TCPConnection::TCPConnection(boost::asio::io_service& io_service) : socket_(io_service)";
 
+    finalBuffer = new char[MessageCoder::MaxMessageConnectionCloseSize()];
+    finalBuffer[0] = 0;
+    bytesInFinalBuffer = 0;
 }
 
 void TCPConnection::Start()
@@ -39,10 +42,23 @@ void TCPConnection::HandleRead(const boost::system::error_code& e,
   {
     TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: New message from " << socket_.remote_endpoint().address().to_string() << ":" << socket_.remote_endpoint().port();
 
-    Message tempMessage;
-    tempMessage.CopyData(meWsk, buffer_.data());
-    TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Push back new message: " << buffer_.data();
-    messageQueue->PushBack(tempMessage);
+    strcat(finalBuffer, buffer_.data());
+    bytesInFinalBuffer += bytes_transferred;
+    finalBuffer[bytesInFinalBuffer] = 0;
+
+    if (strchr(finalBuffer, '\n') != NULL)
+    {
+        Message tempMessage;
+        tempMessage.CopyData(meWsk, finalBuffer);
+        TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: Push back new message: " << finalBuffer;
+        messageQueue->PushBack(tempMessage);
+
+        finalBuffer[0] = 0;
+        bytesInFinalBuffer = 0;
+    } else
+    {
+        TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: final buffer contains: " << finalBuffer;
+    }
 
 
     socket_.async_read_some(boost::asio::buffer(buffer_),
@@ -123,4 +139,6 @@ boost::asio::ip::tcp::socket& TCPConnection::Socket()
 TCPConnection::~TCPConnection()
 {
     TRACE_FLAG_FOR_CLASS_TCPConnection Traces() << "\n" << "LOG: TCPConnection::~TCPConnection()";
+
+    delete [] finalBuffer;
 }

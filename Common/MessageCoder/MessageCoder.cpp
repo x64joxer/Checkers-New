@@ -5,6 +5,11 @@ MessageCoder::MessageCoder()
 
 }
 
+void MessageCoder::AddEndlLine(char *dest)
+{
+    dest[strlen(dest)] = ENDLINE[0];
+}
+
 void MessageCoder::KeyValuePairToChar(const std::string & key, const std::string & value, char *dest)
 {
         int len = strlen(dest);       
@@ -330,7 +335,8 @@ void MessageCoder::CreateConnectedMessage(char *dest)
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, CONNECTED, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
-    InsertLenMessageHeader(dest);
+    AddEndlLine(dest);
+    InsertLenMessageHeader(dest);    
 }
 
 void MessageCoder::CreateCloseConnectionMessage(char *dest)
@@ -338,7 +344,8 @@ void MessageCoder::CreateCloseConnectionMessage(char *dest)
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, CLOSE_CNNECTION, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);    
-    InsertLenMessageHeader(dest);
+    AddEndlLine(dest);
+    InsertLenMessageHeader(dest);    
 }
 
 void MessageCoder::CreateTimeToSendResultToClientsMessage(char *dest)
@@ -346,7 +353,8 @@ void MessageCoder::CreateTimeToSendResultToClientsMessage(char *dest)
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, TIME_TO_SEND_RESULT_TO_CLIENTS, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
-    InsertLenMessageHeader(dest);
+    AddEndlLine(dest);
+    InsertLenMessageHeader(dest);    
 }
 
 void MessageCoder::CreateTimeoutMessage(char *dest)
@@ -354,7 +362,8 @@ void MessageCoder::CreateTimeoutMessage(char *dest)
     InsertHeader(dest);
     KeyValuePairToChar(ACTION, TIMEOUT, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
-    InsertLenMessageHeader(dest);
+    AddEndlLine(dest);
+    InsertLenMessageHeader(dest);    
 }
 
 void MessageCoder::CreateCanNotMoveMessage(char *dest, const std::string & jobId)
@@ -363,7 +372,8 @@ void MessageCoder::CreateCanNotMoveMessage(char *dest, const std::string & jobId
     KeyValuePairToChar(ACTION, CAN_NOT_MOVE, dest);
     KeyValuePairToChar(JOB_ID, jobId, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
-    InsertLenMessageHeader(dest);
+    AddEndlLine(dest);
+    InsertLenMessageHeader(dest);    
 }
 
 void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned long long respTime, const unsigned int numOfResultToReturnFast, const Board & board, const std::string & id, const std::string & jobId, char *dest)
@@ -377,7 +387,8 @@ void MessageCoder::CreateStartAnalyseWorkAndReturnNResultFast(const unsigned lon
     KeyValuePairToChar(NUM_OF_BOARD_TO_RETURN_FAST, numOfResultToReturnFast, dest);
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
-    InsertLenMessageHeader(dest);
+    AddEndlLine(dest);
+    InsertLenMessageHeader(dest);    
 }
 
 void MessageCoder::CreateStartAnalyseWork(const unsigned long long respTime , const Board & board, const std::string & id, const std::string & jobId, const bool isFirstWorker, char *dest)
@@ -390,6 +401,7 @@ void MessageCoder::CreateStartAnalyseWork(const unsigned long long respTime , co
     KeyValuePairToChar(IS_FIRST_WORKER, isFirstWorker, dest);
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -399,6 +411,7 @@ void MessageCoder::CreateResetServerStateMessage(const Board & board, const std:
     KeyValuePairToChar(ACTION, RESET_SERVER_STATE, dest);
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -412,6 +425,7 @@ void MessageCoder::CreateStartMessage(const unsigned long long respTime, const u
     KeyValuePairToChar(NUM_OF_BOARD, numberOfBoard, dest);
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -424,6 +438,7 @@ void MessageCoder::CreateBestResultMessage(const Board & board, const std::strin
     KeyValuePairToChar(JOB_ID, jobId, dest);    
     MessageCoder::BoardToChar(board, dest, 1);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -433,6 +448,7 @@ void MessageCoder::CreateGetServerStateMessage(const std::string & id, char *des
     KeyValuePairToChar(ACTION, GET_SERVER_STATE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -444,6 +460,7 @@ void MessageCoder::CreateStateMessage(const Peers::STATE stat, const unsigned in
     KeyValuePairToChar(STATE, stat, dest);
     KeyValuePairToChar(NUM_OF_THREAD, numOfThread, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);        
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -463,6 +480,7 @@ void MessageCoder::CreateServerStateMessage(const ServerState & serverState, con
     BoardToChar(serverState.GetBoard(), dest + strlen(dest) , 1);
 
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -473,6 +491,7 @@ void MessageCoder::CreateRoleMessage(const ROLE_ENUM role, const std::string & i
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(ROLE, role, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -482,6 +501,7 @@ void MessageCoder::CreateStopAnalyse(const std::string & id, char *dest)
     KeyValuePairToChar(ACTION, STOP_ANALYSE, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -491,6 +511,7 @@ void MessageCoder::CreateOkMessage(const std::string  & id, char *dest)
     KeyValuePairToChar(ACTION, OK, dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -501,6 +522,7 @@ void MessageCoder::CreateNotOkMessage(const std::string & id, NOT_OK_REASON reas
     KeyValuePairToChar(REASON, int(reason), dest);
     KeyValuePairToChar(MESSAGE_ID, id, dest);
     KeyValuePairToChar(MESSAGE_END, 0, dest);
+    AddEndlLine(dest);
     InsertLenMessageHeader(dest);
 }
 
@@ -522,12 +544,14 @@ std::string MessageCoder::CreateMessageId()
     return std::to_string(++messageId);    
 }
 
+std::string MessageCoder::ENDLINE = "\n";
+
 std::string MessageCoder::ACTION = GetNextKey("ACTION");
 std::string MessageCoder::OK = GetNextKey("OK");
 std::string MessageCoder::NOT_OK = GetNextKey("NOT_OK");
 std::string MessageCoder::SERVER_STATE = GetNextKey("SERVER_STATE");
 std::string MessageCoder::MESSAGE_ID = GetNextKey("MESSAGE_ID");
-std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END\n");
+std::string MessageCoder::MESSAGE_END = GetNextKey("MESSAGE_END");
 std::string MessageCoder::CLOSE_CNNECTION = GetNextKey("CLOSE_CNNECTION");
 std::string MessageCoder::CONNECTED = GetNextKey("CONNECTED");
 std::string MessageCoder::START_ANALYSE = GetNextKey("START_ANALYSE");
