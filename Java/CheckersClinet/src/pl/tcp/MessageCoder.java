@@ -646,7 +646,7 @@ public class MessageCoder
     public static String NOT_OK = GetNextKey("NOT_OK");
     public static String SERVER_STATE = GetNextKey("SERVER_STATE");
     public static String MESSAGE_ID = GetNextKey("MESSAGE_ID");
-    public static String MESSAGE_END = GetNextKey("MESSAGE_END\n");
+    public static String MESSAGE_END = GetNextKey("MESSAGE_END");
     public static String CLOSE_CNNECTION = GetNextKey("CLOSE_CNNECTION");
     public static String CONNECTED = GetNextKey("CONNECTED");
     public static String START_ANALYSE = GetNextKey("START_ANALYSE");

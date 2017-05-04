@@ -95,10 +95,10 @@ public class ServerConnection implements Runnable
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private void SendRegisterMessage()");
 		
 	    String prevousMessageid = MessageCoder.CreateMessageId();
-	    String message = new String();
-	    message = MessageCoder.CreateRoleMessage(MessageCoder.ROLE_ENUM.CLIENT, prevousMessageid, message);
-	    
-	    serverClient.Send(message);
+	    String message = "";
+	    message = MessageCoder.CreateRoleMessage(MessageCoder.ROLE_ENUM.CLIENT, prevousMessageid, message);	    
+	    serverClient.Send(message + "\n");	    
+	    notifyVariable.Wait();
 	    continueLoop = false;
 	}
 	
