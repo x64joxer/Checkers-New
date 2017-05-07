@@ -15,14 +15,34 @@ public class NotifyClass
 		
 		try 
 		{
-			wait();
+			wait();			
 		} 
 		catch (InterruptedException e) 
 		{
-			e.printStackTrace();
+			
 		}
 	}
 	
+	public synchronized void Wait(long miliseconds) throws Exception, InterruptedException
+	{
+		if (ProgramVariables.GetTraceFlagForClass_NotifyClass()) Traces.Debug("public synchronized void Wait()"); 
+		
+		try 
+		{			
+			long start = ProgramVariables.GetMilisecondsSinceEpoch();
+			wait(miliseconds);
+			long stop = ProgramVariables.GetMilisecondsSinceEpoch()- start;
+
+			if (stop >= miliseconds)
+			{				
+				throw new Exception("Timeout!");
+			}
+		} 
+		catch (Exception e) 
+		{
+			throw e;
+		}
+	}
 	public synchronized void AddToNotifyList(NotifyClass val)
 	{
 		if (ProgramVariables.GetTraceFlagForClass_NotifyClass()) Traces.Debug("public synchronized void AddToNotifyList(NotifyClass val)");

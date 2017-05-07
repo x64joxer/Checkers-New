@@ -56,7 +56,10 @@ public class ServerConnection implements Runnable
 					
 				case CONNECTED:
 					SendRegisterMessage();
-					
+				
+				case REGISTERSEND_WAIT_FOR_OK:
+					SendRegisterMessageWaitForOkMessage();	
+
 				break;
 				
 				default:
@@ -86,7 +89,7 @@ public class ServerConnection implements Runnable
 		{
 			Traces.Debug("ERR: ServerConnection: Can not connect to server!");
 			connectionState = ServerConnectionState.CONCTERROR;
-			continueLoop = false;
+			continueLoop = false;			
 		}	
 	}
 	
@@ -97,9 +100,36 @@ public class ServerConnection implements Runnable
 	    String prevousMessageid = MessageCoder.CreateMessageId();
 	    String message = "";
 	    message = MessageCoder.CreateRoleMessage(MessageCoder.ROLE_ENUM.CLIENT, prevousMessageid, message);	    
-	    serverClient.Send(message + "\n");	    
-	    notifyVariable.Wait();
-	    continueLoop = false;
+	    serverClient.Send(message + "\n");
+	    connectionState = ServerConnectionState.REGISTERSEND_WAIT_FOR_OK;
+	    
+	}
+	
+	private void SendRegisterMessageWaitForOkMessage()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private void SendRegisterMessageWaitForOkMessage()");
+		
+		try 
+		{
+			notifyVariable.Wait(ProgramVariables.GetMaxTimeWaitToServer());
+			
+			
+			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Message OK recived.");
+			
+			connectionState = ServerConnectionState.STATESEND;
+			
+		}
+		catch(Exception e)
+		{
+			if (e.getMessage() == "Timeout!")
+			{
+				connectionState = ServerConnectionState.CONCTERROR;			
+				serverClient.Close();
+				continueLoop = false;
+				
+				Traces.Debug("ERR: ServerConnection: Tiemout! Messge OK not received after sending register message!");
+			}
+		}		
 	}
 	
 	private TCPClient serverClient = new TCPClient();
@@ -110,7 +140,7 @@ public class ServerConnection implements Runnable
 	boolean continueLoop = true;
 	
 	public enum  ServerConnectionState 
-	{ NOTCONNECTED(0), CONNECTED(1), WAITFORSTATE(2), STATEUPDATED(3), CONCTERROR(255); 
+	{ NOTCONNECTED(0), CONNECTED(1), REGISTERSEND_WAIT_FOR_OK(2), STATESEND(3), CONCTERROR(255); 
 	
 		private final int value;
 		

@@ -32,6 +32,11 @@ public class ProgramVariables
 	    return System.currentTimeMillis() / 1000;
 	}
 
+	public static long GetMilisecondsSinceEpoch()
+	{	    
+	    return System.currentTimeMillis();
+	}
+	
 	public static long GetMaxTimeWaitToWorkers()
 	{
 	    return 5;

@@ -14,6 +14,8 @@ public class MainWindow extends JFrame
 		checkersArea.setVisible(true);
 		checkersArea.setSize(1000, 1000);
 		
+		ServerConnection connection = new ServerConnection("localhost", 6000);
+		connection.Connect();
 		
 	}
 	

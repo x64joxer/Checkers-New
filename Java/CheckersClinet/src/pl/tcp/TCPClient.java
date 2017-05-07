@@ -148,11 +148,14 @@ public class TCPClient implements Runnable
 		} 
 		catch (IOException e) 
 		{
-			connected = ConnectionState.CONERROR;
-			Traces.Debug("ERR: Read message error! " + e.getMessage()); 
-			mynotify.NotifyAll();
-						
-			e.printStackTrace();
+			if (connected != ConnectionState.DISCONNECTED)
+			{
+				connected = ConnectionState.CONERROR;
+				Traces.Debug("ERR: Read message error! " + e.getMessage()); 
+				mynotify.NotifyAll();
+							
+				e.printStackTrace();
+			}
 		}		
 	}
 	
