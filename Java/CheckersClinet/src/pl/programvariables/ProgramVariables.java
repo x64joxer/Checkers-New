@@ -47,7 +47,7 @@ public class ProgramVariables
 	    return 5000;
 	}
 
-	String GetServerIP()
+	public static String GetServerIP()
 	{
 	    return serverIP;
 	}

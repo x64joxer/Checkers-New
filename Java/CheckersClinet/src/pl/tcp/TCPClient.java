@@ -103,7 +103,7 @@ public class TCPClient implements Runnable
 			Traces.Debug("ERROR: Write message error! " +  e.getMessage());
 			
 			mynotify.NotifyAll();
-			e.printStackTrace();
+			
 		}		
 	}
 	
@@ -147,15 +147,10 @@ public class TCPClient implements Runnable
 			
 		} 
 		catch (IOException e) 
-		{
-			if (connected != ConnectionState.DISCONNECTED)
-			{
-				connected = ConnectionState.CONERROR;
-				Traces.Debug("ERR: Read message error! " + e.getMessage()); 
-				mynotify.NotifyAll();
-							
-				e.printStackTrace();
-			}
+		{			
+			connected = ConnectionState.CONERROR;
+			Traces.Debug("ERR: Read message error! " + e.getMessage()); 
+			mynotify.NotifyAll();							
 		}		
 	}
 	

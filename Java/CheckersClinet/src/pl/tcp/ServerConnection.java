@@ -24,10 +24,16 @@ public class ServerConnection implements Runnable
 		ipAddres = ip;	
 	}
 	
+	public void SetMaxRetries(int ret)
+	{
+		maxRetries = ret;
+	}
+	
 	public void Connect()
 	{
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: public void Connect()");
 		
+		connectionState = ServerConnectionState.CONNECTING;
 		connect();
 	}
 
@@ -48,19 +54,20 @@ public class ServerConnection implements Runnable
 		continueLoop = true;
 		
 		while(continueLoop)
-		{
+		{		
 			switch (connectionState)
 			{
-				case NOTCONNECTED:
+				case CONNECTING:
 					ConnectToHost();
+					break;
 					
 				case CONNECTED:
 					SendRegisterMessage();
+					break;
 				
 				case REGISTERSEND_WAIT_FOR_OK:
 					SendRegisterMessageWaitForOkMessage();	
-
-				break;
+					break;
 				
 				default:
 					Traces.Debug("ERR: ServerConnection: Wrong connection state!");
@@ -88,8 +95,17 @@ public class ServerConnection implements Runnable
 		} else
 		{
 			Traces.Debug("ERR: ServerConnection: Can not connect to server!");
-			connectionState = ServerConnectionState.CONCTERROR;
-			continueLoop = false;			
+			
+			if (Reconnect() == true)
+			{
+				try {
+					notifyVariable.Wait(recconectionTime);
+				} catch (Exception e) {
+					 
+				}
+			}
+			
+			
 		}	
 	}
 	
@@ -122,25 +138,54 @@ public class ServerConnection implements Runnable
 		catch(Exception e)
 		{
 			if (e.getMessage() == "Timeout!")
-			{
-				connectionState = ServerConnectionState.CONCTERROR;			
-				serverClient.Close();
-				continueLoop = false;
-				
+			{									
 				Traces.Debug("ERR: ServerConnection: Tiemout! Messge OK not received after sending register message!");
+				
+				Reconnect();								
+				
 			}
 		}		
 	}
 	
+	private boolean Reconnect()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private boolean Reconnect()");
+		
+		if (maxRetries != 0)
+		{
+			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Reconnecting...");
+			
+			connectionState = ServerConnectionState.CONNECTING;
+			if (maxRetries > 0) maxRetries--;			
+			serverClient.Close();
+			
+			return true;
+		} else
+		{
+			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Stop connecting!");
+			
+			connectionState = ServerConnectionState.CONCTERROR;
+			continueLoop = false;
+			return false;
+		}
+	}
+	
 	private TCPClient serverClient = new TCPClient();
 	private int port = 0;
+	private int maxRetries = -1; //-1 - unlimited
+	private int recconectionTime = 5000; 
 	private String ipAddres = "";
-	private ServerConnectionState connectionState = ServerConnectionState.NOTCONNECTED;
+	private volatile ServerConnectionState connectionState = ServerConnectionState.IDLE;
 	private volatile NotifyClass notifyVariable = new NotifyClass();	
-	boolean continueLoop = true;
+	boolean continueLoop = true;	
 	
 	public enum  ServerConnectionState 
-	{ NOTCONNECTED(0), CONNECTED(1), REGISTERSEND_WAIT_FOR_OK(2), STATESEND(3), CONCTERROR(255); 
+	{ IDLE(0), 
+	  CONNECTING(1),
+	  CONNECTED(2),
+	  REGISTERSEND_WAIT_FOR_OK(3),
+	  STATESEND(4),
+	  CONCTERROR(255); 
 	
 		private final int value;
 		
