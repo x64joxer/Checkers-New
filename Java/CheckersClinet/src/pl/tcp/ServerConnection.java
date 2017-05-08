@@ -4,6 +4,7 @@ import pl.tcp.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import Trace.Traces;
 import pl.notify.NotifyClass;
@@ -99,9 +100,9 @@ public class ServerConnection implements Runnable
 			if (Reconnect() == true)
 			{
 				try {
-					notifyVariable.Wait(recconectionTime);
-				} catch (Exception e) {
-					 
+					Thread.sleep(recconectionTime);
+				} catch (InterruptedException e) {
+
 				}
 			}
 			
@@ -113,7 +114,7 @@ public class ServerConnection implements Runnable
 	{
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private void SendRegisterMessage()");
 		
-	    String prevousMessageid = MessageCoder.CreateMessageId();
+	    prevousMessageid = MessageCoder.CreateMessageId();
 	    String message = "";
 	    message = MessageCoder.CreateRoleMessage(MessageCoder.ROLE_ENUM.CLIENT, prevousMessageid, message);	    
 	    serverClient.Send(message + "\n");
@@ -129,10 +130,47 @@ public class ServerConnection implements Runnable
 		{
 			notifyVariable.Wait(ProgramVariables.GetMaxTimeWaitToServer());
 			
+			String message = serverClient.GetMessage();
 			
-			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Message OK recived.");
 			
-			connectionState = ServerConnectionState.STATESEND;
+			HashMap<String, String> receivedMessage = new HashMap<String, String>();
+			
+			MessageCoder.MessageToMap(message, receivedMessage);
+						
+			if (receivedMessage.get(MessageCoder.ACTION).equals(MessageCoder.OK) == true)
+			{
+				if (prevousMessageid.equals(receivedMessage.get(MessageCoder.MESSAGE_ID)) == true)
+				{
+					if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Message OK recived.");
+					
+					connectionState = ServerConnectionState.STATESEND;
+				} else
+				{
+					Traces.Debug("ERR: ServerConnection: Wrong message ID!");
+					
+					if (Reconnect() == true)
+					{
+						try {
+							Thread.sleep(recconectionTime);
+						} catch (InterruptedException e) {
+
+						}					
+					}						
+				}
+				
+			} else
+			{
+				Traces.Debug("ERR: ServerConnection: Wrong message received! Expected OK message! Received message: " + message);
+				
+				if (Reconnect() == true)
+				{
+					try {
+						Thread.sleep(recconectionTime);
+					} catch (InterruptedException e) {
+
+					}					
+				}												
+			}			
 			
 		}
 		catch(Exception e)
@@ -173,7 +211,8 @@ public class ServerConnection implements Runnable
 	private TCPClient serverClient = new TCPClient();
 	private int port = 0;
 	private int maxRetries = -1; //-1 - unlimited
-	private int recconectionTime = 5000; 
+	private int recconectionTime = 5000;
+	private String prevousMessageid = "";
 	private String ipAddres = "";
 	private volatile ServerConnectionState connectionState = ServerConnectionState.IDLE;
 	private volatile NotifyClass notifyVariable = new NotifyClass();	

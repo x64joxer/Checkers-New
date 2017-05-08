@@ -150,27 +150,30 @@ public class MessageCoder
 
 	    while (i < source.length())
 	    {
-	        if (!key)
-	        {
-	            if (source.substring(i, i+1) == "<") begin = i;
-	            if (source.substring(i, i+1) == ">")
+	        if (key == false)
+	        {	        	
+	            if (source.substring(i, i+1).equals("<") == true) 
+	            {	            	
+	            	begin = i;
+	            }
+	            if (source.substring(i, i+1).equals(">") == true)
 	            {
 	                end = i;
 	                key = true;
 	            };
 	        } else
 	        {
-	            if (source.substring(i, i+1) == "<") begin_val = i;
-	            if (source.substring(i, i+1) == ">")
+	            if (source.substring(i, i+1).equals("<") == true) begin_val = i;
+	            if (source.substring(i, i+1).equals(">") == true)
 	            {                
 	                end_val = i;
 	                key = false;
 	                keyString = source.substring(begin + 1, end);                	                
-	                dest.put(keyString, source.substring(begin_val + 1, end_val));
+	                dest.put(keyString, source.substring(begin_val + 1, end_val));	                
 	            };
 	        }
 
-	        if (keyString == MESSAGE_END) break;
+	        if (keyString.equals(MESSAGE_END) == true) break;
 
 	        i++;
 	    };
