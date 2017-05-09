@@ -587,7 +587,7 @@ public class MessageCoder
 		return dest;
 	}
 
-	public static void CreateOkMessage(final String  id, String dest)
+	public static String CreateOkMessage(final String  id, String dest)
 	{
 	    InsertHeader(dest);
 	    KeyValuePairToString(ACTION, OK, dest);
@@ -595,6 +595,8 @@ public class MessageCoder
 	    KeyValuePairToString(MESSAGE_END, 0, dest);
 	    dest = AddEndlLine(dest);	    
 	    InsertLenMessageHeader(dest);
+	    
+	    return dest;
 	}
 
 	public static String CreateNotOkMessage(final String id, NOT_OK_REASON reason, String dest)
