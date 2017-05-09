@@ -16,6 +16,12 @@ public class MessageCoder
 
 	}
 	
+
+	public static String AddEndlLine(String dest)
+	{		
+	    return dest + ENDL;
+	}
+	
 	public static boolean IntToBoolean(final int val)
 	{
 		if (val == 0) return false;
@@ -381,6 +387,7 @@ public class MessageCoder
 	    dest = InsertHeader(dest);
 	    dest = KeyValuePairToString(ACTION, CONNECTED, dest);
 	    dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 	    dest = InsertLenMessageHeader(dest);
 	    
 	    return dest;
@@ -390,9 +397,10 @@ public class MessageCoder
 	{
 		dest = InsertHeader(dest);
 		dest = KeyValuePairToString(ACTION, CLOSE_CNNECTION, dest);
-		dest = KeyValuePairToString(MESSAGE_END, 0, dest);    
+		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -401,8 +409,9 @@ public class MessageCoder
 		dest = InsertHeader(dest);
 		dest = KeyValuePairToString(ACTION, TIME_TO_SEND_RESULT_TO_CLIENTS, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -411,8 +420,9 @@ public class MessageCoder
 		dest = InsertHeader(dest);
 		dest = KeyValuePairToString(ACTION, TIMEOUT, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -422,8 +432,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(ACTION, CAN_NOT_MOVE, dest);
 		dest = KeyValuePairToString(JOB_ID, jobId, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -438,8 +449,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(NUM_OF_BOARD_TO_RETURN_FAST, numOfResultToReturnFast, dest);
 		dest = BoardToString(board, 1, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -453,8 +465,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(IS_FIRST_WORKER, isFirstWorker, dest);
 		dest = BoardToString(board, 1, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -464,8 +477,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(ACTION, RESET_SERVER_STATE, dest);
 		dest = BoardToString(board, 1, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
-		dest = InsertLenMessageHeader(dest);
-		
+	    dest = AddEndlLine(dest);
+		dest = InsertLenMessageHeader(dest);		
+	    
 		return dest;
 	}
 
@@ -479,8 +493,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(NUM_OF_BOARD, numberOfBoard, dest);
 		dest = BoardToString(board, 1, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -493,8 +508,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(JOB_ID, jobId, dest);    
 		dest = BoardToString(board, 1, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -504,8 +520,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(ACTION, GET_SERVER_STATE, dest);
 		dest = KeyValuePairToString(MESSAGE_ID, id, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -516,9 +533,10 @@ public class MessageCoder
 		dest = KeyValuePairToString(MESSAGE_ID, id, dest);
 		dest = KeyValuePairToString(STATE, stat.getValue(), dest);
 		dest = KeyValuePairToString(NUM_OF_THREAD, numOfThread, dest);
-		dest = KeyValuePairToString(MESSAGE_END, 0, dest);        
+		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);
 		dest = InsertLenMessageHeader(dest);
-		
+	    
 		return dest;
 	}
 
@@ -538,8 +556,9 @@ public class MessageCoder
 		dest = BoardToString(serverState.GetBoard(), 1, dest);
 
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
-		dest = InsertLenMessageHeader(dest);
-		
+		dest = AddEndlLine(dest);
+		dest = InsertLenMessageHeader(dest);	    
+	    
 		return dest;
 	}
 
@@ -550,8 +569,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(MESSAGE_ID, id, dest);
 		dest = KeyValuePairToString(ROLE, role.getValue(), dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
-		dest = InsertLenMessageHeader(dest);
-		
+		dest = AddEndlLine(dest);
+		dest = InsertLenMessageHeader(dest);	    
+	    
 		return dest;
 	}
 
@@ -561,8 +581,9 @@ public class MessageCoder
 		dest = KeyValuePairToString(ACTION, STOP_ANALYSE, dest);
 		dest = KeyValuePairToString(MESSAGE_ID, id, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
-		dest = InsertLenMessageHeader(dest);
-		
+		dest = AddEndlLine(dest);
+		dest = InsertLenMessageHeader(dest);	    
+	    
 		return dest;
 	}
 
@@ -572,6 +593,7 @@ public class MessageCoder
 	    KeyValuePairToString(ACTION, OK, dest);
 	    KeyValuePairToString(MESSAGE_ID, id, dest);
 	    KeyValuePairToString(MESSAGE_END, 0, dest);
+	    dest = AddEndlLine(dest);	    
 	    InsertLenMessageHeader(dest);
 	}
 
@@ -582,6 +604,7 @@ public class MessageCoder
 		dest = KeyValuePairToString(REASON, reason.getValue(), dest);
 		dest = KeyValuePairToString(MESSAGE_ID, id, dest);
 		dest = KeyValuePairToString(MESSAGE_END, 0, dest);
+		dest = AddEndlLine(dest);	
 		dest = InsertLenMessageHeader(dest);
 		
 		return dest;
@@ -644,6 +667,7 @@ public class MessageCoder
     private static boolean debugMode = true;
     private static long messageId = 0;
     
+    public static String ENDL = GetNextKey("\n");
     public static String ACTION = GetNextKey("ACTION");
     public static String OK = GetNextKey("OK");
     public static String NOT_OK = GetNextKey("NOT_OK");

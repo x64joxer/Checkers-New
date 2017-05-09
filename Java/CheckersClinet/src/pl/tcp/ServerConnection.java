@@ -117,7 +117,7 @@ public class ServerConnection implements Runnable
 	    prevousMessageid = MessageCoder.CreateMessageId();
 	    String message = "";
 	    message = MessageCoder.CreateRoleMessage(MessageCoder.ROLE_ENUM.CLIENT, prevousMessageid, message);	    
-	    serverClient.Send(message + "\n");
+	    serverClient.Send(message);
 	    connectionState = ServerConnectionState.REGISTERSEND_WAIT_FOR_OK;
 	    
 	}
