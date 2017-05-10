@@ -119,6 +119,11 @@ public class ProgramVariables
 	    return traceFlagForClass_ServerState;
 	}
 
+	public static boolean GetTraceFlagForClass_Synchronizer()
+	{
+	    return traceFlagForClass_Synchronizer;
+	}
+	
 	public static boolean GetTraceFlagForClass_CheckerArea()
 	{
 	    return traceFlagForClass_CheckerArea;
@@ -152,6 +157,7 @@ public class ProgramVariables
 	private static boolean traceFlagForClass_MessageCoder = true;
 	private static boolean traceFlagForClass_NotifyClass = true;
 	private static boolean traceFlagForClass_ServerState = true;
+	private static boolean traceFlagForClass_Synchronizer = true;
 	private static boolean traceFlagForClass_CheckerArea = true;
 	private static boolean traceFlagForClass_TCPClient = true;
 	private static boolean traceFlagForClass_PossibleMoves = true;

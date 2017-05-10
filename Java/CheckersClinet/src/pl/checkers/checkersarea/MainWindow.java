@@ -15,10 +15,14 @@ public class MainWindow extends JFrame
 		checkersArea.setSize(1000, 1000);
 		
 		ServerConnection connection = new ServerConnection("localhost", 6000);
+		synchronizer.SetServerConnection(connection);
+		synchronizer.Start();
+		
 		connection.Connect();
 		
 	}
 	
 	
-	private CheckersArea checkersArea = new CheckersArea();	
+	private CheckersArea checkersArea = new CheckersArea();
+	private Synchronizer synchronizer = new Synchronizer();
 }
