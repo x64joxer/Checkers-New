@@ -27,9 +27,16 @@ public class ServerConnection implements Runnable
 		ipAddres = ip;	
 	}
 	
-	public void SetMaxRetries(int ret)
+	public void SetMaxRetries(final int ret)
 	{
 		maxRetries = ret;
+	}
+	
+	public void AddToStateChangeNotification(final NotifyClass notify)
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: public void AddToStateChangeNotification(final NotifyClass notify)");
+		
+		notifyStateChanged.AddToNotifyList(notify);
 	}
 	
 	public void Connect()
@@ -37,6 +44,7 @@ public class ServerConnection implements Runnable
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: public void Connect()");
 		
 		connectionState = ServerConnectionState.CONNECTING;
+		notifyStateChanged.NotifyAll();
 		connect();
 	}
 
@@ -106,6 +114,7 @@ public class ServerConnection implements Runnable
 		{
 			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Connected to server!");
 			connectionState = ServerConnectionState.CONNECTED;
+			notifyStateChanged.NotifyAll();
 			
 		} else
 		{
@@ -133,6 +142,7 @@ public class ServerConnection implements Runnable
 	    message = MessageCoder.CreateRoleMessage(MessageCoder.ROLE_ENUM.CLIENT, prevousMessageid, message);	    
 	    serverClient.Send(message);
 	    connectionState = ServerConnectionState.REGISTERSEND_WAIT_FOR_OK;
+	    notifyStateChanged.NotifyAll();
 	    
 	}
 	
@@ -158,6 +168,7 @@ public class ServerConnection implements Runnable
 					if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Message OK recived.");
 					
 					connectionState = ServerConnectionState.GETSTATESEND;
+					notifyStateChanged.NotifyAll();
 				} else
 				{
 					Traces.Debug("ERR: ServerConnection: Wrong message ID!");
@@ -208,6 +219,7 @@ public class ServerConnection implements Runnable
 	    message = MessageCoder.CreateGetServerStateMessage(prevousMessageid, message);
 	    serverClient.Send(message);
 	    connectionState = ServerConnectionState.GETSTATESEND_WAIT_FOR_STATE;
+	    notifyStateChanged.NotifyAll();
 	}
 
 	private void WaitForStateFromServer()
@@ -260,7 +272,8 @@ public class ServerConnection implements Runnable
 						currentServerState.SetBlackWins();
 					}
 					
-					connectionState = ServerConnectionState.STATEUPDATED;					
+					connectionState = ServerConnectionState.STATEUPDATED;
+					notifyStateChanged.NotifyAll();
 									
 				} else
 				{
@@ -319,6 +332,7 @@ public class ServerConnection implements Runnable
 			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Reconnecting...");
 			
 			connectionState = ServerConnectionState.CONNECTING;
+			notifyStateChanged.NotifyAll();
 			if (maxRetries > 0) maxRetries--;			
 			serverClient.Close();
 			
@@ -328,6 +342,7 @@ public class ServerConnection implements Runnable
 			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Stop connecting!");
 			
 			connectionState = ServerConnectionState.CONCTERROR;
+			notifyStateChanged.NotifyAll();
 			continueLoop = false;
 			return false;
 		}
@@ -340,7 +355,8 @@ public class ServerConnection implements Runnable
 	private String prevousMessageid = "";
 	private String ipAddres = "";
 	private volatile ServerConnectionState connectionState = ServerConnectionState.IDLE;
-	private volatile NotifyClass notifyVariable = new NotifyClass();	
+	private volatile NotifyClass notifyVariable = new NotifyClass();
+	private volatile NotifyClass notifyStateChanged = new NotifyClass();
 	boolean continueLoop = true;	
 	
 	private volatile ServerState currentServerState = new ServerState();
