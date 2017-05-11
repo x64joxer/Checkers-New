@@ -48,6 +48,13 @@ public class ServerConnection implements Runnable
 		connect();
 	}
 
+	public ServerConnectionState GetConnectionState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: public ServerState GetConnectionState()");
+		
+		return connectionState;
+	}
+	
 	private void connect()
 	{
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private void connect()");
@@ -131,6 +138,13 @@ public class ServerConnection implements Runnable
 			
 			
 		}	
+	}
+	
+	public ServerState GetServerState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private ServerState GetServerState()");
+		
+		return currentServerState;
 	}
 	
 	private void SendRegisterMessage()
@@ -370,7 +384,7 @@ public class ServerConnection implements Runnable
 	  GETSTATESEND_WAIT_FOR_STATE(4),
 	  STATEUPDATED(5),
 	  CONCTERROR(255); 
-	
+	    
 		private final int value;
 		
 	    private ServerConnectionState(int value) {

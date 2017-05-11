@@ -352,6 +352,14 @@ public class CheckersArea extends JPanel
     	//TODO
     }
     
+    public void SetSeverState(final ServerState state)
+    {
+    	serverState = new ServerState(serverState);
+    	board = serverState.GetBoard();    	
+    	
+    	repaint();
+    }
+    
     private Color field1 = Color.BLACK;
     private Color field2 = Color.WHITE;    
     private Color pawn1 = Color.RED;
@@ -362,7 +370,7 @@ public class CheckersArea extends JPanel
     private int mouseY = 0;
     private int grabbed = 0;
     
-    private Board board;
+    private volatile Board board;
     private Board previousBoard;
     private int displayedBoard;
     private PossibleMoves possibleMoves = new PossibleMoves();

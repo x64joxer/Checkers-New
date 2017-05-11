@@ -15,6 +15,13 @@ public class Synchronizer implements Runnable
 		currentServerConnection = serCon;
 		currentServerConnection.AddToStateChangeNotification(notifyVariable);
 	}
+
+	public void SetCheckerArea(final CheckersArea checArea)
+	{
+		if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: public void SetCheckerArea(final CheckersArea checArea)");
+		
+		currentCheckersArea = checArea;
+	}
 	
 	public void Start()
 	{
@@ -49,6 +56,39 @@ public class Synchronizer implements Runnable
 		{
 			if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: Wait for state change...");
 			
+			switch (currentServerConnection.GetConnectionState())
+			{
+				case CONNECTING:
+					
+					break;
+					
+				case CONNECTED:
+					
+					break;
+				
+				case REGISTERSEND_WAIT_FOR_OK:
+						
+					break;
+					
+				case GETSTATESEND:
+						
+					break;
+					
+				case GETSTATESEND_WAIT_FOR_STATE:
+						
+					break;					
+						
+				case STATEUPDATED:
+					if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: STATEUPDATED");
+					
+					currentCheckersArea.SetSeverState(currentServerConnection.GetServerState());	
+					break;
+					
+				default:
+					Traces.Debug("ERR: ServerConnection: Wrong connection state!");					
+				
+			} 			
+			
 			notifyVariable.Wait();
 		}
 	}
@@ -57,4 +97,5 @@ public class Synchronizer implements Runnable
 	private volatile boolean continueLoop = true;
 	private Thread mainThread;
 	private volatile ServerConnection currentServerConnection = new ServerConnection();
+	private volatile CheckersArea currentCheckersArea = new CheckersArea();
 }
