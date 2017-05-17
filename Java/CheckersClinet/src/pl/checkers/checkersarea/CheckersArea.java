@@ -5,13 +5,10 @@ import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import pl.boards.*;
+import pl.programvariables.ProgramVariables;
 import pl.serverstate.*;
 import Trace.Traces;
-import pl.tcp.*;
-
 import javax.swing.JPanel;
 
 public class CheckersArea extends JPanel 
@@ -19,6 +16,8 @@ public class CheckersArea extends JPanel
 	
     public CheckersArea()
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public CheckersArea()");
+    	
     	mouseHandler.SetRefToCheckersArea(this);    	       
         
         previousBoard.Copy(board);
@@ -32,6 +31,8 @@ public class CheckersArea extends JPanel
     
     public void paintComponent(Graphics g) 
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public void paintComponent(Graphics g)");
+    	
         super.paintComponent(g);
         g.drawOval(0, 0, getWidth(), getHeight());
         PaintFields(g);
@@ -41,6 +42,8 @@ public class CheckersArea extends JPanel
     
     private void PaintFields(Graphics painter)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void PaintFields(Graphics painter)");
+    	
         int widthField = getWidth() / 8;
         int heightField = getHeight() / 8;
         boolean flag = false;
@@ -72,6 +75,8 @@ public class CheckersArea extends JPanel
 
     private void PaintPawn(Graphics painter)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void PaintPawn(Graphics painter)");
+    	
         Board boardToPaint = new Board();        
         
         if (cursorState == CursorState.WaitForIA)
@@ -126,6 +131,8 @@ public class CheckersArea extends JPanel
     
     private void DrawPawn(Graphics painter, final int x, final int y, final int widthField, final int heightField, final boolean blackWhite, final boolean pons)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void DrawPawn(Graphics painter, final int x, final int y, final int widthField, final int heightField, final boolean blackWhite, final boolean pons)");
+    	
         if (blackWhite)
         {            
             painter.setColor(pawn1);
@@ -187,6 +194,8 @@ public class CheckersArea extends JPanel
     
     private void PaintGrabbedBlackPawn(Graphics painter)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void PaintGrabbedBlackPawn(Graphics painter)");
+    	
         if (cursorState == CursorState.Grab)
         {
             int widthField = getWidth() / 8;
@@ -198,6 +207,8 @@ public class CheckersArea extends JPanel
     
     private void TakeMouseClickEvent(MouseEvent e)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void TakeMouseClickEvent(MouseEvent e)");
+    	
         int widthField = getWidth() / 8;
         int heightField = getHeight() / 8;
 
@@ -227,6 +238,8 @@ public class CheckersArea extends JPanel
     
     public void TakeMouseMoveEvent(MouseEvent e)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public void TakeMouseMoveEvent(MouseEvent e)");
+    	
         mouseX = e.getX();
         mouseY = e.getY();
 
@@ -235,7 +248,9 @@ public class CheckersArea extends JPanel
     }
     
     public void TakeMouseReleaseEvent(MouseEvent e)
-    {    
+    {   
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public void TakeMouseReleaseEvent(MouseEvent e)");
+    	
         int widthField = getWidth() / 8;
         int heightField = getHeight() / 8;
 
@@ -335,16 +350,22 @@ public class CheckersArea extends JPanel
     
     private void StartThinking()
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void StartThinking()");
+    	
         //TODO
     }
 
     private void SendingJob(final String server)
     {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void SendingJob(final String server)");
+    	
     	//TODO
     }
     
     public synchronized void SetSeverState(final ServerState state)
-    {    	
+    {   
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public synchronized void SetSeverState(final ServerState state)");
+    	
     	serverState.Copy(state);
     	board.Copy(serverState.GetBoard());    	    	    
     	repaint();
