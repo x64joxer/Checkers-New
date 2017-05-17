@@ -42,7 +42,7 @@ public class ServerState
 	
 	public ServerState(final ServerState data)
 	{	    
-	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState ServerState::operator=(final ServerState  & data)");
+	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState public ServerState(final ServerState data)");
 	
 	    current.Copy(data.current);
 	    thinking = data.thinking;
@@ -57,7 +57,7 @@ public class ServerState
 	
 	public void Copy(final ServerState data)
 	{
-	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState ServerState::operator=(final ServerState  & data)");
+	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState public void Copy(final ServerState data)");
 	    	    
 	    current.Copy(data.GetBoard());	    	   
 	    thinking = data.thinking;
@@ -71,8 +71,8 @@ public class ServerState
 	
     public synchronized void SetBoard(final Board  board) {  current.Copy(board); }
     public synchronized Board GetBoard() {  return new Board(current); }
-    public synchronized void SetPreviousBoard(final Board  board) {  previousBoard = board; }
-    public synchronized Board GetPrviousBoard() {  return previousBoard; }
+    public synchronized void SetPreviousBoard(final Board  board) {  previousBoard.Copy(board); }
+    public synchronized Board GetPrviousBoard() {  return new Board(previousBoard); }
     public synchronized void SetThinking(final boolean flag) {  thinking = flag; }
     public synchronized boolean IsThinking() {  return thinking; }
     public synchronized void SetStartTime(final long val) {  startTime = val; }
@@ -84,7 +84,7 @@ public class ServerState
     public synchronized long GetMaxTimeForWorkers() { return maxTimeForWorkers; }
     public synchronized long GetTimeToEnd() { return startTime; }
     public synchronized void SetlastServerError(final String error) { lastServerError = error; }
-    public synchronized String GetLastServerError() { return lastServerError; }
+    public synchronized String GetLastServerError() { return new String(lastServerError); }
     public synchronized void SetWhiteWins() { whiteWins = true; blackWins = false; }
     public synchronized void SetBlackWins() { whiteWins = false; blackWins = true; }
     public synchronized boolean IsWhiteWins() { return whiteWins; }
