@@ -19,18 +19,9 @@ public class CheckersArea extends JPanel
 	
     public CheckersArea()
     {
-    	mouseHandler.SetRefToCheckersArea(this);
-    	
-        board = new Board("| |w| |w| |w| |w|" +
-        "|w| |w| |w| |w| |" +
-        "| |w| |w| |w| |w|" +
-        "| | | | | | | | |" +
-        "| | | | | | | | |" +
-        "|b| |b| |b| |b| |" +
-        "| |b| |b| |b| |b|" +
-        "|b| |b| |b| |b| |");               
+    	mouseHandler.SetRefToCheckersArea(this);    	       
         
-        previousBoard = board;
+        previousBoard.Copy(board);
         cursorState = CursorState.Free;
         
         setPreferredSize(new Dimension(450, 450));
@@ -81,19 +72,19 @@ public class CheckersArea extends JPanel
 
     private void PaintPawn(Graphics painter)
     {
-        Board boardToPaint;
-
+        Board boardToPaint = new Board();        
+        
         if (cursorState == CursorState.WaitForIA)
         {
-            boardToPaint = board;
+            boardToPaint.Copy(board);
         } else
         {
             if (displayedBoard == 0)
             {
-              boardToPaint = new Board(board);
+              boardToPaint.Copy(board);
             } else
             {
-              boardToPaint = new Board(previousBoard);
+              boardToPaint.Copy(previousBoard);
             };
         };
 
@@ -254,7 +245,7 @@ public class CheckersArea extends JPanel
         if (cursorState == CursorState.Grab)
         {                
             Traces.Debug("if (cursorState == Grab)");
-            previousBoard = board;
+            previousBoard.Copy(board);
 
             if (possibleMoves.CanIPutHere(grabbed, x, y, board))
             {
@@ -352,11 +343,10 @@ public class CheckersArea extends JPanel
     	//TODO
     }
     
-    public void SetSeverState(final ServerState state)
-    {
-    	serverState = new ServerState(serverState);
-    	board = serverState.GetBoard();    	
-    	
+    public synchronized void SetSeverState(final ServerState state)
+    {    	
+    	serverState.Copy(state);
+    	board.Copy(serverState.GetBoard());    	    	    
     	repaint();
     }
     
@@ -370,11 +360,12 @@ public class CheckersArea extends JPanel
     private int mouseY = 0;
     private int grabbed = 0;
     
-    private volatile Board board;
-    private Board previousBoard;
+    private Board board = new Board();
+    
+    private Board previousBoard = new Board();
     private int displayedBoard;
     private PossibleMoves possibleMoves = new PossibleMoves();
-    ServerState serverState = new ServerState();
+    private ServerState serverState = new ServerState();
     
     private enum CursorState { Free, Grab, WaitForSerwerStateUpdate, WaitForIA };
     private CursorState cursorState;

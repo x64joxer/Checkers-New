@@ -42,9 +42,9 @@ public class ServerState
 	
 	public ServerState(final ServerState data)
 	{	    
-	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState & ServerState::operator=(final ServerState  & data)");
+	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState ServerState::operator=(final ServerState  & data)");
 	
-	    current = data.current;
+	    current.Copy(data.current);
 	    thinking = data.thinking;
 	    startTime = data.startTime;
 	    maxTime = data.maxTime;
@@ -55,8 +55,22 @@ public class ServerState
 
 	}
 	
-    public synchronized void SetBoard(final Board  board) {  current = board; }
-    public synchronized Board GetBoard() {  return current; }
+	public void Copy(final ServerState data)
+	{
+	    if (ProgramVariables.GetTraceFlagForClass_ServerState()) Traces.Debug("LOG: final ServerState ServerState::operator=(final ServerState  & data)");
+	    	    
+	    current.Copy(data.GetBoard());	    	   
+	    thinking = data.thinking;
+	    startTime = data.startTime;
+	    maxTime = data.maxTime;
+	    timeToEnd = data.timeToEnd;
+	    lastServerError = data.lastServerError;
+	    whiteWins = data.whiteWins;
+	    blackWins = data.blackWins;
+	}
+	
+    public synchronized void SetBoard(final Board  board) {  current.Copy(board); }
+    public synchronized Board GetBoard() {  return new Board(current); }
     public synchronized void SetPreviousBoard(final Board  board) {  previousBoard = board; }
     public synchronized Board GetPrviousBoard() {  return previousBoard; }
     public synchronized void SetThinking(final boolean flag) {  thinking = flag; }

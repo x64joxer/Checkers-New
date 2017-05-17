@@ -32,6 +32,27 @@ public class Board
 	    }
 	}
 	
+	public void Copy(final Board val)
+	{	    	   	    		
+		Clear();	    
+		val.PrintDebug();
+	    previousMurder = val.GetPreviousMurder();	    
+	    val.CopyTo(origin);
+	    whitePatchEnd = val.GetWhitePatchEnd();
+	    blackWhite = val.White();
+	    nullBoard = val.GetNullBoard();	
+	    
+	    for (int i =0; i<val.GetNumberOfBlack(); i++)
+	    {	    	
+	    	black[i] = val.GetBlackPawn(i);	    		   
+	    }
+
+	    for (int i =0; i<val.GetNumberOfWhite(); i++)
+	    {
+	    	white[i] = val.GetWhitePawn(i);	    		   
+	    }		
+	}
+	
 	public void Clear()
 	{
 	    SetPreviousMurder(12);

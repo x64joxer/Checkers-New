@@ -16,6 +16,7 @@ public class MainWindow extends JFrame
 		
 		ServerConnection connection = new ServerConnection("localhost", 6000);
 		synchronizer.SetServerConnection(connection);
+		synchronizer.SetCheckerArea(checkersArea);
 		synchronizer.Start();
 		
 		connection.Connect();
