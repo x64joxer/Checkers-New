@@ -374,7 +374,11 @@ public class ServerConnection implements Runnable
 				currentServerState.SetBlackWins();
 			}
 			
-			connectionState = ServerConnectionState.STATEUPDATED;
+			String newOkMessage = "";
+			newOkMessage = MessageCoder.CreateOkMessage(receivedMessage.get(MessageCoder.MESSAGE_ID), newOkMessage);			
+		    serverClient.Send(newOkMessage);		    
+		    
+			connectionState = ServerConnectionState.STATEUPDATED;						
 			notifyStateChanged.NotifyAll();		
 		} else
 		{
