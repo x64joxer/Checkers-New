@@ -73,8 +73,8 @@ public class MessageCoder
 			copy.replaceFirst("^[a-zA-Z0-9]{4,4}", "AAAA");
 		} else
 		{
-			copy = "AAAA";		   
-		}
+			copy = "AAAA";			
+		}			
 		
 	    return copy;
 	}
@@ -588,13 +588,13 @@ public class MessageCoder
 	}
 
 	public static String CreateOkMessage(final String  id, String dest)
-	{
-	    InsertHeader(dest);
-	    KeyValuePairToString(ACTION, OK, dest);
-	    KeyValuePairToString(MESSAGE_ID, id, dest);
-	    KeyValuePairToString(MESSAGE_END, 0, dest);
-	    dest = AddEndlLine(dest);	    
-	    InsertLenMessageHeader(dest);
+	{		
+	    dest = InsertHeader(dest);	    	    
+	    dest = KeyValuePairToString(ACTION, OK, dest);	    
+	    dest = KeyValuePairToString(MESSAGE_ID, id, dest);	    
+	    dest = KeyValuePairToString(MESSAGE_END, 0, dest);	    
+	    dest = AddEndlLine(dest);	    	    
+	    dest = InsertLenMessageHeader(dest);	    
 	    
 	    return dest;
 	}
