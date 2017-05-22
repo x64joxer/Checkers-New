@@ -336,53 +336,9 @@ public class ServerConnection implements Runnable
 		
 		notifyVariable.Wait();
 		
-		//Receive message
-		String message = serverClient.GetMessage();		
-		HashMap<String, String> receivedMessage = new HashMap<String, String>();		
-		MessageCoder.MessageToMap(message, receivedMessage);
-		
-		if (receivedMessage.get(MessageCoder.ACTION).equals(MessageCoder.SERVER_STATE) == true)
+		if (serverClient.GetConnectionState() == TCPClient.ConnectionState.DISCONNECTED)
 		{
-			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Server state recived.");
-			
-			Board reveiwedBoard = new Board();
-			MessageCoder.MapToBoard(receivedMessage, reveiwedBoard);
-			
-			currentServerState.SetBoard(reveiwedBoard);					
-			
-			if (receivedMessage.get(MessageCoder.IS_THINKING).equals("1") == true)
-			{
-				currentServerState.SetThinking(true);
-			} else
-			{
-				currentServerState.SetThinking(false);	
-			}
-			
-			currentServerState.SetStartTime(Long.parseLong(receivedMessage.get(MessageCoder.START_TIME)));
-			currentServerState.SetMaxTime(Long.parseLong(receivedMessage.get(MessageCoder.MAX_IA_TIME)));
-			currentServerState.SetTimeToEnd(Long.parseLong(receivedMessage.get(MessageCoder.TIME_TO_END)));
-			currentServerState.SetlastServerError(receivedMessage.get(MessageCoder.SERVER_ERROR));
-		
-			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Received board:");
-			if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) reveiwedBoard.PrintDebug();
-			
-			if (receivedMessage.get(MessageCoder.WHITE_WINS).equals("1") == true)
-			{
-				currentServerState.SetWhiteWins();
-			} else
-			{
-				currentServerState.SetBlackWins();
-			}
-			
-			String newOkMessage = "";
-			newOkMessage = MessageCoder.CreateOkMessage(receivedMessage.get(MessageCoder.MESSAGE_ID), newOkMessage);			
-		    serverClient.Send(newOkMessage);		    
-		    
-			connectionState = ServerConnectionState.STATEUPDATED;						
-			notifyStateChanged.NotifyAll();		
-		} else
-		{
-			Traces.Debug("ERR: ServerConnection: Protocol error " + message);
+			Traces.Debug("ERR: ServerConnection: Connection problem!");
 			
 			if (Reconnect() == true)
 			{
@@ -391,8 +347,67 @@ public class ServerConnection implements Runnable
 				} catch (InterruptedException e) {
 
 				}					
+			}			
+		} else
+		{		
+			//Receive message
+			String message = serverClient.GetMessage();		
+			HashMap<String, String> receivedMessage = new HashMap<String, String>();		
+			MessageCoder.MessageToMap(message, receivedMessage);
+			
+			if (receivedMessage.get(MessageCoder.ACTION).equals(MessageCoder.SERVER_STATE) == true)
+			{
+				if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Server state recived.");
+				
+				Board reveiwedBoard = new Board();
+				MessageCoder.MapToBoard(receivedMessage, reveiwedBoard);
+				
+				currentServerState.SetBoard(reveiwedBoard);					
+				
+				if (receivedMessage.get(MessageCoder.IS_THINKING).equals("1") == true)
+				{
+					currentServerState.SetThinking(true);
+				} else
+				{
+					currentServerState.SetThinking(false);	
+				}
+				
+				currentServerState.SetStartTime(Long.parseLong(receivedMessage.get(MessageCoder.START_TIME)));
+				currentServerState.SetMaxTime(Long.parseLong(receivedMessage.get(MessageCoder.MAX_IA_TIME)));
+				currentServerState.SetTimeToEnd(Long.parseLong(receivedMessage.get(MessageCoder.TIME_TO_END)));
+				currentServerState.SetlastServerError(receivedMessage.get(MessageCoder.SERVER_ERROR));
+			
+				if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Received board:");
+				if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) reveiwedBoard.PrintDebug();
+				
+				if (receivedMessage.get(MessageCoder.WHITE_WINS).equals("1") == true)
+				{
+					currentServerState.SetWhiteWins();
+				} else
+				{
+					currentServerState.SetBlackWins();
+				}
+				
+				String newOkMessage = "";
+				newOkMessage = MessageCoder.CreateOkMessage(receivedMessage.get(MessageCoder.MESSAGE_ID), message);			
+			    serverClient.Send(newOkMessage);		    
+			    
+				connectionState = ServerConnectionState.STATEUPDATED;						
+				notifyStateChanged.NotifyAll();		
+			} else
+			{
+				Traces.Debug("ERR: ServerConnection: Protocol error " + message);
+				
+				if (Reconnect() == true)
+				{
+					try {
+						Thread.sleep(recconectionTime);
+					} catch (InterruptedException e) {
+	
+					}					
+				}
 			}
-		}
+	    }
 	}
 	
 	private boolean Reconnect()

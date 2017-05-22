@@ -52,6 +52,13 @@ public class TCPClient implements Runnable
 		
 	}
 	
+	public ConnectionState GetConnectionState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient private ConnectionState GetConnectionState()");
+		
+		return connected;
+	}
+	
 	private boolean IntToBoolean(final int val)
 	{
 		if (val == 0) return false;
@@ -135,14 +142,17 @@ public class TCPClient implements Runnable
 				if (message == null) 
 				{	
 					connected = ConnectionState.DISCONNECTED;		
-					Traces.Debug("ERR: Read message error! Socker closed!");
+					Traces.Debug("ERR: Read message error! Message is null! Socket closed!");
+					mynotify.NotifyAll();
 					break;
-				}
-									
-				if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient Message receivd: " + message);
-				incomingMessageList.add(message);
 				
-				mynotify.NotifyAll();
+				} else
+				{					
+					if (ProgramVariables.GetTraceFlagForClass_TCPClient()) Traces.Debug("LOG: TCPClient Message receivd: " + message);
+					incomingMessageList.add(message);
+					mynotify.NotifyAll();
+				}
+				
 			}			
 			
 		} 
