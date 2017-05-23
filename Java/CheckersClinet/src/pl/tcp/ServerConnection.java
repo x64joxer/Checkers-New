@@ -281,11 +281,16 @@ public class ServerConnection implements Runnable
 					if (receivedMessage.get(MessageCoder.WHITE_WINS).equals("1") == true)
 					{
 						currentServerState.SetWhiteWins();
+						
+					} else
+					if (receivedMessage.get(MessageCoder.BLACK_WINS).equals("1") == true)
+					{
+						currentServerState.SetBlackWins();						
 					} else
 					{
-						currentServerState.SetBlackWins();
+						currentServerState.SetNoWinners();
 					}
-					
+										
 					connectionState = ServerConnectionState.STATEUPDATED;
 					notifyStateChanged.NotifyAll();
 									

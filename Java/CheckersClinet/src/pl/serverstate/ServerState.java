@@ -87,6 +87,7 @@ public class ServerState
     public synchronized String GetLastServerError() { return new String(lastServerError); }
     public synchronized void SetWhiteWins() { whiteWins = true; blackWins = false; }
     public synchronized void SetBlackWins() { whiteWins = false; blackWins = true; }
+    public synchronized void SetNoWinners() { whiteWins = false; blackWins = false; }
     public synchronized boolean IsWhiteWins() { return whiteWins; }
     public synchronized boolean IsBlackWins() { return blackWins; }
     public synchronized void ClearWins() { whiteWins = false; blackWins =false; }
