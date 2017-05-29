@@ -93,7 +93,7 @@ public class ServerState
     public synchronized void ClearWins() { whiteWins = false; blackWins =false; }
 	
 	public static String NO_SERVER_ERROR_TEXT = new String("NO_ERROR");
-    private Board current;
+    private Board current = new Board();
     private Board previousBoard = new Board();
     private boolean thinking = false;
     private long startTime = 0;

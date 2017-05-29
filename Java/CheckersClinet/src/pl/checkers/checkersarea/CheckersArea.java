@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import pl.boards.*;
+import pl.notify.NotifyClass;
 import pl.programvariables.ProgramVariables;
 import pl.serverstate.*;
 import Trace.Traces;
@@ -13,6 +14,13 @@ import javax.swing.JPanel;
 
 public class CheckersArea extends JPanel 
 {	
+	
+	public void AddToStateChangeNotification(final NotifyClass notify)
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: CheckersArea: public void AddToStateChangeNotification(final NotifyClass notify)");
+		
+		notifyVariable.AddToNotifyList(notify);
+	}
 	
     public CheckersArea()
     {
@@ -28,6 +36,20 @@ public class CheckersArea extends JPanel
         this.addMouseListener(mouseHandler);
         this.addMouseMotionListener(mouseHandler);
     }    
+   
+    public CursorState GetCursorState()
+    {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public CursorState GetCursorState()");
+    	
+    	return cursorState;
+    }
+    
+    public ServerState GetServerState()
+    {
+    	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: public ServerState GetServerState()");
+    	
+    	return new ServerState(serverState);
+    }
     
     public void paintComponent(Graphics g) 
     {
@@ -352,6 +374,7 @@ public class CheckersArea extends JPanel
     {
     	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void StartThinking()");
     	
+    	
         //TODO
     }
 
@@ -359,6 +382,7 @@ public class CheckersArea extends JPanel
     {
     	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void SendingJob(final String server)");
     	
+    	notifyVariable.NotifyAll();
     	//TODO
     }
     
@@ -387,7 +411,7 @@ public class CheckersArea extends JPanel
     private int displayedBoard;
     private PossibleMoves possibleMoves = new PossibleMoves();
     private ServerState serverState = new ServerState();
-    
-    private enum CursorState { Free, Grab, WaitForSerwerStateUpdate, WaitForIA };
-    private CursorState cursorState;
+    private volatile NotifyClass notifyVariable = new NotifyClass();
+    public enum CursorState { Free, Grab, WaitForSerwerStateUpdate, WaitForIA };
+    private volatile CursorState cursorState;
 }

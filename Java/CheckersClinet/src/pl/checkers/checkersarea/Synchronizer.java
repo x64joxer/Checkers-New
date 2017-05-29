@@ -13,7 +13,7 @@ public class Synchronizer implements Runnable
 		if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: public void SetServerConnection(final ServerConnection serCon)");
 		
 		currentServerConnection = serCon;
-		currentServerConnection.AddToStateChangeNotification(notifyVariable);
+		currentServerConnection.AddToStateChangeNotification(notifyVariable);		
 	}
 
 	public void SetCheckerArea(final CheckersArea checArea)
@@ -21,6 +21,7 @@ public class Synchronizer implements Runnable
 		if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: public void SetCheckerArea(final CheckersArea checArea)");
 		
 		currentCheckersArea = checArea;
+		currentCheckersArea.AddToStateChangeNotification(notifyVariable);
 	}
 	
 	public void Start()
@@ -89,12 +90,25 @@ public class Synchronizer implements Runnable
 				
 			} 			
 			
-			notifyVariable.Wait();
+			notifyVariable.Wait();			
+						
+			if (currentCheckersArea.GetCursorState() == CheckersArea.CursorState.WaitForSerwerStateUpdate)
+			{
+				if (jobSend == false)
+				{
+					if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: Send job!");
+					
+					currentServerConnection.SendJobToServer(currentCheckersArea.GetServerState());
+					jobSend = true;
+					//TODO add catch exception when server will be in wrong state
+				}
+			}
 		}
 	}
 
 	private volatile NotifyClass notifyVariable = new NotifyClass();	
 	private volatile boolean continueLoop = true;
+	private volatile boolean jobSend = false;
 	private Thread mainThread;
 	private volatile ServerConnection currentServerConnection = new ServerConnection();
 	private volatile CheckersArea currentCheckersArea = new CheckersArea();
