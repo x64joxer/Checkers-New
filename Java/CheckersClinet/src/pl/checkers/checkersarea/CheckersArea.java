@@ -381,7 +381,7 @@ public class CheckersArea extends JPanel
     private void SendingJob(final String server)
     {
     	if (ProgramVariables.GetTraceFlagForClass_CheckerArea()) Traces.Debug("LOG: CheckerArea: private void SendingJob(final String server)");
-    	
+    	serverState.SetBoard(board);
     	notifyVariable.NotifyAll();
     	//TODO
     }
