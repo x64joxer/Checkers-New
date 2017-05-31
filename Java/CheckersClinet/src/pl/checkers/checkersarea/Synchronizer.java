@@ -8,6 +8,12 @@ import pl.tcp.*;
 public class Synchronizer implements Runnable
 {
 
+	public void ResetServerState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: public void ResetServerState()");
+		
+	}
+	
 	public void SetServerConnection(final ServerConnection serCon)
 	{
 		if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: public void SetServerConnection(final ServerConnection serCon)");
