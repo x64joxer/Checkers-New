@@ -71,6 +71,21 @@ public class ServerConnection implements Runnable
 		}
 	}
 	
+	public void ResetServerState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: public void ResetServerState()");
+		
+		if (connectionState == ServerConnectionState.STATEUPDATED || connectionState == ServerConnectionState.WAITFORJOBRESULT)
+		{		
+			connectionState = ServerConnectionState.SENDRESETSERVERSTATE;
+			notifyVariable.NotifyMe();			
+		} else
+		{
+			Traces.Debug("ERR: ServerConnection: Server connection in wrong state!");
+			//TODO throw exception
+		}		
+	}
+	
 	private void connect()
 	{
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private void connect()");
@@ -122,7 +137,14 @@ public class ServerConnection implements Runnable
 				case WAITFORJOBRESULT:
 					 WatiForJobResult();
 					 break;					 
-					 
+
+				case SENDRESETSERVERSTATE:
+					 SendResetServerState();
+					 break;
+
+				case SENDRESETSERVERSTATE_WAIT_FOR_STATE:
+					 SendResetServerStateWaitForState();
+					 break;					 
 				case STATEUPDATED:
 					WaitForTask();						
 					break;					
@@ -427,6 +449,111 @@ public class ServerConnection implements Runnable
 		}    	
 	}
 	
+	private void SendResetServerState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: private void SendResetServerState()");
+		
+	    prevousMessageid = MessageCoder.CreateMessageId();
+	    String message = "";
+	    Board newBoard = new Board(
+	    	    "| |w| |w| |w| |w|"+
+	    	    "|w| |w| |w| |w| |"+
+	    	    "| |w| |w| |w| |w|"+
+	    	    "|\\| |\\| |\\| |\\| |"+
+	    	    "| |\\| |\\| |\\| |\\|"+
+	    	    "|b| |b| |b| |b| |"+
+	    	    "| |b| |b| |b| |b|"+
+	    	    "|b| |b| |b| |b| |"	    			    			    		
+	    		);
+	    
+	    message = MessageCoder.CreateResetServerStateMessage(newBoard, prevousMessageid, message);
+	    serverClient.Send(message);
+	    connectionState = ServerConnectionState.SENDRESETSERVERSTATE_WAIT_FOR_STATE;
+	    notifyStateChanged.NotifyAll();
+	}
+	
+	private void  SendResetServerStateWaitForState()
+	{
+		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: private void  SendResetServerStateWaitForState()");
+
+		try 
+		{
+			notifyVariable.Wait(ProgramVariables.GetMaxTimeWaitToServer());
+			
+			String message = serverClient.GetMessage();
+			
+			
+			HashMap<String, String> receivedMessage = new HashMap<String, String>();
+			
+			MessageCoder.MessageToMap(message, receivedMessage);
+						
+			if (receivedMessage.get(MessageCoder.ACTION).equals(MessageCoder.SERVER_STATE) == true)
+			{
+					if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Server state recived.");
+					
+					Board reveiwedBoard = new Board();
+					MessageCoder.MapToBoard(receivedMessage, reveiwedBoard);
+					
+					currentServerState.SetBoard(reveiwedBoard);					
+					
+					if (receivedMessage.get(MessageCoder.IS_THINKING).equals("1") == true)
+					{
+						currentServerState.SetThinking(true);
+					} else
+					{
+						currentServerState.SetThinking(false);	
+					}
+					
+					currentServerState.SetStartTime(Long.parseLong(receivedMessage.get(MessageCoder.START_TIME)));
+					currentServerState.SetMaxTime(Long.parseLong(receivedMessage.get(MessageCoder.MAX_IA_TIME)));
+					currentServerState.SetTimeToEnd(Long.parseLong(receivedMessage.get(MessageCoder.TIME_TO_END)));
+					currentServerState.SetlastServerError(receivedMessage.get(MessageCoder.SERVER_ERROR));
+				
+					if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: Received board:");
+					if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) reveiwedBoard.PrintDebug();
+					
+					if (receivedMessage.get(MessageCoder.WHITE_WINS).equals("1") == true)
+					{
+						currentServerState.SetWhiteWins();
+						
+					} else
+					if (receivedMessage.get(MessageCoder.BLACK_WINS).equals("1") == true)
+					{
+						currentServerState.SetBlackWins();						
+					} else
+					{
+						currentServerState.SetNoWinners();
+					}
+										
+					connectionState = ServerConnectionState.STATEUPDATED;
+					notifyStateChanged.NotifyAll();														
+			} else
+			{
+				Traces.Debug("ERR: ServerConnection: Wrong message received! Expected SERVER STATE message! Received message: " + message);
+				
+				if (Reconnect() == true)
+				{
+					try {
+						Thread.sleep(recconectionTime);
+					} catch (InterruptedException e) {
+
+					}					
+				}												
+			}			
+			
+		}
+		catch(Exception e)
+		{
+			if (e.getMessage() == "Timeout!")
+			{									
+				Traces.Debug("ERR: ServerConnection: Tiemout! Messge OK not received after sending reset server state message!");
+				
+				Reconnect();								
+				
+			}
+		}			    
+	}
+	
 	private void WaitForTask()
 	{
 		if (ProgramVariables.GetTraceFlagForClass_ServerConnection()) Traces.Debug("LOG: ServerConnection: private void WaitForTask()");
@@ -454,7 +581,17 @@ public class ServerConnection implements Runnable
 		if (connectionState == ServerConnectionState.SENDJOBTOSERVER_WAIT_FOR_STATE)
 		{
 			//Go to main loop
+		}		
+		else
+		if (connectionState == ServerConnectionState.SENDRESETSERVERSTATE)
+		{
+			//Go to main loop
 		}
+		else
+		if (connectionState == ServerConnectionState.SENDRESETSERVERSTATE_WAIT_FOR_STATE)
+		{
+			//Go to main loop
+		}		
 		else			
 		{		
 			//Receive message
@@ -670,6 +807,8 @@ public class ServerConnection implements Runnable
 	  SENDJOBTOSERVER(6),
 	  SENDJOBTOSERVER_WAIT_FOR_STATE(7),
 	  WAITFORJOBRESULT(8),
+	  SENDRESETSERVERSTATE(9),
+	  SENDRESETSERVERSTATE_WAIT_FOR_STATE(10),
 	  CONCTERROR(255); 
 	    
 		private final int value;

@@ -1,8 +1,10 @@
 package pl.checkers.checkersarea;
 
+import pl.boards.Board;
 import pl.notify.NotifyClass;
 import pl.programvariables.ProgramVariables;
 import Trace.Traces;
+import pl.serverstate.ServerState;
 import pl.tcp.*;
 
 public class Synchronizer implements Runnable
@@ -12,6 +14,7 @@ public class Synchronizer implements Runnable
 	{
 		if (ProgramVariables.GetTraceFlagForClass_Synchronizer()) Traces.Debug("LOG: Synchronizer: public void ResetServerState()");
 		
+		currentServerConnection.ResetServerState();
 	}
 	
 	public void SetServerConnection(final ServerConnection serCon)
