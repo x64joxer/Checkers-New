@@ -95,7 +95,7 @@ public class Synchronizer implements Runnable
 					break;
 					
 				default:
-					Traces.Debug("ERR: ServerConnection: Wrong connection state!");					
+					Traces.Debug("ERR: Synchronizer: Wrong connection state!");					
 				
 			} 			
 			

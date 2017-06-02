@@ -524,7 +524,11 @@ public class ServerConnection implements Runnable
 					{
 						currentServerState.SetNoWinners();
 					}
-										
+					
+					String newOkMessage = "";
+					newOkMessage = MessageCoder.CreateOkMessage(receivedMessage.get(MessageCoder.MESSAGE_ID), newOkMessage);			
+				    serverClient.Send(newOkMessage);		
+					
 					connectionState = ServerConnectionState.STATEUPDATED;
 					notifyStateChanged.NotifyAll();														
 			} else
